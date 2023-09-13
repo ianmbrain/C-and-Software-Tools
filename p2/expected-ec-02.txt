@@ -1,0 +1,8 @@
+Barker, Bob                    1923-12-12 123-45-6789
+
+Summary
+-----------------------------------
+Total individuals                 1
+Maximum name length              11
+Individuals 21 or over            1
+Individuals without an SS#        0

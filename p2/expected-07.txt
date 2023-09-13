@@ -1,0 +1,8 @@
+Djarin, Din                    1980-08-03 222-33-4444
+
+Summary
+-----------------------------------
+Total individuals                 1
+Maximum name length              11
+Individuals 21 or over            1
+Individuals without an SS#        0

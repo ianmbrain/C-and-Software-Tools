@@ -1,0 +1,8 @@
+HigginbothamJackson, Demetrius 1144-02-29 876-54-3210
+
+Summary
+-----------------------------------
+Total individuals                 1
+Maximum name length              30
+Individuals 21 or over            1
+Individuals without an SS#        0

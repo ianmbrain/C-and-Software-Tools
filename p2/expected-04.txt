@@ -1,0 +1,8 @@
+Schmoe, Joe                    2010-02-03 987-76-5433
+
+Summary
+-----------------------------------
+Total individuals                 1
+Maximum name length              11
+Individuals 21 or over            0
+Individuals without an SS#        0

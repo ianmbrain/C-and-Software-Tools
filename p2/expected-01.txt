@@ -1,0 +1,7 @@
+
+Summary
+-----------------------------------
+Total individuals                 0
+Maximum name length               0
+Individuals 21 or over            0
+Individuals without an SS#        0

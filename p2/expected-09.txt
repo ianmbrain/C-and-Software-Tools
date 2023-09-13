@@ -1,0 +1,8 @@
+Grogu, Din                     2006-01-30         N/A
+
+Summary
+-----------------------------------
+Total individuals                 1
+Maximum name length              10
+Individuals 21 or over            0
+Individuals without an SS#        1
