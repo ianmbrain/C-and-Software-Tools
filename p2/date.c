@@ -25,3 +25,100 @@
 
 /** Number of digits in the day. */
 #define DAY_DIGITS 2
+
+/**
+ * Reads in the date from standard input and exits with 102 status if the name does not exist or is not 8 or 10 characters in length.
+ * @param date Date variable to store the inputted date in.
+*/
+void read_date( char date[ FIELD_MAX + 1 ] ) {
+  // NEED TO CHANGE 11 TO FIELD_MAX
+  if ( scanf( "%11s", date ) == -1 ) {
+    exit( DATE_ERROR );
+  }
+
+  if ( strlen( date ) != ( SHORT_YEAR + MONTH_DIGITS + DAY_DIGITS ) || strlen( date ) != ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+    exit( DATE_ERROR );
+  }
+}
+
+/**
+ * Transforms the date into the proper YYYY-MM-DD format.
+ * Exit with 102 status if the date is not in one of the specified formats.
+ * @param date Date variable to be transformed.
+*/
+void fix_date( char date[ FIELD_MAX + 1 ] ) {
+  int first_sep = skip_digits( date, 0 );
+
+  if ( first_sep == 4 ) {
+    if ( date[ 4 ] != '-' || date[ 7 ] != '-' )
+      exit( DATE_ERROR );
+
+    // Check if any characters that should be digits are not digits.
+    for ( int i = 0; date[ i ]; i < ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+      if ( i != 4 && i != 7 ) {
+        if ( !isdigit( date [ i ] ) ) {
+          exit( DATE_ERROR );
+        }
+      }
+    }
+    
+  }
+  else if ( first_sep == 2 ) {
+    char year[ FIELD_MAX + 1 ] = "";
+    char day[ 3 ] = "";
+    char month [ 3 ] = "";
+
+    if ( date[ 2 ] == '-' ) {
+      if ( date[ 5 ] != '-' )
+        exit( DATE_ERROR );
+    }
+    else if ( date[ 2 ] == '/' ) {
+      if ( date[ 5 ] != '/' )
+        exit( DATE_ERROR );
+    }
+    else {
+      exit( DATE_ERROR );
+    }
+
+    // Check if any characters that should be digits are not digits.
+    for ( int i = 0; date[ i ]; i < ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+      if ( i != 2 && i != 5 ) {
+        if ( !isdigit( date [ i ] ) ) {
+          exit( DATE_ERROR );
+        }
+      }
+    }
+
+    strncpy( day, date, 2 );
+    month[ 0 ] = date[ 3 ];
+    month[ 1 ] = date[ 4 ];
+
+    if ( strlen( date ) == ( SHORT_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+      year[ 2 ] = date[ 6 ];
+      year[ 3 ] = date[ 7 ];
+
+      if ( year[ 2 ] <= CURRENT_YEAR[ 0 ] && year[ 3 ] <= CURRENT_YEAR[ 1 ] ) {
+        year[ 0 ] = '2';
+        year[ 1 ] = '0';
+      }
+      else {
+        year[ 0 ] = '1';
+        year[ 1 ] = '9';
+      }
+    }
+    else if ( strlen( date ) == ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+      year[ 0 ] = date[ 6 ];
+      year[ 1 ] = date[ 7 ];
+      year[ 2 ] = date[ 8 ];
+      year[ 3 ] = date[ 9 ];
+    }
+
+    strcat( year, '-' );
+    strcat( year, day );
+    strcat( year, '-' );
+    strcat( year, month );
+  }
+  else {
+    exit( DATE_ERROR );
+  }
+}
