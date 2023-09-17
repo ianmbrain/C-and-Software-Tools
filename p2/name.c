@@ -32,6 +32,13 @@ bool read_name( char name[ FIELD_MAX + 1 ] )
   return true;
 }
 
+/**
+ * Transforms the parameter name into the correct format.
+ * Capitalizes the first letter of the first and last name.
+ * Reverse the order of the names and add a comma between them if there is not a comma separating the names.
+ * Exits with 101 status if the name contains non characters besides a comma and a space.
+ * @param name Name to be fixed.
+*/
 void fix_name( char name[ FIELD_MAX + 1 ] )
 {
   int length = strlen( name );
@@ -58,7 +65,9 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
     char last_name[ FIELD_MAX + 1 ] = "";
 
     strncpy( first_name, name, 0 );
+    first_name[ 0 ] = toupper( first_name[ 0 ] );
     strncpy( last_name, name, space_index + 1 );
+    last_name[ 0 ] = toupper( last_name[ 0 ] );
 
     strcat( first_name, ', ' );
     strcat( first_name, last_name );
