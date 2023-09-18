@@ -18,7 +18,7 @@
 // This should be followed by a space and then the individual’s birthdate in standard format (ten characters). 
 // After another space, the individual’s SSN should be printed in standard format, right justified in an 11-character field. The SSN will take all 11 characters, unless it’s N/A.
 
-main() {
+int main() {
   int individual_count = 0;
   int max_name_size = 0;
   int age_cutoff_count = 0;
@@ -74,4 +74,6 @@ main() {
   printf( "%-26s", "Individuals without an SS#" );
   printf( " " );
   printf( "%8d\n" );
+
+  return EXIT_SUCCESS;
 }
