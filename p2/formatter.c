@@ -40,7 +40,7 @@ int main() {
     bool meet_cutoff = true;
     for ( int i = 0; date[ i ]; i++ ) {
       if ( AGE_CUTOFF[ i ] > date[ i ] )
-        meet_cutoff == false;
+        meet_cutoff = false;
     }
 
     if ( meet_cutoff ) {
@@ -61,19 +61,19 @@ int main() {
   printf( "-----------------------------------\n" );
   printf( "%-26s", "Total individuals" );
   printf( " " );
-  printf( "%8d\n" );
+  printf( "%8d\n", individual_count );
 
   printf( "%-26s", "Maximum name length" );
   printf( " " );
-  printf( "%8d\n" );
+  printf( "%8d\n", max_name_size );
 
   printf( "%-26s", "Individuals 21 or over" );
   printf( " " );
-  printf( "%8d\n" );
+  printf( "%8d\n", age_cutoff_count );
 
   printf( "%-26s", "Individuals without an SS#" );
   printf( " " );
-  printf( "%8d\n" );
+  printf( "%8d\n", no_ssn_count );
 
   return EXIT_SUCCESS;
 }
