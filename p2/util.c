@@ -13,7 +13,8 @@
 */
 int skip_digits( char str[], int start )
 {
-  int length = strlen( str );
+  int length = 0;
+  length = strlen( str );
 
   for (int i = start; i < length; i++ ) {
     if ( str[ i ] == '\0' || !isdigit( str[ i ] ) ) {
@@ -30,7 +31,8 @@ int skip_digits( char str[], int start )
 */
 int skip_letters( char str[], int start )
 {
-  int length = strlen( str );
+  int length = 0;
+  length = strlen( str );
 
   for (int i = start; i < length; i++ ) {
     if ( str[ i ] == '\0' || !isalpha( str[ i ] ) ) {
