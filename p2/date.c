@@ -54,7 +54,7 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
       exit( DATE_ERROR );
 
     // Check if any characters that should be digits are not digits.
-    for ( int i = 0; date[ i ]; i < ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+    for ( int i = 0; i < ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ); i++ ) {
       if ( i != 4 && i != 7 ) {
         if ( !isdigit( date [ i ] ) ) {
           exit( DATE_ERROR );
@@ -81,7 +81,7 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
     }
 
     // Check if any characters that should be digits are not digits.
-    for ( int i = 0; date[ i ]; i < ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+    for ( int i = 0; i < ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ); i++ ) {
       if ( i != 2 && i != 5 ) {
         if ( !isdigit( date [ i ] ) ) {
           exit( DATE_ERROR );
@@ -113,9 +113,9 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
       year[ 3 ] = date[ 9 ];
     }
 
-    strcat( year, '-' );
+    strcat( year, "-" );
     strcat( year, day );
-    strcat( year, '-' );
+    strcat( year, "-" );
     strcat( year, month );
   }
   else {
