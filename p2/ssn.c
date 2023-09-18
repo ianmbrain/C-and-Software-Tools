@@ -49,7 +49,7 @@ void fix_ssn( char ssn[ FIELD_MAX + 1 ] ) {
 
   // If the index of a non digit is 0 then the format should be N/A.
   if ( first_non_digit == 0 ) {
-    if ( strcmp( ssn, "N/A" ) != 0 )
+    if ( strcmp( ssn, SSN_NA ) != 0 )
       exit( SSN_ERROR );
   }
   // If the non digit index indicates the ssn is already in standard format.
