@@ -69,7 +69,7 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
     strncpy( last_name, name, space_index + 1 );
     last_name[ 0 ] = toupper( last_name[ 0 ] );
 
-    strcat( first_name, ', ' );
+    strcat( first_name, ", " );
     strcat( first_name, last_name );
     strcat( name, first_name );
   }
