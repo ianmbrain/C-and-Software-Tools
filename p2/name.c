@@ -64,10 +64,12 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
     char first_name[ FIELD_MAX + 1 ] = "";
     char last_name[ FIELD_MAX + 1 ] = "";
 
-    strncpy( first_name, name, 0 );
+    strncpy( first_name, name, skip_letters( name, 0 ) );
     first_name[ 0 ] = toupper( first_name[ 0 ] );
-    strncpy( last_name, name, space_index + 1 );
+    //strncpy( last_name, name, skip_letters( name, space_index + 1 ) );
+    copy_substring( last_name, 0, name, skip_letters( name, space_index + 1 ), strlen( name ) );
     last_name[ 0 ] = toupper( last_name[ 0 ] );
+
 
     strcat( first_name, ", " );
     strcat( first_name, last_name );
