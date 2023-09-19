@@ -31,6 +31,7 @@ int main() {
   while ( read_name( name ) != false ) {
     printf( name );
     read_date( date );
+    printf( date );
     read_ssn( ssn );
 
     individual_count++;

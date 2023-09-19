@@ -32,11 +32,33 @@
 */
 void read_date( char date[ FIELD_MAX + 1 ] ) {
   // NEED TO CHANGE 11 TO FIELD_MAX
-  if ( scanf( "%11s", date ) == -1 ) {
-    exit( DATE_ERROR );
+  // if ( scanf( "%11s", date ) == -1 ) {
+  //   exit( DATE_ERROR );
+  // }
+
+  // if ( strlen( date ) != ( SHORT_YEAR + MONTH_DIGITS + DAY_DIGITS ) || strlen( date ) != ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+  //   exit( DATE_ERROR );
+  // }
+
+  int read_char = getchar();
+  int char_index = 0;
+  
+  while ( read_char != EOF ) {
+    if ( char_index > FIELD_MAX ) {
+      exit( DATE_ERROR );
+    }
+    
+    if ( read_char == ':' || read_char == '\n' ) {
+      break;
+    }
+
+    date[ char_index ] = read_char;
+    char_index++;
+    date[ char_index ] = '\0';
+    read_char = getchar();
   }
 
-  if ( strlen( date ) != ( SHORT_YEAR + MONTH_DIGITS + DAY_DIGITS ) || strlen( date ) != ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+  if ( strlen( date ) == 0 /** || char_index > FIELD_MAX */ ) {
     exit( DATE_ERROR );
   }
 }
