@@ -33,8 +33,8 @@ int main() {
     read_ssn( ssn );
 
     fix_name( name );
-    //fix_date( date );
-    //fix_ssn( ssn );
+    fix_date( date );
+    fix_ssn( ssn );
 
     individual_count++;
 

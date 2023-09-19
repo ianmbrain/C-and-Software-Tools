@@ -13,14 +13,22 @@
 */
 int skip_digits( char str[], int start )
 {
-  int return_index = 0;
+  int return_index = start;
 
-  for (int i = start; str[ i ]; i++ ) {
-    if ( str[ i ] == '\0' || !isdigit( str[ i ] ) ) {
-      return_index = i;
+  while ( str[ return_index ] ) {
+    if ( !isdigit( str[ return_index ] ) ) {
       return return_index;
     }
+
+    return_index++;
   }
+
+  // for (int i = start; str[ i ]; i++ ) {
+  //   if ( str[ i ] == '\0' || !isdigit( str[ i ] ) ) {
+  //     return_index = i;
+  //     return return_index;
+  //   }
+  // }
 
   return return_index;
 }
