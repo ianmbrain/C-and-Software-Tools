@@ -37,14 +37,17 @@ int main() {
     if ( strlen( name ) > max_name_size )
       max_name_size = strlen( name );
 
-    bool meet_cutoff = true;
-    for ( int i = 0; date[ i ]; i++ ) {
-      if ( AGE_CUTOFF[ i ] > date[ i ] )
-        meet_cutoff = false;
-    }
+    //bool date_cutoff = true;
 
-    if ( meet_cutoff ) {
-      age_cutoff_count++;
+    // for ( int i = 0; date[ i ] != '-'; i++ ) {
+    //   if ( (int) AGE_CUTOFF[ i ] < (int) date[ i ] ) {
+    //     date_cutoff = false;
+    //     break;
+    //   }
+    // }
+
+    if ( !( strcmp( AGE_CUTOFF, date ) < 0 ) ) {
+      age_cutoff_count += 1;
     }
     
     if ( strcmp( ssn, "N/A" ) == 0 )
@@ -54,7 +57,7 @@ int main() {
     printf( " " );
     printf( "%10s", date );
     printf( " " );
-    printf( "%11s\n", ssn );
+    printf( "%11s\n\n", ssn );
   }
 
   printf( "Summary\n" );
