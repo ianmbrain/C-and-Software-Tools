@@ -61,9 +61,10 @@ int main() {
     printf( " " );
     printf( "%10s", date );
     printf( " " );
-    printf( "%11s\n\n", ssn );
+    printf( "%11s\n", ssn );
   }
 
+  printf( "%c", '\n' );
   printf( "Summary\n" );
   printf( "-----------------------------------\n" );
   printf( "%-26s", "Total individuals" );
