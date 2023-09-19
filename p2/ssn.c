@@ -27,11 +27,33 @@
 */
 void read_ssn( char ssn[ FIELD_MAX + 1 ] ) {
   // NEED TO CHANGE 11 TO FIELD_MAX
-  if ( scanf( "%11s", ssn ) == -1 ) {
-    exit( SSN_ERROR );
+  // if ( scanf( "%11s", ssn ) == -1 ) {
+  //   exit( SSN_ERROR );
+  // }
+
+  // if ( strlen( ssn ) != ( START_DIGITS + MIDDLE_DIGITS + END_DIGITS ) || strlen( ssn ) != ( START_DIGITS + MIDDLE_DIGITS + END_DIGITS + 2 ) || strcmp( ssn, "N/A" ) != 0 ) {
+  //   exit( SSN_ERROR );
+  // }
+
+  int read_char = getchar();
+  int char_index = 0;
+  
+  while ( read_char != EOF ) {
+    if ( char_index > FIELD_MAX ) {
+      exit( SSN_ERROR );
+    }
+    
+    if ( read_char == '\n' ) {
+      break;
+    }
+
+    ssn[ char_index ] = read_char;
+    char_index++;
+    ssn[ char_index ] = '\0';
+    read_char = getchar();
   }
 
-  if ( strlen( ssn ) != ( START_DIGITS + MIDDLE_DIGITS + END_DIGITS ) || strlen( ssn ) != ( START_DIGITS + MIDDLE_DIGITS + END_DIGITS + 2 ) || strcmp( ssn, "N/A" ) != 0 ) {
+  if ( strlen( ssn ) == 0 /** || char_index > FIELD_MAX */ ) {
     exit( SSN_ERROR );
   }
 }

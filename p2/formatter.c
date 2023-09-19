@@ -29,9 +29,7 @@ int main() {
   char ssn[ FIELD_MAX + 1 ];
 
   while ( read_name( name ) != false ) {
-    printf( name );
     read_date( date );
-    printf( date );
     read_ssn( ssn );
 
     individual_count++;
