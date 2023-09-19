@@ -21,11 +21,38 @@
 bool read_name( char name[ FIELD_MAX + 1 ] )
 {
   // NEED TO CHANGE 30 TO FIELD_MAX
-  if ( scanf( "%30s", name ) == -1 ) {
-    return false;
+  // if ( scanf( "%30s", name ) == -1 ) {
+  //   return false;
+  // }
+
+  // if ( strlen( name ) == 0 || strlen( name ) > 30 ) {
+  //   exit( NAME_ERROR );
+  // }
+
+  // return true;
+
+  int read_char = getchar();
+  int char_index = 0;
+  
+  while ( read_char != EOF ) {
+    if ( char_index > FIELD_MAX ) {
+      exit( NAME_ERROR );
+    }
+    
+    if ( read_char == ':' || read_char == '\n' ) {
+      break;
+    }
+
+    name[ char_index ] = read_char;
+    char_index++;
+    name[ char_index ] = '\0';
+    read_char = getchar();
   }
 
-  if ( strlen( name ) == 0 || strlen( name ) > 30 ) {
+  if ( char_index == 0 ) {
+    return false;
+  }
+  else if ( strlen( name ) == 0 /** || char_index > FIELD_MAX */ ) {
     exit( NAME_ERROR );
   }
 
