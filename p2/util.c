@@ -13,14 +13,16 @@
 */
 int skip_digits( char str[], int start )
 {
-  int length = 0;
-  length = strlen( str );
+  int return_index = 0;
 
-  for (int i = start; i < length; i++ ) {
+  for (int i = start; str[ i ]; i++ ) {
     if ( str[ i ] == '\0' || !isdigit( str[ i ] ) ) {
-      return i;
+      return_index = i;
+      return return_index;
     }
   }
+
+  return return_index;
 }
 
 /**
@@ -31,14 +33,16 @@ int skip_digits( char str[], int start )
 */
 int skip_letters( char str[], int start )
 {
-  int length = 0;
-  length = strlen( str );
+  int return_index = 0;
 
-  for (int i = start; i < length; i++ ) {
+  for (int i = start; str[ i ]; i++ ) {
     if ( str[ i ] == '\0' || !isalpha( str[ i ] ) ) {
-      return i;
+      return_index = i;
+      return return_index;
     }
   }
+
+  return return_index;
 }
 
 /**
