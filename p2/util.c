@@ -33,14 +33,22 @@ int skip_digits( char str[], int start )
 */
 int skip_letters( char str[], int start )
 {
-  int return_index = 0;
+  int return_index = start;
 
-  for (int i = start; str[ i ]; i++ ) {
-    if ( str[ i ] == '\0' || !isalpha( str[ i ] ) ) {
-      return_index = i;
+  while ( str[ return_index ] ) {
+    if ( !isalpha( str[ return_index ] ) ) {
       return return_index;
     }
+
+    return_index++;
   }
+
+  // for (int i = start; str[ i ]; i++ ) {
+  //   if ( !isalpha( str[ i ] || str[ i ] == '\0' ) ) {
+  //     return_index = i;
+  //     return return_index;
+  //   }
+  // }
 
   return return_index;
 }
@@ -63,6 +71,6 @@ int copy_substring( char dest[], int dstart, char src[], int sstart, int send )
     dstart++;
   }
 
-  dest[ send ] = '\0';
+  dest[ dstart ] = '\0';
   return send;
 }

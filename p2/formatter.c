@@ -32,6 +32,10 @@ int main() {
     read_date( date );
     read_ssn( ssn );
 
+    fix_name( name );
+    //fix_date( date );
+    //fix_ssn( ssn );
+
     individual_count++;
 
     if ( strlen( name ) > max_name_size )

@@ -38,7 +38,7 @@ bool read_name( char name[ FIELD_MAX + 1 ] )
     if ( char_index > FIELD_MAX ) {
       exit( NAME_ERROR );
     }
-    
+
     if ( read_char == ':' || read_char == '\n' ) {
       break;
     }
@@ -82,7 +82,7 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
   if ( comma_count == 1 ) {
     name[ 0 ] = toupper( name[ 0 ] );
 
-    name[ skip_letters( name, 0 ) + 2 ] = toupper( skip_letters( name, 0 ) + 2 );
+    name[ skip_letters( name, 0 ) + 2 ] = toupper( name[ skip_letters( name, 0 ) + 2 ] );
   }
   else if ( comma_count == 0 ) {
     // DOES THIS ARRAY NEED TO BE RESIZED? NO AS FIELD_MAX + 1 FOR NULL TERMINATOR
@@ -94,13 +94,17 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
     strncpy( first_name, name, skip_letters( name, 0 ) );
     first_name[ 0 ] = toupper( first_name[ 0 ] );
     //strncpy( last_name, name, skip_letters( name, space_index + 1 ) );
-    copy_substring( last_name, 0, name, skip_letters( name, space_index + 1 ), strlen( name ) );
+    copy_substring( last_name, 0, name, ( space_index + 1 ), strlen( name ) );
     last_name[ 0 ] = toupper( last_name[ 0 ] );
 
 
-    strcat( first_name, ", " );
-    strcat( first_name, last_name );
-    strcat( name, first_name );
+    // strcat( first_name, ", " );
+    // strcat( first_name, last_name );
+    // strcpy( name, first_name );
+
+    strcat( last_name, ", " );
+    strcat( last_name, first_name );
+    strcpy( name, last_name );
   }
   else {
     exit( NAME_ERROR );
