@@ -57,7 +57,7 @@ void read_ssn( char ssn[ FIELD_MAX + 1 ] ) {
     exit( SSN_ERROR );
   }
 
-  int digit_count;
+  int digit_count = 0;
   for ( int i = 0; ssn[ i ]; i++ ) {
     if ( isdigit( ssn[ i ] ) )
       digit_count++;

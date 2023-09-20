@@ -92,6 +92,11 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
     strncpy( first_name, name, skip_letters( name, 0 ) );
     copy_substring( last_name, 0, name, ( space_index + 1 ), strlen( name ) );
 
+    // Exit the program if either name does not exist.
+    if ( strlen( first_name ) == 0 || strlen( last_name ) == 0 ) {
+      exit( NAME_ERROR );
+    }
+
     for (int i = 0; first_name[ i ]; i++ ) {
       if ( isspace( last_name[ i ] ) )
         exit( NAME_ERROR );
@@ -104,7 +109,8 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
   }
   else if ( comma_count == 0 ) {
     // DOES THIS ARRAY NEED TO BE RESIZED? NO AS FIELD_MAX + 1 FOR NULL TERMINATOR
-    int space_index = skip_letters( name, 0 );
+    int space_index = 0;
+    space_index = skip_letters( name, 0 );
 
     char first_name[ FIELD_MAX + 1 ] = "";
     char last_name[ FIELD_MAX + 1 ] = "";
@@ -128,6 +134,11 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
     for (int i = 0; last_name[ i ]; i++ ) {
       if ( isspace( last_name[ i ] ) )
         exit( NAME_ERROR );
+    }
+
+    // Exit the program if either name does not exist.
+    if ( strlen( first_name ) == 0 || strlen( last_name ) == 0 ) {
+      exit( NAME_ERROR );
     }
 
     strcat( last_name, ", " );
