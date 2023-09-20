@@ -83,6 +83,24 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
     name[ 0 ] = toupper( name[ 0 ] );
 
     name[ skip_letters( name, 0 ) + 2 ] = toupper( name[ skip_letters( name, 0 ) + 2 ] );
+
+
+    char first_name[ FIELD_MAX + 1 ] = "";
+    char last_name[ FIELD_MAX + 1 ] = "";
+    int space_index = skip_letters( name, 0 ) + 1;
+
+    strncpy( first_name, name, skip_letters( name, 0 ) );
+    copy_substring( last_name, 0, name, ( space_index + 1 ), strlen( name ) );
+
+    for (int i = 0; first_name[ i ]; i++ ) {
+      if ( isspace( last_name[ i ] ) )
+        exit( NAME_ERROR );
+    }
+
+    for (int i = 0; last_name[ i ]; i++ ) {
+      if ( isspace( last_name[ i ] ) )
+        exit( NAME_ERROR );
+    }
   }
   else if ( comma_count == 0 ) {
     // DOES THIS ARRAY NEED TO BE RESIZED? NO AS FIELD_MAX + 1 FOR NULL TERMINATOR
@@ -102,11 +120,21 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
     // strcat( first_name, last_name );
     // strcpy( name, first_name );
 
+    for (int i = 0; first_name[ i ]; i++ ) {
+      if ( isspace( last_name[ i ] ) )
+        exit( NAME_ERROR );
+    }
+
+    for (int i = 0; last_name[ i ]; i++ ) {
+      if ( isspace( last_name[ i ] ) )
+        exit( NAME_ERROR );
+    }
+
     strcat( last_name, ", " );
     strcat( last_name, first_name );
     strcpy( name, last_name );
 
-    
+    // Exit the program if the name is over the field width after formatting it.
     if ( strlen( name ) > FIELD_MAX ) {
       exit( NAME_ERROR );
     }
