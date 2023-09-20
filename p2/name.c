@@ -105,6 +105,11 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
     strcat( last_name, ", " );
     strcat( last_name, first_name );
     strcpy( name, last_name );
+
+    
+    if ( strlen( name ) > FIELD_MAX ) {
+      exit( NAME_ERROR );
+    }
   }
   else {
     exit( NAME_ERROR );

@@ -76,7 +76,7 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
       exit( DATE_ERROR );
 
     // Check if any characters that should be digits are not digits.
-    for ( int i = 0; i < ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ); i++ ) {
+    for ( int i = 0; i < ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS + 2 ); i++ ) {
       if ( i != 4 && i != 7 ) {
         if ( !isdigit( date [ i ] ) ) {
           exit( DATE_ERROR );
@@ -103,7 +103,7 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
     }
 
     // Check if any characters that should be digits are not digits.
-    for ( int i = 0; i < ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ); i++ ) {
+    for ( int i = 0; i < ( SHORT_YEAR + MONTH_DIGITS + DAY_DIGITS + 2 ); i++ ) {
       if ( i != 2 && i != 5 ) {
         if ( !isdigit( date [ i ] ) ) {
           exit( DATE_ERROR );
@@ -115,20 +115,26 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
     month[ 0 ] = date[ 3 ];
     month[ 1 ] = date[ 4 ];
 
-    if ( strlen( date ) == ( SHORT_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+    if ( strlen( date ) == ( SHORT_YEAR + MONTH_DIGITS + DAY_DIGITS + 2 ) ) {
       year[ 2 ] = date[ 6 ];
       year[ 3 ] = date[ 7 ];
 
-      if ( year[ 2 ] <= CURRENT_YEAR[ 0 ] && year[ 3 ] <= CURRENT_YEAR[ 1 ] ) {
+      if ( year[ 2 ] < CURRENT_YEAR[ 0 ] ) {
         year[ 0 ] = '2';
         year[ 1 ] = '0';
+      }
+      else if ( year[ 2 ] == CURRENT_YEAR[ 0 ] ) {
+        if ( year[ 3 ] <= '3' ) {
+          year[ 0 ] = '2';
+          year[ 1 ] = '0';
+        }
       }
       else {
         year[ 0 ] = '1';
         year[ 1 ] = '9';
       }
     }
-    else if ( strlen( date ) == ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS ) ) {
+    else if ( strlen( date ) == ( FULL_YEAR + MONTH_DIGITS + DAY_DIGITS + 2 ) ) {
       year[ 0 ] = date[ 6 ];
       year[ 1 ] = date[ 7 ];
       year[ 2 ] = date[ 8 ];
@@ -139,6 +145,7 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
     strcat( year, day );
     strcat( year, "-" );
     strcat( year, month );
+    strcpy( date, year );
   }
   else {
     exit( DATE_ERROR );
