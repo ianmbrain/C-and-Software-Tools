@@ -62,6 +62,11 @@ int main() {
     printf( "%10s", date );
     printf( " " );
     printf( "%11s\n", ssn );
+
+    // Reset each variable. This ensures that the old value is not retained if a new value is not included.
+    strcpy( name, "" );
+    strcpy( date, "" );
+    strcpy( ssn, "" );
   }
 
   printf( "%c", '\n' );
