@@ -56,6 +56,15 @@ void read_ssn( char ssn[ FIELD_MAX + 1 ] ) {
   if ( strlen( ssn ) == 0 /** || char_index > FIELD_MAX */ ) {
     exit( SSN_ERROR );
   }
+
+  int digit_count;
+  for ( int i = 0; ssn[ i ]; i++ ) {
+    if ( isdigit( ssn[ i ] ) )
+      digit_count++;
+  }
+
+  if ( digit_count > ( START_DIGITS + MIDDLE_DIGITS + END_DIGITS ) )
+    exit( SSN_ERROR );
 }
 
 /**
