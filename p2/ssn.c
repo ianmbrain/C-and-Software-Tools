@@ -1,4 +1,9 @@
 /**
+ * @file ssn.c
+ * @author Ian M Brain (imbrain)
+ * This file provides functionality to read in the individuals social security number and format it correctly.
+ * The correct format for a social security number is ###-##-####.
+ * These two functions are used in formatter.c in order to read and format user input.
   */
 
 #include "ssn.h"
@@ -26,16 +31,10 @@
  * @param ssn ssn variable to store the user inputted ssn to.
 */
 void read_ssn( char ssn[ FIELD_MAX + 1 ] ) {
-  // NEED TO CHANGE 11 TO FIELD_MAX
-  // if ( scanf( "%11s", ssn ) == -1 ) {
-  //   exit( SSN_ERROR );
-  // }
-
-  // if ( strlen( ssn ) != ( START_DIGITS + MIDDLE_DIGITS + END_DIGITS ) || strlen( ssn ) != ( START_DIGITS + MIDDLE_DIGITS + END_DIGITS + 2 ) || strcmp( ssn, "N/A" ) != 0 ) {
-  //   exit( SSN_ERROR );
-  // }
-
+  // Character that has been read in.
   int read_char = getchar();
+
+  // Index of the current character to read.
   int char_index = 0;
   
   while ( read_char != EOF ) {
@@ -53,7 +52,7 @@ void read_ssn( char ssn[ FIELD_MAX + 1 ] ) {
     read_char = getchar();
   }
 
-  if ( strlen( ssn ) == 0 /** || char_index > FIELD_MAX */ ) {
+  if ( strlen( ssn ) == 0 ) {
     exit( SSN_ERROR );
   }
 
@@ -70,7 +69,7 @@ void read_ssn( char ssn[ FIELD_MAX + 1 ] ) {
 /**
  * Updates the ssn to the format of three digits, dash, two digits, dash, final four digits.
  * Exit with 103 status if the ssn is not in one of three formats:
- * three digits, dash, two digits, dash, final four digits,
+ * ###-##-###.
  * nine consecutive digits,
  * or N/A.
  * @param ssn ssn to update to the correct format. 

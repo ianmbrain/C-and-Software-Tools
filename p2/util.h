@@ -1,5 +1,5 @@
 /**
- * @file util.c
+ * @file util.h
  * @author Ian M Brain (imbrain)
  * This file provides utility functions that are used by other files in the program.
  * Skip digits returns the frist index of a non digit in a string.
