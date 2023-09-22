@@ -49,7 +49,11 @@
 /** Index of the second separator for dates that do not start with a full year. */
 #define SHORT_SECOND_SEPARATOR 5
 
+/** Index of the first digit in a four digit date. */
+#define FIRST_YEAR_DIGIT 2
 
+/** Index of the second digit in a four digit date. */
+#define SECOND_YEAR_DIGIT 3
 
 /**
  * Reads in the date from standard input and exits with 102 status if the name does not exist or is not 8 or 10 characters in length.
@@ -108,8 +112,8 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
   }
   else if ( first_sep == SHORT_FIRST_SEPARATOR ) {
     char year[ FIELD_MAX + 1 ] = "";
-    char day[ 3 ] = "";
-    char month [ 3 ] = "";
+    char day[ FIELD_MAX + 1 ] = "";
+    char month [ FIELD_MAX + 1 ] = "";
 
     if ( date[ SHORT_FIRST_SEPARATOR ] == '-' ) {
       if ( date[ SHORT_SECOND_SEPARATOR ] != '-' )
@@ -138,14 +142,14 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
     copy_substring( month, 0, date, SHORT_FIRST_SEPARATOR + 1, SHORT_SECOND_SEPARATOR );
 
     if ( strlen( date ) == ( SHORT_YEAR_LENGTH ) ) {
-      copy_substring( year, 2, date, SHORT_SECOND_SEPARATOR + 1, SHORT_YEAR_LENGTH );
+      copy_substring( year, FIRST_YEAR_DIGIT, date, SHORT_SECOND_SEPARATOR + 1, SHORT_YEAR_LENGTH );
 
-      if ( year[ 2 ] < CURRENT_YEAR[ 0 ] ) {
+      if ( year[ FIRST_YEAR_DIGIT ] < CURRENT_YEAR[ 0 ] ) {
         year[ 0 ] = '2';
         year[ 1 ] = '0';
       }
-      else if ( year[ 2 ] == CURRENT_YEAR[ 0 ] ) {
-        if ( year[ 3 ] <= '3' ) {
+      else if ( year[ FIRST_YEAR_DIGIT ] == CURRENT_YEAR[ 0 ] ) {
+        if ( year[ SECOND_YEAR_DIGIT ] <= '3' ) {
           year[ 0 ] = '2';
           year[ 1 ] = '0';
         }
