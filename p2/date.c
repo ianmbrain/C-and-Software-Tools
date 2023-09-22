@@ -136,13 +136,9 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
     strncpy( day, date, SHORT_FIRST_SEPARATOR );
 
     copy_substring( month, 0, date, SHORT_FIRST_SEPARATOR + 1, SHORT_SECOND_SEPARATOR );
-    // month[ 0 ] = date[ SHORT_FIRST_SEPARATOR + 1 ];
-    // month[ 1 ] = date[ SHORT_FIRST_SEPARATOR + 2];
 
     if ( strlen( date ) == ( SHORT_YEAR_LENGTH ) ) {
       copy_substring( year, 2, date, SHORT_SECOND_SEPARATOR + 1, SHORT_YEAR_LENGTH );
-      // year[ 2 ] = date[ SHORT_SECOND_SEPARATOR + 1 ];
-      // year[ 3 ] = date[ SHORT_SECOND_SEPARATOR + 2 ];
 
       if ( year[ 2 ] < CURRENT_YEAR[ 0 ] ) {
         year[ 0 ] = '2';
@@ -162,10 +158,6 @@ void fix_date( char date[ FIELD_MAX + 1 ] ) {
     // Use the entire year from the date if the length of the date indicates a full year was used
     else if ( strlen( date ) == ( FULL_YEAR_LENGTH ) ) {
       copy_substring( year, 0, date, SHORT_SECOND_SEPARATOR + 1, FULL_YEAR_LENGTH );
-      // year[ 0 ] = date[ SHORT_SECOND_SEPARATOR + 1 ];
-      // year[ 1 ] = date[ SHORT_SECOND_SEPARATOR + 2 ];
-      // year[ 2 ] = date[ SHORT_SECOND_SEPARATOR + 3 ];
-      // year[ 3 ] = date[ SHORT_SECOND_SEPARATOR + 4 ];
     }
 
     // Assemble the date in the correct format

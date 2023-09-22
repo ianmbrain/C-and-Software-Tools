@@ -58,15 +58,6 @@ int main() {
     if ( strlen( name ) > max_name_size )
       max_name_size = strlen( name );
 
-    //bool date_cutoff = true;
-
-    // for ( int i = 0; date[ i ] != '-'; i++ ) {
-    //   if ( (int) AGE_CUTOFF[ i ] < (int) date[ i ] ) {
-    //     date_cutoff = false;
-    //     break;
-    //   }
-    // }
-
     if ( !( strcmp( AGE_CUTOFF, date ) < 0 ) ) {
       age_cutoff_count += 1;
     }

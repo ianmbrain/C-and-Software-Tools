@@ -83,7 +83,7 @@ void fix_ssn( char ssn[ FIELD_MAX + 1 ] ) {
       exit( SSN_ERROR );
   }
   // If the non digit index indicates the ssn is already in standard format.
-  else if ( first_non_digit == 3 ) {
+  else if ( first_non_digit == START_DIGITS ) {
     if ( ssn[ first_non_digit ] != '-' || ssn[ skip_digits( ssn, first_non_digit + 1 ) ] != '-' )
       exit( SSN_ERROR );
   }
