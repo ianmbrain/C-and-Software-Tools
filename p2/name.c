@@ -105,7 +105,7 @@ void fix_name( char name[ FIELD_MAX + 1 ] )
 
     // Exit the program if the first name contains spaces within it.
     for (int i = 0; first_name[ i ]; i++ ) {
-      if ( isspace( last_name[ i ] ) )
+      if ( isspace( first_name[ i ] ) )
         exit( NAME_ERROR );
     }
 
