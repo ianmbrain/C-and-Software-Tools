@@ -11,14 +11,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-/** Exit status for a missing or badly formatted name. */
-#define NAME_ERROR 101
-
-/** Two characters that represent the space and comma inbetween the first and last name. */
-#define COMMA_SPACE 2
-
-/** One character that represents the space between the first and last name. */
-#define SPACE_INDEX 1
 
 /**
  * Reads in the name from standard input and stores it in the parameter string
