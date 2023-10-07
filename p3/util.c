@@ -1,7 +1,7 @@
 /**
  * @file util.c
  * @author Ian M Brain (imbrain)
- * This program provides functionality to check if certain calculations of unsigned long integers overflow.
+ * This file provides functionality to check if certain calculations of unsigned long integers overflow.
  * Functionality includes checking for overflow in the addition, subtraction, or multiplication of integers.
  * Used.... DO THIS -__________-----_______---_____----______
   */
