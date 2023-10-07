@@ -1,0 +1,3 @@
+Alice buy 1 100.00
+Bob sell 1 100.00
+Chris buy 1 100.00

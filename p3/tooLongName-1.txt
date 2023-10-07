@@ -1,0 +1,3 @@
+X                                               2.72
+NameThatIsLongerThanThirtyChars                15.45
+Y                                               3.14

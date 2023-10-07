@@ -1,0 +1,4 @@
+Bill sell 100000 317.01
+Francoise buy 150000 174.79
+Elon sell 25000 244.88
+Francoise sell 150000 175.79

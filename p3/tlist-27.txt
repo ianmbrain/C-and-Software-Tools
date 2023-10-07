@@ -1,0 +1,3 @@
+Sarah buy 1 100.0
+Percy sell 1 100.0
+Bill buy 1 100.0

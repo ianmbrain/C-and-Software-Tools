@@ -1,0 +1,3 @@
+Ron                                            20.00
+Hermione                                     2000.00
+Harry                                      200000.00

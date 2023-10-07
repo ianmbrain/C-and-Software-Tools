@@ -1,0 +1,4 @@
+Carlene sell 5 1000000000.00
+Adria buy 1 619999999.99
+Gregoria sell 10000 10000000.00
+Josephina buy 7 80000000.00
