@@ -97,14 +97,58 @@ unsigned long *lookupAccount( char const name[ NAME_LIMIT + 1 ] ) {
 void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     // STILL NEED TO check for errors in the account name
     // A name 
+    // This should be from that file with the fname
+
+    //If part of the account file is incorrect (e.g., too many accounts, 
+    // an account name that’s too long or a bad character in an account balance), the program should report the following error message.
+
+    int dash_count = 0;
+    char print_error[ 28 + AFILE_LIMIT + 1 ] = "Invalid account file name: ";
+    strcat( print_error, fname );
 
     for ( int i = 0; fname[ i ]; i++ ) {
-
+        if ( dash_count == 0 ) {
+            if ( !isalpha( fname[ i ] ) )
+                fprintf( stderr, print_error );
+            
+            if ( fname[ i ] == '-' );
+                dash_count++;
+        }
+        else {
+            if( !isalpha( fname[ i ] ) )
+                fprintf( stderr, print_error );
+        }
     }
+
+    // May not be needed
+    FILE *file = fopen( fname, "r" );
+
+    int current_acc = 0;
+    //char acc_name[ NAME_LIMIT + 1 ];
+    //char acc_balance[ 20 ] = " ";
+
+    while ( fscanf( file, "%s", accounts[ current_acc ] ) == 1 ) {
+        // Check for correct account name format
+
+        // Read currency 
+        readCurrency( file, balances[ current_acc ] );
+
+
+        current_acc++;
+    }
+
+    fclose( file );
 }
 
 // After processing all input transactions, this function can be used to write out the updated balances of all accounts. 
 // It writes to the next version of the given account file name (i.e., the given name with the version number stepped).
 void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
+    FILE *file = fopen( fname, "w" );
 
+    int current_acc = 0;
+
+    fprintf( file, "%30s", accounts[ current_acc ] );
+    fprintf( file, "%d", balances[ current_acc ] );
+
+    fclose( file );
 }
