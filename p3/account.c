@@ -12,6 +12,10 @@
 /** Number of accounts supported by the program. */
 #define ACCOUNT_LIMIT 100000
 
+static unsigned long balances[ 100000 ];
+
+static char accounts[ 100000 ][ NAME_LIMIT + 1 ];
+
 // This function reads an amount of currency from the given stream, storing it in the unsigned value pointed to by val. 
 // It returns true if the input contains an amount of currency in a valid format for an account 
 // or transaction file and can be represented as cents in an unsigned long.
@@ -70,6 +74,8 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
         current_char = fgetc( fp );
     }
 
+    return true;
+
 // Check for the correct format - two last digits then decimal
 }
 
@@ -78,14 +84,27 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
 // If no such account exits, it returns NULL. This function can be used by the 
 // transaction to get the balance value for an account and adjust it based on the current transaction.
 unsigned long *lookupAccount( char const name[ NAME_LIMIT + 1 ] ) {
+    for ( int i = 0; name[ i ]; i++ ) {
+        if ( strcomp( name[ i ], accounts[ i ] ) == 0 ) {
+            return balances + i;
+        }
+    }
 
+    return NULL;
 }
 
-//
+// This function loads all the accounts from the file with the given account name, detecting any errors in the filename or the file contents.
 void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
+    // STILL NEED TO check for errors in the account name
+    // A name 
 
+    for ( int i = 0; fname[ i ]; i++ ) {
+
+    }
 }
 
+// After processing all input transactions, this function can be used to write out the updated balances of all accounts. 
+// It writes to the next version of the given account file name (i.e., the given name with the version number stepped).
 void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 
 }
