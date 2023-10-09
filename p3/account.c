@@ -108,14 +108,14 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 
     for ( int i = 0; fname[ i ]; i++ ) {
         if ( dash_count == 0 ) {
-            if ( !isalpha( fname[ i ] ) )
+            if ( !isalpha( fname[ i ] ) && !isdigit( fname[ i ] ) && fname[ i ] != '_' )
                 fprintf( stderr, print_error );
             
             if ( fname[ i ] == '-' );
                 dash_count++;
         }
         else {
-            if( !isalpha( fname[ i ] ) )
+            if( !isdigit( fname[ i ] ) )
                 fprintf( stderr, print_error );
         }
     }
@@ -143,12 +143,45 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 // After processing all input transactions, this function can be used to write out the updated balances of all accounts. 
 // It writes to the next version of the given account file name (i.e., the given name with the version number stepped).
 void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
-    FILE *file = fopen( fname, "w" );
+    char file_name[ AFILE_LIMIT + 1 ] = " ";
+    char file_num[ AFILE_LIMIT + 1 ] = " ";
+    bool dash_index = 0;
+    int num_index = 0;
+    
+    for ( int i = 0; fname[ i ]; i-- ) {
+        if ( dash_index ) {
+            file_num[ num_index ] = fname[ i ];
+        }
+        else if ( fname[ i ] == '-' )
+            dash_index = i;
+    }
+
+    char new_fname[ AFILE_LIMIT + 1 ] = " ";
+    int new_num = atoi( file_num );
+    new_num++;
+    sprintf( file_num, "%d", new_num );
+
+    strncpy( new_fname, fname, dash_index + 1 );
+    strcat( new_fname, file_num );
+
+    // Check for overflow
+    int dash_count = 0;
+    char print_error[ 28 + AFILE_LIMIT + 1 ] = "Invalid account file name: ";
+    strcat( print_error, fname );
+
+    if ( new_fname[ strlen( new_fname ) + 1 ] != EOF && !isspace( new_fname[ strlen( new_fname ) + 1 ] ) )
+        fprintf( stderr, print_error );
+
+
+    FILE *file = fopen( new_fname, "w" );
 
     int current_acc = 0;
+    int file_length = sizeof( balances ) / sizeof( balances[ 0 ] );
 
-    fprintf( file, "%30s", accounts[ current_acc ] );
-    fprintf( file, "%d", balances[ current_acc ] );
+    while ( current_acc < file_length ) {
+        fprintf( file, "%30s", accounts[ current_acc ] );
+        fprintf( file, "%d", balances[ current_acc ] );
+    }
 
     fclose( file );
 }
