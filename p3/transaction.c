@@ -28,6 +28,11 @@ void processTransactons( char const fname[] ) {
     double price = 0;
 
     FILE *file = fopen( fname, "r" );
+    if ( file == NULL ) {
+        char print_error[ 29 + AFILE_LIMIT + 1 ] = "Can't open transaction file: ";
+        strcat( print_error, fname );
+        frprintf( stderr, print_error );
+    }
 
     while ( fscanf( file, "%s%s%d%f", name, transaction, &shares, &price ) == 1 ) {
         if ( lookupAccount( name ) == NULL ) {

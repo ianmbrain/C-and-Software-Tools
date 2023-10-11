@@ -8,3 +8,5 @@
 
 /** Index of the transacton file command-line argument. */
 #define TRANSACT_ARG 2
+
+int main( int )

@@ -123,6 +123,12 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     // May not be needed
     FILE *file = fopen( fname, "r" );
 
+    if ( file == NULL ) {
+        char print_error[ 25 + AFILE_LIMIT + 1 ] = "Can't open account file: ";
+        strcat( print_error, fname );
+        frprintf( stderr, print_error );
+    }
+
     int current_acc = 0;
     //char acc_name[ NAME_LIMIT + 1 ];
     //char acc_balance[ 20 ] = " ";
@@ -174,6 +180,11 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 
 
     FILE *file = fopen( new_fname, "w" );
+    if ( file == NULL ) {
+        char print_error[ 25 + AFILE_LIMIT + 1 ] = "Can't open account file: ";
+        strcat( print_error, fname );
+        frprintf( stderr, print_error );
+    }
 
     int current_acc = 0;
     int file_length = sizeof( balances ) / sizeof( balances[ 0 ] );
