@@ -31,37 +31,37 @@ void processTransactons( char const fname[] ) {
     if ( file == NULL ) {
         char print_error[ 29 + AFILE_LIMIT + 1 ] = "Can't open transaction file: ";
         strcat( print_error, fname );
-        frprintf( stderr, print_error );
+        fprintf( stderr, print_error );
     }
 
-    while ( fscanf( file, "%s%s%d%f", name, transaction, &shares, &price ) == 1 ) {
+    while ( fscanf( file, "%s%s%ld%lf", name, transaction, &shares, &price ) == 1 ) {
         if ( lookupAccount( name ) == NULL ) {
-            frprintf( stderr, "Invalid transaction file" );
+            fprintf( stderr, "Invalid transaction file" );
             exit( EXIT_FAILURE );
         }
         
         fscanf( file, "%s", transaction );
         if ( strcmp( transaction, "buy" ) != 0 && strcmp( transaction, "sell" ) ) {
-            frprintf( stderr, "Invalid transaction file" );
+            fprintf( stderr, "Invalid transaction file" );
             exit( EXIT_FAILURE );
         }
         
-        if ( fscanf( file, "%d", &shares ) != 1 ) {
-            frprintf( stderr, "Invalid transaction file" );
+        if ( fscanf( file, "%ld", &shares ) != 1 ) {
+            fprintf( stderr, "Invalid transaction file" );
             exit( EXIT_FAILURE );
         }
 
-        fscanf( file, "%f", &price );
+        fscanf( file, "%lf", &price );
 
         if ( !checkMul( shares, price ) ) {
-            frprintf( stderr, "Account overflow" );
+            fprintf( stderr, "Account overflow" );
             exit( EXIT_FAILURE );
         }
 
         unsigned long amount = shares * price;
         unsigned long *balance = lookupAccount( name );
         if ( !checkAdd( *balance, amount ) ) {
-            frprintf( stderr, "Account overflow" );
+            fprintf( stderr, "Account overflow" );
             exit( EXIT_FAILURE );
         }
         
@@ -70,5 +70,5 @@ void processTransactons( char const fname[] ) {
 
     //saveAccounts( fname );
 
-    close( file );
+    fclose( file );
 }

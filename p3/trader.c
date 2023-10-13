@@ -12,7 +12,7 @@
 int main( int argc, char *argv[] ) {
     loadAccounts( argv[ 0 ] );
 
-    processTransactions( argv[ 1 ] );
+    processTransactons( argv[ 1 ] );
 
     saveAccounts( argv[ 0 ] );
 }

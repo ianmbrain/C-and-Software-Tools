@@ -34,7 +34,7 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
     while ( isdigit( current_char ) || current_char == '.' ) {
         // ATOI may cause problems with garbage ________---_____--___--__-__-_--_-_-_-_-------______------_---_--_-
         if (current_char != '.' ) {
-            int current_digit = atoi( current_char );
+            int current_digit = current_char - 0;
 
             if ( decimal_count == 0 ) {
                 checkMul( return_value, 10 );
@@ -74,6 +74,7 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
         current_char = fgetc( fp );
     }
 
+    *val = return_value;
     return true;
 
 // Check for the correct format - two last digits then decimal
@@ -85,7 +86,7 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
 // transaction to get the balance value for an account and adjust it based on the current transaction.
 unsigned long *lookupAccount( char const name[ NAME_LIMIT + 1 ] ) {
     for ( int i = 0; name[ i ]; i++ ) {
-        if ( strcomp( name[ i ], accounts[ i ] ) == 0 ) {
+        if ( strcmp( name, accounts[ i ] ) == 0 ) {
             return balances + i;
         }
     }
@@ -111,7 +112,7 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
             if ( !isalpha( fname[ i ] ) && !isdigit( fname[ i ] ) && fname[ i ] != '_' )
                 fprintf( stderr, print_error );
             
-            if ( fname[ i ] == '-' );
+            if ( fname[ i ] == '-' )
                 dash_count++;
         }
         else {
@@ -126,7 +127,7 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     if ( file == NULL ) {
         char print_error[ 25 + AFILE_LIMIT + 1 ] = "Can't open account file: ";
         strcat( print_error, fname );
-        frprintf( stderr, print_error );
+        fprintf( stderr, print_error );
     }
 
     int current_acc = 0;
@@ -137,7 +138,7 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
         // Check for correct account name format
 
         // Read currency 
-        readCurrency( file, balances[ current_acc ] );
+        readCurrency( file, balances + current_acc  );
 
 
         current_acc++;
@@ -149,7 +150,7 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 // After processing all input transactions, this function can be used to write out the updated balances of all accounts. 
 // It writes to the next version of the given account file name (i.e., the given name with the version number stepped).
 void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
-    char file_name[ AFILE_LIMIT + 1 ] = " ";
+    //char file_name[ AFILE_LIMIT + 1 ] = " ";
     char file_num[ AFILE_LIMIT + 1 ] = " ";
     bool dash_index = 0;
     int num_index = 0;
@@ -171,7 +172,7 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     strcat( new_fname, file_num );
 
     // Check for overflow
-    int dash_count = 0;
+    //int dash_count = 0;
     char print_error[ 28 + AFILE_LIMIT + 1 ] = "Invalid account file name: ";
     strcat( print_error, fname );
 
@@ -183,7 +184,7 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     if ( file == NULL ) {
         char print_error[ 25 + AFILE_LIMIT + 1 ] = "Can't open account file: ";
         strcat( print_error, fname );
-        frprintf( stderr, print_error );
+        fprintf( stderr, print_error );
     }
 
     int current_acc = 0;
@@ -191,7 +192,7 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 
     while ( current_acc < file_length ) {
         fprintf( file, "%30s", accounts[ current_acc ] );
-        fprintf( file, "%d", balances[ current_acc ] );
+        fprintf( file, "%ld", balances[ current_acc ] );
     }
 
     fclose( file );
