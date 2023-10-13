@@ -68,7 +68,7 @@ void processTransactons( char const fname[] ) {
         *balance += amount;
     }
 
-    saveAccounts( fname );
+    //saveAccounts( fname );
 
     close( file );
 }

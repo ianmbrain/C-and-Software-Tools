@@ -9,4 +9,10 @@
 /** Index of the transacton file command-line argument. */
 #define TRANSACT_ARG 2
 
-int main( int )
+int main( int argc, char *argv[] ) {
+    loadAccounts( argv[ 0 ] );
+
+    processTransactions( argv[ 1 ] );
+
+    saveAccounts( argv[ 0 ] );
+}
