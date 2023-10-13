@@ -7,3 +7,5 @@
 
 /** Limit on the length of an account file. */
 #define AFILE_LIMIT 30
+
+void processTransactons( char const fname[] );
