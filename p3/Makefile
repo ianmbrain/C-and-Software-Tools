@@ -7,6 +7,4 @@ trader: trader.o transaction.o account.o
 trader.o: trader.c transaction.h account.h util.h
 transaction.o: transaction.c transaction.h account.h util.h
 account.o: account.c account.h util.h
-
-
 	
