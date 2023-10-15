@@ -25,7 +25,7 @@ void processTransactons( char const fname[] ) {
     char name[ NAME_LIMIT + 1 ] = "";
     char transaction[ 4 + 1 ];
     unsigned long shares = 0;
-    double price = 0;
+    char price[ 22 + 1 ] = "";
 
     FILE *file = fopen( fname, "r" );
     if ( file == NULL ) {
@@ -51,22 +51,72 @@ void processTransactons( char const fname[] ) {
             exit( EXIT_FAILURE );
         }
 
-        fscanf( file, "%lf", &price );
+        // Read in each price tranforming it into an int.
+        fscanf( file, "%s", price );
 
-        if ( !checkMul( shares, price ) ) {
+        char current_char = ' ';
+        int decimal_count = 0;
+        int digits_after_decimal = 0;
+        int int_price = 0;
+
+        // Convert price to an integer.
+        for ( int i = 0; price[ i ]; i++ ) {
+            current_char = price[ i ];
+
+            if (current_char != '.' ) {
+                if ( decimal_count > 0 ) {
+                    digits_after_decimal++;
+
+                    if ( digits_after_decimal > 2 ) {
+                        fprintf( stderr, "Invalid transaction file" );
+                        exit( EXIT_FAILURE );
+                    }
+                }
+                int current_digit = current_char - '0';
+
+                checkMul( int_price, 10 );
+                int_price *= 10;
+
+                checkAdd( int_price, current_digit );
+                int_price += current_digit;
+            }
+            else {
+                decimal_count++;
+
+                if ( decimal_count > 1 ) {
+                    fprintf( stderr, "Invalid transaction file" );
+                    exit( EXIT_FAILURE );
+                }
+            }
+        }
+
+        if ( !checkMul( shares, int_price ) ) {
             fprintf( stderr, "Account overflow" );
             exit( EXIT_FAILURE );
         }
 
-        unsigned long amount = shares * price;
+        unsigned long amount = shares * int_price;
         unsigned long *balance = lookupAccount( name );
-        if ( !checkAdd( *balance, amount ) ) {
-            fprintf( stderr, "Account overflow" );
-            exit( EXIT_FAILURE );
-        }
         
+        if ( strcmp( transaction, "buy" ) == 0 ) {
+            if ( !checkSub( *balance, amount ) ) {
+                fprintf( stderr, "Account overflow" );
+                exit( EXIT_FAILURE );
+            }
 
-        *balance += amount;
+            *balance -= amount;
+        }
+        else {
+            if ( !checkAdd( *balance, amount ) ) {
+                fprintf( stderr, "Account overflow" );
+                exit( EXIT_FAILURE );
+            }
+
+            *balance += amount;
+        }
+
+        fprintf( stderr, "%s ", name );
+        fprintf( stderr, "%ld\n", *balance );
     }
 
     //saveAccounts( fname );

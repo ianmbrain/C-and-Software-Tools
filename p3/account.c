@@ -290,9 +290,13 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
         file_length++;
     }
 
+    long double double_price = 0;
     while ( current_acc < file_length ) {
         fprintf( file, "%-30s", accounts[ current_acc ] );
-        fprintf( file, "%ld\n", balances[ current_acc ] );
+
+        // Convert the integer balance into a double.
+        double_price = ( long double ) balances[ current_acc ] / 100;
+        fprintf( file, "%22.2Lf\n", double_price );
 
         current_acc++;
     }
