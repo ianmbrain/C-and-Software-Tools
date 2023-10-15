@@ -26,7 +26,7 @@ static char accounts[ 100000 ][ NAME_LIMIT + 1 ];
 bool readCurrency( FILE *fp, unsigned long *val ) {
     int decimal_count = 0;
     int digits_after_decimal = 0;
-    int decimal_digit = 0;
+    //int decimal_digit = 0;
 
     unsigned long return_value = 0;
     char string_value[ 21 + 10 ] = "";
