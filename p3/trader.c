@@ -10,9 +10,9 @@
 #define TRANSACT_ARG 2
 
 int main( int argc, char *argv[] ) {
-    loadAccounts( argv[ 0 ] );
+    loadAccounts( argv[ 1 ] );
 
-    processTransactons( argv[ 1 ] );
+    processTransactons( argv[ 2 ] );
 
-    saveAccounts( argv[ 0 ] );
+    saveAccounts( argv[ 1 ] );
 }

@@ -22,7 +22,7 @@ void processTransactons( char const fname[] ) {
 
     // An invalid currency value or a currency value that’s too large should also produce the Invalid transaction file message. You are not expected to check for overflow in reading the number of shares
 
-    char name[ NAME_LIMIT + 1 ];
+    char name[ NAME_LIMIT + 1 ] = "";
     char transaction[ 4 + 1 ];
     unsigned long shares = 0;
     double price = 0;
@@ -34,7 +34,7 @@ void processTransactons( char const fname[] ) {
         fprintf( stderr, print_error );
     }
 
-    while ( fscanf( file, "%s%s%ld%lf", name, transaction, &shares, &price ) == 1 ) {
+    while ( fscanf( file, "%s", name ) == 1 ) {
         if ( lookupAccount( name ) == NULL ) {
             fprintf( stderr, "Invalid transaction file" );
             exit( EXIT_FAILURE );
@@ -65,6 +65,7 @@ void processTransactons( char const fname[] ) {
             exit( EXIT_FAILURE );
         }
         
+
         *balance += amount;
     }
 

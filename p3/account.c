@@ -25,44 +25,68 @@ static char accounts[ 100000 ][ NAME_LIMIT + 1 ];
 // may need to check if the first value is a decimal when it should be '0' or something
 bool readCurrency( FILE *fp, unsigned long *val ) {
     int decimal_count = 0;
+    int digits_after_decimal = 0;
     int decimal_digit = 0;
 
     unsigned long return_value = 0;
-    char current_char = fgetc( fp );
-  
-    // Read in the value
-    while ( isdigit( current_char ) || current_char == '.' ) {
-        // ATOI may cause problems with garbage ________---_____--___--__-__-_--_-_-_-_-------______------_---_--_-
+    char string_value[ 21 + 10 ] = "";
+
+    fscanf( fp, "%s", string_value );
+    //fprintf( stderr,  "%s\n", string_value );
+
+    // read this in. read each character from it
+
+    char current_char = ' ';
+    
+    //int value_length = strlen( string_value );
+
+    for ( int i = 0; string_value[ i ]; i++ ) {
+        current_char = string_value[ i ];
+        //fprintf( stderr, "%c\n", current_char );
+
         if (current_char != '.' ) {
-            int current_digit = current_char - 0;
+            if ( decimal_count > 0 ) {
+                digits_after_decimal++;
 
-            if ( decimal_count == 0 ) {
-                checkMul( return_value, 10 );
-                return_value *= 10;
-
-                checkAdd( return_value, current_digit );
-                return_value += current_digit;
-            }
-            else {
-                decimal_digit++;
-                
-                if ( decimal_digit == 1 ) {
-                    if ( current_digit != 1 )
-                        return false;
-
-                    current_digit /= 10;
-                    return_value += current_digit;
-                }
-                else if ( decimal_digit == 1 ) {
-                    if ( current_digit > 5 )
-                        return false;
-
-                    current_digit /= 100;
-                    return_value += current_digit;
-                }
-                else if (decimal_digit > 2 )
+                if ( digits_after_decimal > 2 ) {
                     return false;
+                }
             }
+            int current_digit = current_char - '0';
+
+            checkMul( return_value, 10 );
+            return_value *= 10;
+
+            checkAdd( return_value, current_digit );
+            return_value += current_digit;
+
+            // if ( decimal_count == 0 ) {
+            //     checkMul( return_value, 10 );
+            //     return_value *= 10;
+
+            //     checkAdd( return_value, current_digit );
+            //     return_value += current_digit;
+            // }
+            // else {
+            //     decimal_digit++;
+                
+            //     if ( decimal_digit == 1 ) {
+            //         if ( !( current_digit <= 1 ) )
+            //             return false;
+
+            //         current_digit /= 10;
+            //         return_value += current_digit;
+            //     }
+            //     else if ( decimal_digit == 2 ) {
+            //         if ( current_digit > 5 )
+            //             return false;
+
+            //         current_digit /= 100;
+            //         return_value += current_digit;
+            //     }
+            //     else if (decimal_digit > 2 )
+            //         return false;
+            // }
         }
         else {
             decimal_count++;
@@ -70,9 +94,62 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
             if ( decimal_count > 1 )
                 return false;
         }
-        
-        current_char = fgetc( fp );
     }
+//_______________________________________________________________
+
+    // char current_char = fgetc( fp );
+
+    // while ( isspace( current_char ) ) {
+    //     current_char = fgetc( fp );
+    // }
+    
+    // // Read in the value
+    // while ( isdigit( current_char ) || current_char == '.' ) {
+    //     // ATOI may cause problems with garbage ________---_____--___--__-__-_--_-_-_-_-------______------_---_--_-
+    //     fprintf( stderr, "%c\n", current_char );
+
+    //     if (current_char != '.' ) {
+    //         int current_digit = current_char - 0;
+
+    //         if ( decimal_count == 0 ) {
+    //             checkMul( return_value, 10 );
+    //             return_value *= 10;
+
+    //             checkAdd( return_value, current_digit );
+    //             return_value += current_digit;
+    //         }
+    //         else {
+    //             decimal_digit++;
+                
+    //             if ( decimal_digit == 1 ) {
+    //                 if ( !( current_digit <= 1 ) )
+    //                     return false;
+
+    //                 current_digit /= 10;
+    //                 return_value += current_digit;
+    //             }
+    //             else if ( decimal_digit == 2 ) {
+    //                 if ( current_digit > 5 )
+    //                     return false;
+
+    //                 current_digit /= 100;
+    //                 return_value += current_digit;
+    //             }
+    //             else if (decimal_digit > 2 )
+    //                 return false;
+    //         }
+    //     }
+    //     else {
+    //         decimal_count++;
+
+    //         if ( decimal_count > 1 )
+    //             return false;
+    //     }
+
+    //     //fprintf( stderr, "%ld\n", return_value );
+        
+    //     current_char = fgetc( fp );
+    // }
 
     *val = return_value;
     return true;
@@ -109,15 +186,23 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 
     for ( int i = 0; fname[ i ]; i++ ) {
         if ( dash_count == 0 ) {
-            if ( !isalpha( fname[ i ] ) && !isdigit( fname[ i ] ) && fname[ i ] != '_' )
-                fprintf( stderr, print_error );
-            
             if ( fname[ i ] == '-' )
                 dash_count++;
+            
+            else if ( !isalpha( fname[ i ] ) && !isdigit( fname[ i ] ) && fname[ i ] != '_' ) {
+                fprintf( stderr, print_error );
+                exit( EXIT_FAILURE );
+            }
         }
         else {
-            if( !isdigit( fname[ i ] ) )
+            if( !isdigit( fname[ i ] ) ) {
+                // If the file is the . for the file type, the file name is successful
+                if ( fname[ i ] == '.' )
+                    break;
+
                 fprintf( stderr, print_error );
+                exit( EXIT_FAILURE );
+            }
         }
     }
 
@@ -128,6 +213,7 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
         char print_error[ 25 + AFILE_LIMIT + 1 ] = "Can't open account file: ";
         strcat( print_error, fname );
         fprintf( stderr, print_error );
+        exit( EXIT_FAILURE );
     }
 
     int current_acc = 0;
@@ -138,12 +224,13 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
         // Check for correct account name format
 
         // Read currency 
-        readCurrency( file, balances + current_acc  );
+        readCurrency( file, ( balances + current_acc ) );
 
 
         current_acc++;
     }
 
+    fprintf( stderr, "%d", current_acc );
     fclose( file );
 }
 
@@ -152,16 +239,23 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     //char file_name[ AFILE_LIMIT + 1 ] = " ";
     char file_num[ AFILE_LIMIT + 1 ] = " ";
-    bool dash_index = 0;
+    int dash_index = 0;
     int num_index = 0;
     
-    for ( int i = 0; fname[ i ]; i-- ) {
-        if ( dash_index ) {
+    for ( int i = 0; fname[ i ]; i++ ) {
+        if ( dash_index > 0 ) {
+            // If the file is the . for the file type, stop counting the file number
+            if ( fname[ i ] == '.' )
+                break;
+
             file_num[ num_index ] = fname[ i ];
+            num_index++;
         }
         else if ( fname[ i ] == '-' )
             dash_index = i;
     }
+
+    //fprintf( stderr, file_num );
 
     char new_fname[ AFILE_LIMIT + 1 ] = " ";
     int new_num = atoi( file_num );
@@ -170,29 +264,37 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 
     strncpy( new_fname, fname, dash_index + 1 );
     strcat( new_fname, file_num );
+    strcat( new_fname, ".txt" );
 
     // Check for overflow
     //int dash_count = 0;
     char print_error[ 28 + AFILE_LIMIT + 1 ] = "Invalid account file name: ";
     strcat( print_error, fname );
 
-    if ( new_fname[ strlen( new_fname ) + 1 ] != EOF && !isspace( new_fname[ strlen( new_fname ) + 1 ] ) )
+    if ( new_fname[ strlen( new_fname ) + 1 ] != '\0' && !isspace( new_fname[ strlen( new_fname ) + 1 ] ) ) {
         fprintf( stderr, print_error );
-
+        exit( EXIT_FAILURE );
+    }
 
     FILE *file = fopen( new_fname, "w" );
     if ( file == NULL ) {
         char print_error[ 25 + AFILE_LIMIT + 1 ] = "Can't open account file: ";
         strcat( print_error, fname );
         fprintf( stderr, print_error );
+        exit( EXIT_FAILURE );
     }
 
     int current_acc = 0;
-    int file_length = sizeof( balances ) / sizeof( balances[ 0 ] );
+    int file_length = 0; //( sizeof( balances ) / sizeof( balances[ 0 ] ) );
+    for ( int i = 0; strcmp( accounts[ i ], "" ) != 0; i++ ) {
+        file_length++;
+    }
 
     while ( current_acc < file_length ) {
-        fprintf( file, "%30s", accounts[ current_acc ] );
-        fprintf( file, "%ld", balances[ current_acc ] );
+        fprintf( file, "%-30s", accounts[ current_acc ] );
+        fprintf( file, "%ld\n", balances[ current_acc ] );
+
+        current_acc++;
     }
 
     fclose( file );
