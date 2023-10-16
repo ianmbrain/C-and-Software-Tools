@@ -1,5 +1,10 @@
 /**
- */
+ * @file transaction.c
+ * @author Ian M Brain (imbrain)
+ * This file provides functionality to read in a transaction file.
+ * The transactions are then processed and performed on the associated account balances.
+ * This functionality is used in trader.c to process transactions on the account balances.
+  */
 
 // I included these, check what libraries we can use __________--_____----_____-------_____----______-------_____----_____------------
 #include "transaction.h"
@@ -11,23 +16,29 @@
 #include "util.h"
 #include "account.h"
 
-// This function reads and performs all transactions in the transaction file with the given name. 
-// It uses the account component to update account balances and detects errors as the transaction file is processed.
+/**
+ * Processes the transactions from a transaction file and adjusts the associated account balances.
+ * This functionality is used in trader.c to process transactions.
+ * Throw file open error if the file cannot be opened
+ * Throw invalid file error if the name does not exist as an account.
+ * Throw invalid file error if the transaction is not buy or sell and if the shares or price cannot be read.
+ * Throw account overflow error if the product of shares and price or transaction on the balance causes an overflow.
+ * The code to read in price values is based on code from the loadAccounts() function in account.c.
+ * @param fname name of the transaction file to process transactions from
+*/
 void processTransactons( char const fname[] ) {
-    // If there is an overflow during a transaction, either in computing the product of the number of shares and the share price
-    // or in increasing or decreasing the account balance
-
-    //If there is some other problem with the contents of the transaction file (e.g., an account name that isn’t in the account file, 
-    // a transaction type that isn’t “buy” or “sell” or a number of shares that can’t be parsed as an unsigned long)
-
-    // An invalid currency value or a currency value that’s too large should also produce the Invalid transaction file message. You are not expected to check for overflow in reading the number of shares
-
+    // Name of each account.
     char name[ NAME_LIMIT + 1 ] = "";
+    // Buy or sell transaction.
     char transaction[ 4 + 1 ];
+    // Number of shares to be processed.
     unsigned long shares = 0;
+    // Price of each share to be processed.
     char price[ 22 + 1 ] = "";
 
     FILE *file = fopen( fname, "r" );
+
+    // Throw file open error if the file cannot be opened.
     if ( file == NULL ) {
         char print_error[ 29 + AFILE_LIMIT + 1 ] = "Can't open transaction file: ";
         strcat( print_error, fname );
@@ -35,31 +46,39 @@ void processTransactons( char const fname[] ) {
     }
 
     while ( fscanf( file, "%s", name ) == 1 ) {
+        // Throw invalid file error if a name in the transaction file does not match a name from the accont file.
         if ( lookupAccount( name ) == NULL ) {
             fprintf( stderr, "Invalid transaction file\n" );
             exit( EXIT_FAILURE );
         }
-        
+
+        // Throw invalid file error if the transaction is not buy or sell.
         fscanf( file, "%s", transaction );
         if ( strcmp( transaction, "buy" ) != 0 && strcmp( transaction, "sell" ) ) {
             fprintf( stderr, "Invalid transaction file\n" );
             exit( EXIT_FAILURE );
         }
         
+        // Throw invalid file error if the shares cannot be read.
         if ( fscanf( file, "%ld", &shares ) != 1 ) {
             fprintf( stderr, "Invalid transaction file\n" );
             exit( EXIT_FAILURE );
         }
 
-        // Read in each price tranforming it into an int.
+        // Read each price value.
         fscanf( file, "%s", price );
 
+        // This code is based on code from the loadAccounts() function in account.c.
+        // Current price character being read.
         char current_char = ' ';
+        // Count of the decimals in the price string.
         int decimal_count = 0;
+        // Count of digits after the decimal.
         int digits_after_decimal = 0;
+        // Price as an integer to store the transformed string in.
         unsigned long int_price = 0;
 
-        // Convert price to an integer.
+        // Ensure the price is in the proper format and store it as an integer.
         for ( int i = 0; price[ i ]; i++ ) {
             current_char = price[ i ];
 
@@ -67,33 +86,34 @@ void processTransactons( char const fname[] ) {
                 if ( decimal_count > 0 ) {
                     digits_after_decimal++;
 
+                    // Throw invalid file error if there are more than two digits after the decimal
                     if ( digits_after_decimal > 2 ) {
                         fprintf( stderr, "Invalid transaction file" );
                         exit( EXIT_FAILURE );
                     }
                 }
-                unsigned long current_digit = current_char - '0';
-                //fprintf( stderr, "%ld\n", current_digit );
 
+                // Convert the character number into an integer digit
+                int current_digit = current_char - '0';
+
+                // Throw account overflow error if adjusting the price value causes an overflow.
                 if ( checkMul( int_price, 10 ) == false ) {
                     fprintf( stderr, "Account overflow\n" );
                     exit( EXIT_FAILURE );
                 }
                 int_price *= 10;
-                // fprintf( stderr, "%ld - ", sizeof(10) );
-                // fprintf( stderr, "%ld - ", int_price );
-                // fprintf( stderr, "%ld - ", current_digit );
 
+                // Throw account overflow error if adjusting the price value causes an overflow.
                 if ( checkAdd( int_price, current_digit ) == false ) {
                     fprintf( stderr, "Account overflow\n" );
                     exit( EXIT_FAILURE );
                 }
                 int_price += current_digit;
-                //fprintf( stderr, "%ld\n", int_price );
             }
             else {
                 decimal_count++;
 
+                // Throw invalid file error if there are too many decimals.
                 if ( decimal_count > 1 ) {
                     fprintf( stderr, "Invalid transaction file\n" );
                     exit( EXIT_FAILURE );
@@ -101,14 +121,17 @@ void processTransactons( char const fname[] ) {
             }
         }
 
+        // Throw account overflow error if the product of shares and the price overflow.
         if ( !checkMul( shares, int_price ) ) {
             fprintf( stderr, "Account overflow\n" );
             exit( EXIT_FAILURE );
         }
 
+        // Multiply  the shares by the price and store it in the account balance.
         unsigned long amount = shares * int_price;
         unsigned long *balance = lookupAccount( name );
         
+        // Throw account overflow error if the transaction overflows the account balance.
         if ( strcmp( transaction, "buy" ) == 0 ) {
             if ( !checkSub( *balance, amount ) ) {
                 fprintf( stderr, "Account overflow\n" );
@@ -117,6 +140,7 @@ void processTransactons( char const fname[] ) {
 
             *balance -= amount;
         }
+        // Throw account overflow error if the transaction overflows the account balance.
         else {
             if ( !checkAdd( *balance, amount ) ) {
                 fprintf( stderr, "Account overflow\n" );
@@ -125,12 +149,7 @@ void processTransactons( char const fname[] ) {
 
             *balance += amount;
         }
-
-        // fprintf( stderr, "%s ", name );
-        // fprintf( stderr, "%ld\n", *balance );
     }
-
-    //saveAccounts( fname );
 
     fclose( file );
 }

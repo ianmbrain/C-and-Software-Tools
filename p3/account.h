@@ -51,6 +51,6 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] );
  * File number is adjusted by one before it is written to.
  * Throw file name error if the file name becomes too long after adjusting the file number.
  * Throw file open error if the file cannot be opened.
- * @param name name of file to save the accounts and balances to.
+ * @param fname name of file to save the accounts and balances to.
 */
 void saveAccounts( char fname[ AFILE_LIMIT + 1 ] );
