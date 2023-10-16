@@ -1,3 +1,11 @@
+/**
+ * @file util.h
+ * @author Ian M Brain (imbrain)
+ * This file provides functionality to check if certain calculations of unsigned long integers overflow.
+ * Functionality includes checking for overflow in the addition, subtraction, or multiplication of integers.
+ * Used in account and trasaction to check for overflow in the files and calculations.
+  */
+
 #include <stdio.h>
 #include <stdbool.h>
 
