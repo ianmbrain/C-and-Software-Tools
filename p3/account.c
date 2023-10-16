@@ -44,6 +44,11 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
         current_char = string_value[ i ];
         //fprintf( stderr, "%c\n", current_char );
 
+        if ( current_char != '.' && !isdigit( current_char ) ) {
+            fprintf( stderr, "Invalid account file\n" );
+            exit( EXIT_FAILURE );
+        }
+
         if (current_char != '.' ) {
             if ( decimal_count > 0 ) {
                 digits_after_decimal++;
@@ -54,10 +59,16 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
             }
             int current_digit = current_char - '0';
 
-            checkMul( return_value, 10 );
+            if ( checkMul( return_value, 10 ) == false ) {
+                fprintf( stderr, "Invalid account file\n" );
+                exit( EXIT_FAILURE );
+            }
             return_value *= 10;
 
-            checkAdd( return_value, current_digit );
+            if ( checkAdd( return_value, current_digit ) == false ) {
+                fprintf( stderr, "Invalid account file\n" );
+                exit( EXIT_FAILURE );
+            }
             return_value += current_digit;
 
             // if ( decimal_count == 0 ) {
@@ -162,7 +173,8 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
 // If no such account exits, it returns NULL. This function can be used by the 
 // transaction to get the balance value for an account and adjust it based on the current transaction.
 unsigned long *lookupAccount( char const name[ NAME_LIMIT + 1 ] ) {
-    for ( int i = 0; name[ i ]; i++ ) {
+    int number_of_accounts = sizeof( accounts ) / sizeof( accounts [ 0 ] );
+    for ( int i = 0; i < number_of_accounts; i++ ) {
         if ( strcmp( name, accounts[ i ] ) == 0 ) {
             return balances + i;
         }
@@ -220,17 +232,25 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     //char acc_name[ NAME_LIMIT + 1 ];
     //char acc_balance[ 20 ] = " ";
 
-    while ( fscanf( file, "%s", accounts[ current_acc ] ) == 1 ) {
+    char account_name[ NAME_LIMIT + 1 ];
+    while ( fscanf( file, "%s", account_name ) == 1 ) {
         // Check for correct account name format
+        if ( account_name[ NAME_LIMIT ] != '\0' ) {
+            fprintf( stderr, "Invalid account file\n" );
+            exit( EXIT_FAILURE );
+        }
+        strcpy( accounts[ current_acc ], account_name );
 
         // Read currency 
-        readCurrency( file, ( balances + current_acc ) );
+        if ( readCurrency( file, ( balances + current_acc ) ) == false ) {
+            fprintf( stderr, "Invalid account file\n" );
+            exit( EXIT_FAILURE );
+        }
 
 
         current_acc++;
     }
 
-    fprintf( stderr, "%d", current_acc );
     fclose( file );
 }
 

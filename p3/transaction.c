@@ -36,18 +36,18 @@ void processTransactons( char const fname[] ) {
 
     while ( fscanf( file, "%s", name ) == 1 ) {
         if ( lookupAccount( name ) == NULL ) {
-            fprintf( stderr, "Invalid transaction file" );
+            fprintf( stderr, "Invalid transaction file\n" );
             exit( EXIT_FAILURE );
         }
         
         fscanf( file, "%s", transaction );
         if ( strcmp( transaction, "buy" ) != 0 && strcmp( transaction, "sell" ) ) {
-            fprintf( stderr, "Invalid transaction file" );
+            fprintf( stderr, "Invalid transaction file\n" );
             exit( EXIT_FAILURE );
         }
         
         if ( fscanf( file, "%ld", &shares ) != 1 ) {
-            fprintf( stderr, "Invalid transaction file" );
+            fprintf( stderr, "Invalid transaction file\n" );
             exit( EXIT_FAILURE );
         }
 
@@ -57,7 +57,7 @@ void processTransactons( char const fname[] ) {
         char current_char = ' ';
         int decimal_count = 0;
         int digits_after_decimal = 0;
-        int int_price = 0;
+        unsigned long int_price = 0;
 
         // Convert price to an integer.
         for ( int i = 0; price[ i ]; i++ ) {
@@ -72,26 +72,37 @@ void processTransactons( char const fname[] ) {
                         exit( EXIT_FAILURE );
                     }
                 }
-                int current_digit = current_char - '0';
+                unsigned long current_digit = current_char - '0';
+                //fprintf( stderr, "%ld\n", current_digit );
 
-                checkMul( int_price, 10 );
+                if ( checkMul( int_price, 10 ) == false ) {
+                    fprintf( stderr, "Account overflow\n" );
+                    exit( EXIT_FAILURE );
+                }
                 int_price *= 10;
+                // fprintf( stderr, "%ld - ", sizeof(10) );
+                // fprintf( stderr, "%ld - ", int_price );
+                // fprintf( stderr, "%ld - ", current_digit );
 
-                checkAdd( int_price, current_digit );
+                if ( checkAdd( int_price, current_digit ) == false ) {
+                    fprintf( stderr, "Account overflow\n" );
+                    exit( EXIT_FAILURE );
+                }
                 int_price += current_digit;
+                //fprintf( stderr, "%ld\n", int_price );
             }
             else {
                 decimal_count++;
 
                 if ( decimal_count > 1 ) {
-                    fprintf( stderr, "Invalid transaction file" );
+                    fprintf( stderr, "Invalid transaction file\n" );
                     exit( EXIT_FAILURE );
                 }
             }
         }
 
         if ( !checkMul( shares, int_price ) ) {
-            fprintf( stderr, "Account overflow" );
+            fprintf( stderr, "Account overflow\n" );
             exit( EXIT_FAILURE );
         }
 
@@ -100,7 +111,7 @@ void processTransactons( char const fname[] ) {
         
         if ( strcmp( transaction, "buy" ) == 0 ) {
             if ( !checkSub( *balance, amount ) ) {
-                fprintf( stderr, "Account overflow" );
+                fprintf( stderr, "Account overflow\n" );
                 exit( EXIT_FAILURE );
             }
 
@@ -108,15 +119,15 @@ void processTransactons( char const fname[] ) {
         }
         else {
             if ( !checkAdd( *balance, amount ) ) {
-                fprintf( stderr, "Account overflow" );
+                fprintf( stderr, "Account overflow\n" );
                 exit( EXIT_FAILURE );
             }
 
             *balance += amount;
         }
 
-        fprintf( stderr, "%s ", name );
-        fprintf( stderr, "%ld\n", *balance );
+        // fprintf( stderr, "%s ", name );
+        // fprintf( stderr, "%ld\n", *balance );
     }
 
     //saveAccounts( fname );
