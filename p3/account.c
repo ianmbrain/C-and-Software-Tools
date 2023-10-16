@@ -195,6 +195,7 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     int dash_count = 0;
     char print_error[ 28 + AFILE_LIMIT + 1 ] = "Invalid account file name: ";
     strcat( print_error, fname );
+    strcat( print_error, "\n" );
 
     for ( int i = 0; fname[ i ]; i++ ) {
         if ( dash_count == 0 ) {
@@ -224,6 +225,7 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     if ( file == NULL ) {
         char print_error[ 25 + AFILE_LIMIT + 1 ] = "Can't open account file: ";
         strcat( print_error, fname );
+        strcat( print_error, "\n" );
         fprintf( stderr, print_error );
         exit( EXIT_FAILURE );
     }
@@ -290,6 +292,7 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     //int dash_count = 0;
     char print_error[ 28 + AFILE_LIMIT + 1 ] = "Invalid account file name: ";
     strcat( print_error, fname );
+    strcat( print_error, "\n" );
 
     if ( new_fname[ strlen( new_fname ) + 1 ] != '\0' && !isspace( new_fname[ strlen( new_fname ) + 1 ] ) ) {
         fprintf( stderr, print_error );
@@ -300,6 +303,7 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     if ( file == NULL ) {
         char print_error[ 25 + AFILE_LIMIT + 1 ] = "Can't open account file: ";
         strcat( print_error, fname );
+        strcat( print_error, "\n" );
         fprintf( stderr, print_error );
         exit( EXIT_FAILURE );
     }
