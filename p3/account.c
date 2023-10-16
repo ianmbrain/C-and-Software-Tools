@@ -271,8 +271,16 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
         fprintf( file, "%-30s", accounts[ current_acc ] );
 
         // Convert each integer balance into a double.
-        acc_balance = ( long double ) balances[ current_acc ] / 100;
-        fprintf( file, "%22.2Lf\n", acc_balance );
+        int remainder = ( balances[ current_acc ] % 100 );
+        acc_balance = (unsigned long) ( (unsigned long) balances[ current_acc ] / 100 );
+        fprintf( file, "%19ld.", ( unsigned long) acc_balance );
+        if( remainder == 0 )
+            fprintf( file, "%d%d\n", 0, 0 );
+        else if ( remainder < 10 ) {
+            fprintf( file, "%d%d\n", 0, remainder );
+        }
+        else
+            fprintf( file, "%d\n", remainder );
 
         current_acc++;
     }

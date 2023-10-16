@@ -225,6 +225,9 @@ if [ -x trader ]; then
     
     extraArgs=()
     runTest tooLongName 1 23 1
+
+    extraArgs=()
+    runTest aliceAndBob 5 24 1
     
     extraArgs=()
     runTest badVersion x 25 1

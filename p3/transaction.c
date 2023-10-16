@@ -137,7 +137,6 @@ void processTransactons( char const fname[] ) {
                 fprintf( stderr, "Account overflow\n" );
                 exit( EXIT_FAILURE );
             }
-
             *balance -= amount;
         }
         // Throw account overflow error if the transaction overflows the account balance.
@@ -146,7 +145,6 @@ void processTransactons( char const fname[] ) {
                 fprintf( stderr, "Account overflow\n" );
                 exit( EXIT_FAILURE );
             }
-
             *balance += amount;
         }
     }

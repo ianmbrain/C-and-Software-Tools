@@ -33,7 +33,7 @@ bool checkAdd( unsigned long a, unsigned long b ) {
  * @return true if the difference of a and b do not overflow and false otherwise.
 */
 bool checkSub( unsigned long a, unsigned long b ) {
-  if ( a - b < 0 ) {
+  if ( a < b ) {
     return false;
   }
 
