@@ -17,6 +17,18 @@
 /** Number of accounts supported by the program. */
 #define ACCOUNT_LIMIT 100000
 
+/** Length of the ULONG value to be used to intitalize strings that hold these values. */
+#define ULONG_LENGTH 20
+
+/** Length of the open file error text. */
+#define OPEN_ERROR_LENGTH 25
+
+/** Value to use to get the remainder of a value. */
+#define REMAINDER_OPERATOR 100
+
+/** If the decimal value is less than this value, add a zero before it to make the decimal two digits. */
+#define ADD_ZERO 10
+
 /** Balances of each account. */
 static unsigned long balances[ ACCOUNT_LIMIT ];
 
@@ -40,7 +52,7 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
     // Currency values that will be returned from the string value.
     unsigned long return_value = 0;
     // String value of the currency value that will be converted into the return value.
-    char string_value[ 21 + 10 ] = "";
+    char string_value[ ULONG_LENGTH + 1 ] = "";
     // Current character in the currency string value.
     char current_char = ' ';
 
@@ -59,7 +71,7 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
             if ( decimal_count > 0 ) {
                 digits_after_decimal++;
 
-                if ( digits_after_decimal > 2 ) {
+                if ( digits_after_decimal > DECIMAL_DIGITS ) {
                     return false;
                 }
             }
@@ -67,10 +79,10 @@ bool readCurrency( FILE *fp, unsigned long *val ) {
             int current_digit = current_char - '0';
 
             // Throw and error if the value overflows.
-            if ( checkMul( return_value, 10 ) == false ) {
+            if ( checkMul( return_value, ADD_DIGIT ) == false ) {
                 return false;
             }
-            return_value *= 10;
+            return_value *= ADD_DIGIT;
 
             // Throw and error if the value overflows.
             if ( checkAdd( return_value, current_digit ) == false ) {
@@ -125,7 +137,7 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     // Count of dashes in the file name
     int dash_count = 0;
     // Error to print if the account name is incorrect
-    char print_error[ 28 + AFILE_LIMIT + 1 ] = "Invalid account file name: ";
+    char print_error[ NAME_ERROR_LENGTH + AFILE_LIMIT + 1 ] = "Invalid account file name: ";
     strcat( print_error, fname );
     strcat( print_error, "\n" );
 
@@ -158,7 +170,7 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 
     // Throw an error if the file cannot be opened.
     if ( file == NULL ) {
-        char print_error[ 25 + AFILE_LIMIT + 1 ] = "Can't open account file: ";
+        char print_error[ OPEN_ERROR_LENGTH + AFILE_LIMIT + 1 ] = "Can't open account file: ";
         strcat( print_error, fname );
         strcat( print_error, "\n" );
         fprintf( stderr, print_error );
@@ -232,7 +244,7 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     strcat( new_fname, ".txt" );
 
     // Error message to throw if the account name is invalid
-    char print_error[ 28 + AFILE_LIMIT + 1 ] = "Invalid account file name: ";
+    char print_error[ NAME_ERROR_LENGTH + AFILE_LIMIT + 1 ] = "Invalid account file name: ";
     strcat( print_error, fname );
     strcat( print_error, "\n" );
 
@@ -246,7 +258,7 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
 
     // Throw a file open error if the file cannot be opened.
     if ( file == NULL ) {
-        char print_error[ 25 + AFILE_LIMIT + 1 ] = "Can't open account file: ";
+        char print_error[ OPEN_ERROR_LENGTH + AFILE_LIMIT + 1 ] = "Can't open account file: ";
         strcat( print_error, fname );
         strcat( print_error, "\n" );
         fprintf( stderr, print_error );
@@ -271,12 +283,12 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
         fprintf( file, "%-30s", accounts[ current_acc ] );
 
         // Convert each integer balance into a double.
-        int remainder = ( balances[ current_acc ] % 100 );
-        acc_balance = (unsigned long) ( (unsigned long) balances[ current_acc ] / 100 );
+        int remainder = ( balances[ current_acc ] % REMAINDER_OPERATOR );
+        acc_balance = (unsigned long) ( (unsigned long) balances[ current_acc ] / REMAINDER_OPERATOR );
         fprintf( file, "%19ld.", ( unsigned long) acc_balance );
         if( remainder == 0 )
             fprintf( file, "%d%d\n", 0, 0 );
-        else if ( remainder < 10 ) {
+        else if ( remainder < ADD_ZERO ) {
             fprintf( file, "%d%d\n", 0, remainder );
         }
         else

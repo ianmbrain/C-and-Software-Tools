@@ -6,15 +6,16 @@
  * This functionality is used in trader.c to process transactions on the account balances.
   */
 
-// I included these, check what libraries we can use __________--_____----_____-------_____----______-------_____----_____------------
 #include "transaction.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
 #include "util.h"
 #include "account.h"
+
+/** Maximum of length of a transaction, in this case 'sell'. */
+#define TRANS_LENGTH 4
 
 /**
  * Processes the transactions from a transaction file and adjusts the associated account balances.
@@ -30,7 +31,7 @@ void processTransactons( char const fname[] ) {
     // Name of each account.
     char name[ NAME_LIMIT + 1 ] = "";
     // Buy or sell transaction.
-    char transaction[ 4 + 1 ];
+    char transaction[ TRANS_LENGTH + 1 ];
     // Number of shares to be processed.
     unsigned long shares = 0;
     // Price of each share to be processed.
@@ -40,7 +41,7 @@ void processTransactons( char const fname[] ) {
 
     // Throw file open error if the file cannot be opened.
     if ( file == NULL ) {
-        char print_error[ 29 + AFILE_LIMIT + 1 ] = "Can't open transaction file: ";
+        char print_error[ NAME_ERROR_LENGTH + AFILE_LIMIT + 1 ] = "Can't open transaction file: ";
         strcat( print_error, fname );
         fprintf( stderr, print_error );
     }
@@ -87,7 +88,7 @@ void processTransactons( char const fname[] ) {
                     digits_after_decimal++;
 
                     // Throw invalid file error if there are more than two digits after the decimal
-                    if ( digits_after_decimal > 2 ) {
+                    if ( digits_after_decimal > DECIMAL_DIGITS ) {
                         fprintf( stderr, "Invalid transaction file" );
                         exit( EXIT_FAILURE );
                     }
@@ -96,12 +97,12 @@ void processTransactons( char const fname[] ) {
                 // Convert the character number into an integer digit
                 int current_digit = current_char - '0';
 
-                // Throw account overflow error if adjusting the price value causes an overflow.
-                if ( checkMul( int_price, 10 ) == false ) {
+                // Throw account overflow error if adjusting the price value causes an overflow. Otherwise multiply by 10 to allow the return value to accomodate an additional digit.
+                if ( checkMul( int_price, ADD_DIGIT ) == false ) {
                     fprintf( stderr, "Account overflow\n" );
                     exit( EXIT_FAILURE );
                 }
-                int_price *= 10;
+                int_price *= ADD_DIGIT;
 
                 // Throw account overflow error if adjusting the price value causes an overflow.
                 if ( checkAdd( int_price, current_digit ) == false ) {

@@ -16,6 +16,15 @@
 /** Limit on the length of an account file. */
 #define AFILE_LIMIT 30
 
+/** Number of digits permitted to be after the decimal point. */
+#define DECIMAL_DIGITS 2
+
+/** Value to multiply the return value value by to allow it to permit an additional digit. */
+#define ADD_DIGIT 10
+
+/** Length of the invalid name error text. */
+#define NAME_ERROR_LENGTH 27
+
 /**
  * Reads in a currency value from the stream parameter and stores it in the pointer parameter.
  * The function returns true if the currency value is in the proper format and false otherwise.

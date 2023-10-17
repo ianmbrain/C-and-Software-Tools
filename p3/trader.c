@@ -33,9 +33,9 @@ int main( int argc, char *argv[] ) {
         fprintf( stderr, "usage: trader <account-file> <transaction-file>\n" );
         exit( EXIT_FAILURE );
     }
-    loadAccounts( argv[ 1 ] );
+    loadAccounts( argv[ ACCOUNT_ARG ] );
 
-    processTransactons( argv[ 2 ] );
+    processTransactons( argv[ TRANSACT_ARG ] );
 
-    saveAccounts( argv[ 1 ] );
+    saveAccounts( argv[ ACCOUNT_ARG ] );
 }
