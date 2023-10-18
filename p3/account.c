@@ -17,9 +17,6 @@
 /** Number of accounts supported by the program. */
 #define ACCOUNT_LIMIT 100000
 
-/** Length of the ULONG value to be used to intitalize strings that hold these values. */
-#define ULONG_LENGTH 20
-
 /** Length of the open file error text. */
 #define OPEN_ERROR_LENGTH 25
 

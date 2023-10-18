@@ -35,7 +35,7 @@ void processTransactons( char const fname[] ) {
     // Number of shares to be processed.
     unsigned long shares = 0;
     // Price of each share to be processed.
-    char price[ 22 + 1 ] = "";
+    char price[ ULONG_LENGTH + 1 ] = "";
 
     FILE *file = fopen( fname, "r" );
 

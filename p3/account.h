@@ -25,6 +25,9 @@
 /** Length of the invalid name error text. */
 #define NAME_ERROR_LENGTH 27
 
+/** Length of the ULONG value to be used to intitalize strings that hold these values. */
+#define ULONG_LENGTH 20
+
 /**
  * Reads in a currency value from the stream parameter and stores it in the pointer parameter.
  * The function returns true if the currency value is in the proper format and false otherwise.
