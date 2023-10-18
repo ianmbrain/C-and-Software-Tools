@@ -183,6 +183,12 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     char account_name[ NAME_LIMIT + 1 ];
 
     while ( fscanf( file, "%s", account_name ) == 1 ) {
+        // Throw invalid file error if there are too many accounts.
+        if (current_acc > ACCOUNT_LIMIT ) {
+            fprintf( stderr, "Invalid account file\n" );
+            exit( EXIT_FAILURE );
+        }
+
         // Copy the name into accounts. Throw an error if the account name is too long.
         if ( account_name[ NAME_LIMIT ] != '\0' ) {
             fprintf( stderr, "Invalid account file\n" );

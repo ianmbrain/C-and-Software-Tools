@@ -65,6 +65,11 @@ void processTransactons( char const fname[] ) {
             fprintf( stderr, "Invalid transaction file\n" );
             exit( EXIT_FAILURE );
         }
+        // If shares is read incorrectly and is negative, throw an invalid file error.
+        if ( shares < 0 ) {
+            fprintf( stderr, "Invalid transaction file\n" );
+            exit( EXIT_FAILURE );
+        }
 
         // Read each price value.
         fscanf( file, "%s", price );
