@@ -177,9 +177,9 @@ void loadAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
         exit( EXIT_FAILURE );
     }
 
-    // Index tracker for the account and balance
+    // Index tracker for the account and balance.
     int current_acc = 0;
-    // Name of each account in the file. 
+    // Name of each account in the file.
     char account_name[ NAME_LIMIT + 1 ];
 
     while ( fscanf( file, "%s", account_name ) == 1 ) {
@@ -278,7 +278,7 @@ void saveAccounts( char fname[ AFILE_LIMIT + 1 ] ) {
     // Balance of each account.
     long double acc_balance = 0;
 
-    // Print the file name and double balance to the file
+    // Print the file name and double balance to the file.
     while ( current_acc < file_length ) {
         fprintf( file, "%-30s", accounts[ current_acc ] );
 

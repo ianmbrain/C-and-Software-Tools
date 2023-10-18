@@ -12,3 +12,4 @@ util.o: util.c util.h
 clean:
 	rm -f *.o
 	rm -f trader
+	rm -f output.txt

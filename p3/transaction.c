@@ -25,7 +25,7 @@
  * Throw invalid file error if the transaction is not buy or sell and if the shares or price cannot be read.
  * Throw account overflow error if the product of shares and price or transaction on the balance causes an overflow.
  * The code to read in price values is based on code from the loadAccounts() function in account.c.
- * @param fname name of the transaction file to process transactions from
+ * @param fname name of the transaction file to process transactions from.
 */
 void processTransactons( char const fname[] ) {
     // Name of each account.
@@ -94,7 +94,7 @@ void processTransactons( char const fname[] ) {
                     }
                 }
 
-                // Convert the character number into an integer digit
+                // Convert the character number into an integer digit.
                 int current_digit = current_char - '0';
 
                 // Throw account overflow error if adjusting the price value causes an overflow. Otherwise multiply by 10 to allow the return value to accomodate an additional digit.
@@ -131,7 +131,7 @@ void processTransactons( char const fname[] ) {
         // Multiply  the shares by the price and store it in the account balance.
         unsigned long amount = shares * int_price;
         unsigned long *balance = lookupAccount( name );
-        
+
         // Throw account overflow error if the transaction overflows the account balance.
         if ( strcmp( transaction, "buy" ) == 0 ) {
             if ( !checkSub( *balance, amount ) ) {
