@@ -1,1 +1,3 @@
 
+
+char *readLine( FILE *fp );
