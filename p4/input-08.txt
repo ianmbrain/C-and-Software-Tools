@@ -1,0 +1,13 @@
+add 264
+add 139
+add 245
+add 264
+add 247
+add 272
+add 267
+add 674
+add 139
+remove 264
+remove 247
+trip
+quit

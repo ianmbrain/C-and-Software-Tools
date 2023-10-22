@@ -1,0 +1,22 @@
+cmd> add 250
+
+cmd> add 125
+
+cmd> add 789
+
+cmd> add 901
+
+cmd> add 345
+
+cmd> add 690
+
+cmd> trip
+ID  Name                                     Distance
+250 dkZJmr eUeoCC                                 0.0
+125 cWZCcWGoCnyaKXbdUO                         1444.1
+789 ttWQsCdUTRypTNlj                          10803.3
+901 VaCRqCn VLYTTKNmvtXFdJMiV dJHYzxTmu       19130.5
+345 nxfkEaozAINfYUR                           30916.2
+690 heVsHIjOlwekBJwoUQqQTbn                   40454.7
+
+cmd> quit

@@ -1,0 +1,12 @@
+list names
+list county XXX
+add 344
+add abc
+trip
+add 281
+add 578
+trip
+remove 299
+trip
+travel
+quit

@@ -1,0 +1,16 @@
+add 950
+add 840
+add 725
+add 104
+add 245
+add 840
+add 589
+add 444
+add 678
+add 104
+trip
+remove 840
+remove 104
+remove 589
+trip
+quit

@@ -1,0 +1,168 @@
+cmd> list parks
+ID  Name                                          Lat      Lon Counties
+139 Lake Waccamaw State Park                   34.279  -78.465 Columbus
+140 Lea Island State Natural Area              34.321  -77.688 Pender
+168 Salmon Creek State Natural Area            36.013  -76.716 Bertie
+199 Bald Head Island State Natural Area        33.862  -77.963 Brunswick
+202 Beech Creek Bog State Natural Area         36.194  -81.850 Watauga
+203 Bear Paw State Natural Area                36.161  -81.820 Watauga
+205 Bushy Lake State Natural Area              34.870  -78.683 Cumberland
+206 Bullhead Mountain State Natural Area       36.449  -81.060 Alleghany
+208 Carvers Creek State Park                   35.211  -78.977 Cumberland,Harnett
+210 Chowan Swamp State Natural Area            36.402  -76.905 Gates
+211 Cliffs of the Neuse State Park             35.235  -77.893 Wayne
+220 Fort Fisher State Recreation Area          33.953  -77.929 NewHanover
+224 Goose Creek State Park                     35.482  -76.901 Beaufort
+226 Grandfather Mountain State Park            36.111  -81.812 Avery,Caldwell,Watauga
+227 Hammocks Beach State Park                  34.671  -77.143 Onslow
+229 Hanging Rock State Park                    36.412  -80.254 Stokes
+233 Jones Lake State Park                      34.683  -78.595 Bladen
+235 Jockey's Ridge State Park                  35.964  -75.633 Dare
+236 Kerr Lake State Recreation Area            36.441  -78.369 Vance,Warren
+238 Lake Norman State Park                     35.673  -80.933 Iredell
+242 Lower Haw River State Natural Area         35.772  -79.143 Chatham
+245 Mayo River State Park                      36.439  -79.938 Rockingham
+247 Medoc Mountain State Park                  36.264  -77.888 Halifax
+249 Mount Jefferson State Natural Area         36.398  -81.473 Ashe
+251 Morrow Mountain State Park                 35.374  -80.073 Stanly
+254 North Carolina Museum of Art               35.810  -78.702 Wake
+258 Occoneechee Mountain State Natural Area    36.061  -79.117 Orange
+260 Pineola Bog State Natural Area             36.017  -81.896 Avery
+264 Raven Rock State Park                      35.460  -78.913 Harnett
+267 Run Hill State Natural Area                35.995  -75.675 Dare
+270 Sandy Run Savannas State Natural Area      34.631  -77.650 Onslow,Pender
+272 Singletary Lake State Park                 34.583  -78.450 Bladen
+275 Stone Mountain State Park                  36.387  -81.027 Alleghany,Wilkes
+277 Theodore Roosevelt State Natural Area      34.697  -76.826 Carteret
+281 Weymouth Woods-Sandhills Nature Preserve   35.147  -79.369 Moore
+285 Worlds Edge State Natural Area             35.406  -82.269 Rutherford
+288 Yorkshire Center                           35.966  -78.633 Wake
+325 Gorges State Park                          35.097  -82.952 Transylvania
+346 Merchants Millpond State Park              36.437  -76.702 Gates
+387 Yellow Mountain State Natural Area         35.994  -82.038 Avery
+498 At Raleigh Central Headquarters            35.787  -78.639 Wake
+501 Bay Tree Lake State Natural Area           34.678  -78.431 Bladen
+578 Warwick Mill Bay State Natural Area        34.568  -78.919 Robeson
+604 Bobs Creek State Natural Area              35.635  -81.935 McDowell
+619 Falls Lake State Recreation Area           36.012  -78.689 Wake,Durham
+628 Haw River State Park                       36.251  -79.756 Guilford,Rockingham
+674 South Mountains State Park                 35.596  -81.600 Burke
+743 Lumber River State Park                    34.390  -79.002 Columbus,Hoke,Robeson,Scotland
+771 Scuppernong River State Park               35.861  -76.357 Tyrrell,Washington
+822 Fort Macon State Park                      34.698  -76.678 Carteret
+834 Jordan Lake State Recreation Area          35.737  -79.017 Chatham
+848 Mitchell Mill State Natural Area           35.915  -78.388 Wake
+855 New River State Park                       36.468  -81.340 Alleghany,Ashe
+861 Pilot Mountain State Park                  36.341  -80.463 Surry,Yadkin
+884 William B. Umstead State Park              35.891  -78.750 Wake
+909 Chimney Rock State Park                    35.433  -82.250 Buncombe,Henderson,Polk,Rutherford
+937 Lake James State Park                      35.729  -81.901 Burke,McDowell
+950 Mount Mitchell State Park                  35.753  -82.274 Yancey
+959 Pettigrew State Park                       35.804  -76.449 Tyrrell,Washington
+976 Sugar Mountain Bog State Natural Area      36.083  -81.896 Avery
+
+cmd> list names
+ID  Name                                          Lat      Lon Counties
+498 At Raleigh Central Headquarters            35.787  -78.639 Wake
+199 Bald Head Island State Natural Area        33.862  -77.963 Brunswick
+501 Bay Tree Lake State Natural Area           34.678  -78.431 Bladen
+203 Bear Paw State Natural Area                36.161  -81.820 Watauga
+202 Beech Creek Bog State Natural Area         36.194  -81.850 Watauga
+604 Bobs Creek State Natural Area              35.635  -81.935 McDowell
+206 Bullhead Mountain State Natural Area       36.449  -81.060 Alleghany
+205 Bushy Lake State Natural Area              34.870  -78.683 Cumberland
+208 Carvers Creek State Park                   35.211  -78.977 Cumberland,Harnett
+909 Chimney Rock State Park                    35.433  -82.250 Buncombe,Henderson,Polk,Rutherford
+210 Chowan Swamp State Natural Area            36.402  -76.905 Gates
+211 Cliffs of the Neuse State Park             35.235  -77.893 Wayne
+619 Falls Lake State Recreation Area           36.012  -78.689 Wake,Durham
+220 Fort Fisher State Recreation Area          33.953  -77.929 NewHanover
+822 Fort Macon State Park                      34.698  -76.678 Carteret
+224 Goose Creek State Park                     35.482  -76.901 Beaufort
+325 Gorges State Park                          35.097  -82.952 Transylvania
+226 Grandfather Mountain State Park            36.111  -81.812 Avery,Caldwell,Watauga
+227 Hammocks Beach State Park                  34.671  -77.143 Onslow
+229 Hanging Rock State Park                    36.412  -80.254 Stokes
+628 Haw River State Park                       36.251  -79.756 Guilford,Rockingham
+235 Jockey's Ridge State Park                  35.964  -75.633 Dare
+233 Jones Lake State Park                      34.683  -78.595 Bladen
+834 Jordan Lake State Recreation Area          35.737  -79.017 Chatham
+236 Kerr Lake State Recreation Area            36.441  -78.369 Vance,Warren
+937 Lake James State Park                      35.729  -81.901 Burke,McDowell
+238 Lake Norman State Park                     35.673  -80.933 Iredell
+139 Lake Waccamaw State Park                   34.279  -78.465 Columbus
+140 Lea Island State Natural Area              34.321  -77.688 Pender
+242 Lower Haw River State Natural Area         35.772  -79.143 Chatham
+743 Lumber River State Park                    34.390  -79.002 Columbus,Hoke,Robeson,Scotland
+245 Mayo River State Park                      36.439  -79.938 Rockingham
+247 Medoc Mountain State Park                  36.264  -77.888 Halifax
+346 Merchants Millpond State Park              36.437  -76.702 Gates
+848 Mitchell Mill State Natural Area           35.915  -78.388 Wake
+251 Morrow Mountain State Park                 35.374  -80.073 Stanly
+249 Mount Jefferson State Natural Area         36.398  -81.473 Ashe
+950 Mount Mitchell State Park                  35.753  -82.274 Yancey
+855 New River State Park                       36.468  -81.340 Alleghany,Ashe
+254 North Carolina Museum of Art               35.810  -78.702 Wake
+258 Occoneechee Mountain State Natural Area    36.061  -79.117 Orange
+959 Pettigrew State Park                       35.804  -76.449 Tyrrell,Washington
+861 Pilot Mountain State Park                  36.341  -80.463 Surry,Yadkin
+260 Pineola Bog State Natural Area             36.017  -81.896 Avery
+264 Raven Rock State Park                      35.460  -78.913 Harnett
+267 Run Hill State Natural Area                35.995  -75.675 Dare
+168 Salmon Creek State Natural Area            36.013  -76.716 Bertie
+270 Sandy Run Savannas State Natural Area      34.631  -77.650 Onslow,Pender
+771 Scuppernong River State Park               35.861  -76.357 Tyrrell,Washington
+272 Singletary Lake State Park                 34.583  -78.450 Bladen
+674 South Mountains State Park                 35.596  -81.600 Burke
+275 Stone Mountain State Park                  36.387  -81.027 Alleghany,Wilkes
+976 Sugar Mountain Bog State Natural Area      36.083  -81.896 Avery
+277 Theodore Roosevelt State Natural Area      34.697  -76.826 Carteret
+578 Warwick Mill Bay State Natural Area        34.568  -78.919 Robeson
+281 Weymouth Woods-Sandhills Nature Preserve   35.147  -79.369 Moore
+884 William B. Umstead State Park              35.891  -78.750 Wake
+285 Worlds Edge State Natural Area             35.406  -82.269 Rutherford
+387 Yellow Mountain State Natural Area         35.994  -82.038 Avery
+288 Yorkshire Center                           35.966  -78.633 Wake
+
+cmd> list county Wake
+ID  Name                                          Lat      Lon Counties
+498 At Raleigh Central Headquarters            35.787  -78.639 Wake
+619 Falls Lake State Recreation Area           36.012  -78.689 Wake,Durham
+848 Mitchell Mill State Natural Area           35.915  -78.388 Wake
+254 North Carolina Museum of Art               35.810  -78.702 Wake
+884 William B. Umstead State Park              35.891  -78.750 Wake
+288 Yorkshire Center                           35.966  -78.633 Wake
+
+cmd> add 325
+
+cmd> add 771
+
+cmd> add 674
+
+cmd> add 848
+
+cmd> add 771
+
+cmd> add 959
+
+cmd> trip
+ID  Name                                     Distance
+325 Gorges State Park                             0.0
+771 Scuppernong River State Park                374.8
+674 South Mountains State Park                  669.4
+848 Mitchell Mill State Natural Area            850.9
+771 Scuppernong River State Park                964.7
+959 Pettigrew State Park                        971.2
+
+cmd> remove 771
+
+cmd> remove 848
+
+cmd> trip
+ID  Name                                     Distance
+325 Gorges State Park                             0.0
+674 South Mountains State Park                   83.7
+771 Scuppernong River State Park                378.3
+959 Pettigrew State Park                        384.8
+
+cmd> quit

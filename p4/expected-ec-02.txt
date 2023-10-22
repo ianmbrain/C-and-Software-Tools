@@ -1,0 +1,14 @@
+cmd> add 214
+
+cmd> add 615
+
+cmd> nearest 10
+ID  Name                                     Distance
+615 Dismal Swamp State Park                       0.0
+418 Eno River State Park                        150.5
+214 Deep River State Trail                      170.1
+807 Carolina Beach State Park                   191.1
+713 Crowders Mountain State Park                290.6
+217 Elk Knob State Park                         296.9
+
+cmd> quit

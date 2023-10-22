@@ -1,0 +1,8 @@
+add 250
+add 125
+add 789
+add 901
+add 345
+add 690
+trip
+quit

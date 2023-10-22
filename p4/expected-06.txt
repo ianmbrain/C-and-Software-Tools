@@ -1,0 +1,11 @@
+cmd> list county Orange
+ID  Name                                          Lat      Lon Counties
+418 Eno River State Park                       36.078  -79.005 Durham,Orange
+258 Occoneechee Mountain State Natural Area    36.061  -79.117 Orange
+
+cmd> list county Pender
+ID  Name                                          Lat      Lon Counties
+140 Lea Island State Natural Area              34.321  -77.688 Pender
+270 Sandy Run Savannas State Natural Area      34.631  -77.650 Onslow,Pender
+
+cmd> quit

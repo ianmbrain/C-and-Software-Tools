@@ -1,0 +1,5 @@
+add 604
+add 208
+add 807
+nearest 4
+quit

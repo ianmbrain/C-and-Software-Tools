@@ -1,0 +1,12 @@
+list parks
+list county Transylvania
+list names
+add 346
+add 288
+trip
+add 281
+add 578
+trip
+remove 281
+trip
+quit

@@ -1,0 +1,50 @@
+cmd> add 950
+
+cmd> add 840
+
+cmd> add 725
+
+cmd> add 104
+
+cmd> add 245
+
+cmd> add 840
+
+cmd> add 589
+
+cmd> add 444
+
+cmd> add 678
+
+cmd> add 104
+
+cmd> trip
+ID  Name                                     Distance
+950 stUObJJzCPuyayoQTehSqqvmKSrKKplgGui           0.0
+840 QFxopgTFpmtg JsvafFeakkPCIjnHJzMo          6449.5
+725 oHmGunuSRlyhHTgJHcwlmCjgNXnfVklH          12301.9
+104 TEJSQtjMkkOKkPSoHGlUadmD                  13893.4
+245 npSSLa fCAUCAsUhvx                        23228.3
+840 QFxopgTFpmtg JsvafFeakkPCIjnHJzMo         31951.7
+589 oGMLXvyuZek                               41857.0
+444 AKykNDzkJAlHwUHkReVXYoqgcmJVbcDUz         51065.7
+678  LPyKr cMnkupLEKrYnJESsYiEeh              59692.3
+104 TEJSQtjMkkOKkPSoHGlUadmD                  65754.5
+
+cmd> remove 840
+
+cmd> remove 104
+
+cmd> remove 589
+
+cmd> trip
+ID  Name                                     Distance
+950 stUObJJzCPuyayoQTehSqqvmKSrKKplgGui           0.0
+725 oHmGunuSRlyhHTgJHcwlmCjgNXnfVklH           4582.7
+245 npSSLa fCAUCAsUhvx                        14114.2
+840 QFxopgTFpmtg JsvafFeakkPCIjnHJzMo         22837.6
+444 AKykNDzkJAlHwUHkReVXYoqgcmJVbcDUz         26860.1
+678  LPyKr cMnkupLEKrYnJESsYiEeh              35486.6
+104 TEJSQtjMkkOKkPSoHGlUadmD                  41548.8
+
+cmd> quit

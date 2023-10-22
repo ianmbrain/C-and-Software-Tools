@@ -1,0 +1,7 @@
+cmd> list county Alleghany
+ID  Name                                          Lat      Lon Counties
+206 Bullhead Mountain State Natural Area       36.449  -81.060 Alleghany
+855 New River State Park                       36.468  -81.340 Alleghany,Ashe
+275 Stone Mountain State Park                  36.387  -81.027 Alleghany,Wilkes
+
+cmd> quit

@@ -1,0 +1,16 @@
+cmd> add 848
+
+cmd> add 959
+
+cmd> add 277
+
+cmd> add 288
+
+cmd> trip
+ID  Name                                     Distance
+848 Mitchell Mill State Natural Area              0.0
+959 Pettigrew State Park                        108.8
+277 Theodore Roosevelt State Natural Area       188.2
+288 Yorkshire Center                            322.7
+
+cmd> quit

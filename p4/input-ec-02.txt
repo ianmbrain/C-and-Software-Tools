@@ -1,0 +1,4 @@
+add 214
+add 615
+nearest 10
+quit

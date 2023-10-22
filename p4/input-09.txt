@@ -1,0 +1,14 @@
+list parks
+list names
+list county Wake
+add 325
+add 771
+add 674
+add 848
+add 771
+add 959
+trip
+remove 771
+remove 848
+trip
+quit

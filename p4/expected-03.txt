@@ -1,0 +1,10 @@
+cmd> list parks
+ID  Name                                          Lat      Lon Counties
+214 Deep River State Trail                     35.587  -79.181 Chatham,Lee
+217 Elk Knob State Park                        36.333  -81.691 Ashe,Watauga
+418 Eno River State Park                       36.078  -79.005 Durham,Orange
+615 Dismal Swamp State Park                    36.506  -76.355 Camden
+713 Crowders Mountain State Park               35.213  -81.294 Cleveland,Gaston
+807 Carolina Beach State Park                  34.047  -77.907 NewHanover
+
+cmd> quit

@@ -1,0 +1,8 @@
+cmd> add 217
+
+cmd> add 418
+
+cmd> nearest 0
+Invalid command
+
+cmd> quit

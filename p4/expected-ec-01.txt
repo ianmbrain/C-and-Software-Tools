@@ -1,0 +1,15 @@
+cmd> add 604
+
+cmd> add 208
+
+cmd> add 807
+
+cmd> nearest 4
+ID  Name                                     Distance
+807 Carolina Beach State Park                     0.0
+220 Fort Fisher State Recreation Area             6.6
+199 Bald Head Island State Natural Area          13.2
+140 Lea Island State Natural Area                22.7
+139 Lake Waccamaw State Park                     35.7
+
+cmd> quit

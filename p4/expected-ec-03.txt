@@ -1,0 +1,4 @@
+cmd> nearest 3
+Invalid command
+
+cmd> quit

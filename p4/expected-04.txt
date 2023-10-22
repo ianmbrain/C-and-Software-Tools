@@ -1,0 +1,17 @@
+cmd> list names
+ID  Name                                          Lat      Lon Counties
+604 Bobs Creek State Natural Area              35.635  -81.935 McDowell
+206 Bullhead Mountain State Natural Area       36.449  -81.060 Alleghany
+205 Bushy Lake State Natural Area              34.870  -78.683 Cumberland
+208 Carvers Creek State Park                   35.211  -78.977 Cumberland,Harnett
+713 Crowders Mountain State Park               35.213  -81.294 Cleveland,Gaston
+214 Deep River State Trail                     35.587  -79.181 Chatham,Lee
+904 Deep River State Trail                     35.587  -79.181 Wake
+345 Dismal Swamp State Park                    36.506  -76.355 Camden
+615 Dismal Swamp State Park                    36.506  -76.355 Camden
+217 Elk Knob State Park                        36.333  -81.691 Ashe,Watauga
+220 Elk Knob State Park                        36.333  -81.691 Ashe,Watauga
+102 Eno River State Park                       36.078  -79.005 Ashe
+418 Eno River State Park                       36.078  -79.005 Durham,Orange
+
+cmd> quit

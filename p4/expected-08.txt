@@ -1,0 +1,33 @@
+cmd> add 264
+
+cmd> add 139
+
+cmd> add 245
+
+cmd> add 264
+
+cmd> add 247
+
+cmd> add 272
+
+cmd> add 267
+
+cmd> add 674
+
+cmd> add 139
+
+cmd> remove 264
+
+cmd> remove 247
+
+cmd> trip
+ID  Name                                     Distance
+139 Lake Waccamaw State Park                      0.0
+245 Mayo River State Park                       170.8
+264 Raven Rock State Park                       259.5
+272 Singletary Lake State Park                  325.4
+267 Run Hill State Natural Area                 509.9
+674 South Mountains State Park                  843.0
+139 Lake Waccamaw State Park                   1042.5
+
+cmd> quit
