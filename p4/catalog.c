@@ -44,8 +44,15 @@ Catalog *makeCatalog() {
     return return_catalog;
 }
 
+// This function frees the memory used to store the given Catalog, including freeing space for all the 
+// Parks, freeing the resizable array of pointers and freeing space for the Catalog struct itself.
 void freeCatalog( Catalog *catalog ) {
+    for ( int i = 0; i < catalog->count; i++ ) {
+        free( catalog->list[ i ] );
+    }
 
+    free( catalog->list );
+    free( catalog );
 }
 
 // This function reads all the parks from a park file with the given name. 
@@ -160,6 +167,28 @@ void sortParks( Catalog *catalog, int (* compare) ( void const *va, void const *
     qsort( catalog->list, catalog->count, sizeof( catalog->list[ 0 ] ), compare );
 }
 
+// This function prints all or some of the parks. It uses the function pointer parameter together with 
+// the string, str, which is passed to the function, to decide which parks to print. 
+// This function will be used for the list parks, list names, and list county commands. The function pointer is described in the “Listing Parks” section below.
 void listParks( Catalog *catalog, bool (*test)( Park const *park, char const *str ), char const *str ) {
+    char park_counties[ MAX_PARK_COUNTIES * COUNTY_NAME_LENGTH + 1 ] = "";
 
+    printf( "%s", "ID  Name                                          Lat      Lon Counties\n");
+
+    for ( int i = 0; i < catalog->count; i++ ) {
+        // Convert parks counties into the parks separated by a comma.
+        strcat( park_counties, catalog->list[ i ]->name );
+        for ( int i = 1; i < catalog->list[ i ]->numCounties; i++ ) {
+            strcat( park_counties, "," );
+            strcat( park_counties, catalog->list[ i ]->name );
+        }
+
+        if ( test( catalog->list[ i ], str ) ) {
+            printf( "%3d ", catalog->list[ i ]->id );
+            printf( "%40s ", catalog->list[ i ]->name );
+            printf( "%-5.3lf", catalog->list[ i ]->lat );
+            printf( "%-5.3lf", catalog->list[ i ]->lon );
+            printf( "%s\n", park_counties);
+        }
+    }
 }
