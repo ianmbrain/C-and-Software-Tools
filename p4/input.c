@@ -1,5 +1,5 @@
 
-
+#include <input.h>
 #include <stdio.h>
 
 char *readLine( FILE *fp ) {
@@ -19,8 +19,8 @@ char *readLine( FILE *fp ) {
             text_line = (char *) realloc( text_line, capacity * sizeof( char ) );
         }
 
-        len++;
         text_line[ len ] = cur_char;
+        len++;
     }
 
     return text_line;

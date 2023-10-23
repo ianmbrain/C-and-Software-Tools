@@ -1,12 +1,10 @@
 
+// Include its own header as well,
+#include <catalog.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <input.h>
-
-#define PARK_NAME_LENGTH 40
-
-#define COUNTY_NAME_LENGTH 12
 
 #define MAX_PARK_COUNTIES 5 
 
@@ -39,7 +37,7 @@ double distance( Park const *a, Park const *b ) {
 // Still need to allocate memory for each park
 Catalog *makeCatalog() {
     Catalog *return_catalog = (Catalog *) malloc( sizeof( Catalog ) );
-    return_catalog->list = (Park **) malloc( INITIAL_CATALOG_PARKS * sizeof( Park ) );
+    return_catalog->list = (Park **) malloc( INITIAL_CATALOG_PARKS * sizeof( Park * ) );
     return_catalog->count = 0;
     return_catalog->capacity = INITIAL_CATALOG_PARKS;
 
@@ -68,44 +66,98 @@ void readParks( char const *filename, Catalog *catalog ) {
     // make sure to free the memory of the line after each go?
     // Check for errors
 
+    
     // how long should this be?
     //char field[ 12 + 1 ] = "";
     // At this length, it may prevent the last county from being error checked
-    char *park_info[ 28 + 60 + 1 ] = readline( park_file );
-    char *park_name[ PARK_NAME_LENGTH + 1 ] = readline( park_file );
+    //28 + 60 + 1
+    char *park_info[ 100 ] = NULL;
+    *park_info = readline( park_file );
 
-    // Should this be a pointer? I think so to malloc
-    // do we need to initialize this?
-    Park *cur_park = (Park *) malloc( sizeof( Park ) );
+    while ( *park_info != NULL ) {
+        char *park_name[ PARK_NAME_LENGTH + 1 ] = readline( park_file );
 
-    // Set each of the values of the park based on the file string.
-    int n = 0;
-    int num_county = 0;
-    sscanf( *park_info, "%d%lf%lf%n", &cur_park->id, &cur_park->lat, &cur_park->lon, &n );
-    // Read in parks and identify how many there are
-    // Could be done using a while loop with scanf, so while == 1 do this and ++ the county numCounties
-    while ( sscanf( *( park_info + n ), "%s", cur_park->counties[ num_county ] ) == 1 ) {
-        // Print invalid file error if a county name is too long.
-        if ( cur_park->counties[ num_county ][ COUNTY_NAME_LENGTH ] != '\0' ) {
+        // Should this be a pointer? I think so to malloc
+        // do we need to initialize this?
+        Park *cur_park = (Park *) malloc( sizeof( Park ) );
+
+        // Set each of the values of the park based on the file string.
+        int n = 0;
+        int num_county = 0;
+        // Print invalid file error if the line is missing a field.
+        if ( sscanf( *park_info, "%d%lf%lf%n", &cur_park->id, &cur_park->lat, &cur_park->lon, &n ) != 3 ) {
+            fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
+            exit( EXIT_FAILURE );
+        }
+        // Read in parks and identify how many there are
+        // Could be done using a while loop with scanf, so while == 1 do this and ++ the county numCounties
+        while ( sscanf( *( park_info + n ), "%s%n", cur_park->counties[ num_county ], &n ) == 1 ) {
+            // Print invalid file error if a county name is too long.
+            if ( cur_park->counties[ num_county ][ COUNTY_NAME_LENGTH ] != '\0' ) {
+                fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
+                exit( EXIT_FAILURE );
+            }
+
+            // Print invalid file error if there are more counties than allowed.
+            if ( num_county > 5 ) {
+                fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
+                exit( EXIT_FAILURE );
+            }
+            num_county++;
+        }
+
+        // Print invalid file error if the park does not contain any counties.
+        if ( num_county == 0 ) {
             fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
             exit( EXIT_FAILURE );
         }
 
-        // Print invalid file error if there are more counties than allowed.
-        if ( num_county > 5 ) {
+        sscanf( *park_name, "%s", cur_park->name );
+
+        // Print invalid file error is the park name is too long.
+        if ( cur_park->name[ PARK_NAME_LENGTH ] == '\n' ) {
             fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
             exit( EXIT_FAILURE );
         }
-        num_county++;
+
+        // Add park to the catalog.
+        // cur_park is a pointer which the address in list can point to. This memory should be freed later.
+        if ( catalog->count >= catalog->capacity ) {
+            catalog->capacity *= 2;
+            catalog->list = (Park **) realloc( catalog->list, catalog->capacity * sizeof( Park * ) );
+        }
+        catalog->list[ catalog->count ] = cur_park;
+        catalog->count++;
+
+        // Free memory
+        free( park_info );
+        free( park_name );
+
+        char *park_info[ 28 + 60 + 1 ] = NULL;
+        *park_info = readline( park_file );
     }
 
-    sscanf( *park_name, "%s", cur_park->name );
+    // Print invlaid file error is two parks have the same id.
+    for ( int i = 0; i < catalog->count; i++ ) {
+        for ( int j = i + 1; j < catalog->count; j++ ) {
+            if ( catalog->list[ i ]->id == catalog->list[ j ]->id ) {
+                fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
+                exit( EXIT_FAILURE );
+            }
+        }
+    }
 
-    // free memory of read line
 }
 
-void sortParks( Catalog *catalog, int (* compare) (void const *va, void const *vb )) {
+// This function sorts the parks in the given catalog. 
+// It uses the qsort() function together with the function pointer parameter to order the parks. The function pointer is described in the “Sorting Parks” section below.
+void sortParks( Catalog *catalog, int (* compare) ( void const *va, void const *vb ) ) {
+    // Convert void pointers to the right type
+    // Then use them to access fields in the park struct and decide how they compare
 
+    // Should sizeof be park * pointer?
+    // Is list the first item? or should list be dereferenced to the first pointer
+    qsort( catalog->list, catalog->count, sizeof( catalog->list[ 0 ] ), compare );
 }
 
 void listParks( Catalog *catalog, bool (*test)( Park const *park, char const *str ), char const *str ) {
