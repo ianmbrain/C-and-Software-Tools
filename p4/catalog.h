@@ -13,3 +13,11 @@ struct ParkStruct {
 };
 
 typedef struct ParkStruct Park;
+
+struct CatalogStruct {
+    Park **list;
+    int count;
+    int capacity; 
+};
+
+typedef struct CatalogStruct Catalog;

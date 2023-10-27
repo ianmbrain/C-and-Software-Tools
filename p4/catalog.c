@@ -78,6 +78,7 @@ void readParks( char const *filename, Catalog *catalog ) {
     //char field[ 12 + 1 ] = "";
     // At this length, it may prevent the last county from being error checked
     //28 + 60 + 1
+    // may need to change this to make it more like command in parks.c
     char *park_info[ 100 ] = NULL;
     *park_info = readline( park_file );
 
@@ -163,7 +164,7 @@ void sortParks( Catalog *catalog, int (* compare) ( void const *va, void const *
     // Then use them to access fields in the park struct and decide how they compare
 
     // Should sizeof be park * pointer?
-    // Is list the first item? or should list be dereferenced to the first pointer
+    // Is list the first item? or should list be dereferenced to the first pointer _____-----_____-----______----____-----
     qsort( catalog->list, catalog->count, sizeof( catalog->list[ 0 ] ), compare );
 }
 
