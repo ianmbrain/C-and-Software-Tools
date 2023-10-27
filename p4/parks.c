@@ -42,12 +42,28 @@ static int nameComp( void const *va, void const *vb )
     }
 }
 
+static bool testCounty( Park *park, char *str ) {
+    int num_counties = sizeof( park->counties ) / sizeof( park-> counties[ 0 ] );
+    for ( int i = 0; i < num_counties; i++ ) {
+        // Return true if the park is associated with the county.
+        if ( strcmp( park->counties[ i ], str ) == 0 ) {
+            return true;
+        }
+    }
+
+    // Return false if the park is not associated with the county.
+    return false;
+}
+
+static bool testTrue( Park *park, char *str ) {
+    return true;
+}
+
 struct TripStruct {
     Park **list;
     int count;
     int capacity; 
 };
-
 typedef struct TripStruct Trip;
 
 int main( int argc, char *argv[] ) {
@@ -86,19 +102,26 @@ int main( int argc, char *argv[] ) {
             sscanf( user_input + n, "%s%n", command, &n );
 
             if ( strcmp( command, "parks") ) {
-                // Print parks ____--___--__-_-_--_-_---
+                sortParks( catalog, idComp );
+                listParks( catalog, testTrue, NULL );
             }
             else if ( strcmp( command, "county") ) {
-                char counties[ 12 ][ COUNTY_NAME_LENGTH + 1 ] = {""};
-                int county_cnt = 0;
-                char county[ COUNTY_NAME_LENGTH + 1 ];
+                char county[ COUNTY_NAME_LENGTH + 1 ];  
                 
-                while ( sscanf( user_input + n, "%s%n", county, &n ) == 1 ) {
-                    strcpy( counties[ county_cnt ], county );
+                if ( sscanf( user_input + n, "%s%n", county, &n ) != 1 ) {
+                    fprintf( stderr, "%s\n", "Invalid command" );
+                    continue;
                 }
-                // Choose and print parks ____--___--__-_-_--_-_---
+
+                sortParks( catalog, nameComp );
+                listParks( catalog, testCounty, county );
+            }
+            else if ( strcmp( command, "names") ) {
+                sortParks( catalog, nameComp );
+                listParks( catalog, testTrue, NULL );
             }
 
+            // This should be done before hand _____------______-------______-------_______-----___
             printf( "%s\n", user_input );
         }
         else if ( strcmp( command, "add" ) == 0 ) {
@@ -107,6 +130,12 @@ int main( int argc, char *argv[] ) {
 
             // Search for the park to add from the catalog.
             Park *add_park = NULL;
+
+            // Throw invalid command error if the id is not an int.
+            if ( park_id == -1 ) {
+                fprintf( stderr, "%s\n", "Invalid command" );
+                continue;
+            }
 
             for ( int i = 0; i < catalog->count; i++ ) {
                 if ( catalog->list[ i ]->id == park_id ) {
@@ -132,27 +161,60 @@ int main( int argc, char *argv[] ) {
             printf( "%s\n", user_input );
         }
         else if ( strcmp( command, "remove" ) == 0 ) {
-            int park_id = 0;
+            int park_id = -1;
             sscanf( user_input + n, "%d%n", &park_id, &n );
             // Park to remove.
             Park *remove_park = NULL;
 
+            // Throw invalid command error if the id is not an int.
+            // What if this is a double??? ___---___----_____------______-------_____-------______------______------____-
+            if ( park_id == -1 ) {
+                fprintf( stderr, "%s\n", "Invalid command" );
+                continue;
+            }
+
             // Search for the park to remove from the trip.
             for ( int i = 0; i < trip->count; i++ ) {
                 if ( trip->list[ i ]->id == park_id ) {
-                    for ( int j = i; j < trip -> count; j++ ) {
-                        //____--_----_-------_______---____--___----___----____----___-
+                    for ( int j = i; j < trip -> count - 1; j++ ) {
+                        trip->list[ j ] = trip->list[ j + 1 ];
                     }
+
+                    trip->count--;
                 }
+            }
+
+            // Thow invalid command error if the id does not match an existing park id.
+            if ( remove_park == NULL ) {
+                fprintf( stderr, "%s\n", "Invalid command" );
+                continue;
             }
 
             printf( "%s\n", user_input );
         }
         else if ( strcmp( command, "trip" ) == 0 ) {
+            double total_distance = 0;
 
+            printf( "%s\n", "ID  Name                                     Distance" );
+
+            for ( int i = 0; i < trip->count; i++ ) {
+                printf( "%s %40s ", trip->list[ i ]->id, trip->list[ i ]->name );
+
+                if ( i > 0 ) {
+                    total_distance += distance( trip->list[ i - 1 ], trip->list[ i ] );
+                }
+                printf( "%-8.1d\n", total_distance );
+            }
         }
         else if ( strcmp( command, "quit" ) == 0 ) {
+            for ( int i = 0; i < catalog->count; i++ ) {
+                free( catalog->list[ i ] );
+            }
 
+            free( catalog->list );
+            free( catalog );
+            free( trip->list );
+            free( trip );
         }
         else {
             // Print this message and ask for another command if an invalid command is entered.

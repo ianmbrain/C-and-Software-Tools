@@ -5,10 +5,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <input.h>
+#include <math.h>
 
 #define MAX_PARK_COUNTIES 5 
 
 #define INITIAL_CATALOG_PARKS 5
+
+#define RADIUS_EARTH 3959
+
+#define DEG_TO_RAD ( M_PI / 180 )
 
 struct ParkStruct {
     int id;
@@ -30,8 +35,34 @@ struct CatalogStruct {
 
 typedef struct CatalogStruct Catalog;
 
+// CITE THIS_______---------__________----------_________----------__________-----__--
 double distance( Park const *a, Park const *b ) {
+    int a_lon = a->lon;
+    int a_lat = a->lat;
+    int b_lon = b->lon;
+    int b_lat = b->lon;
 
+    // OK, pretend the center of the earth is at the origin, turn these
+    // two locations into vectors pointing from the origin.
+    // This could be simplified.
+    double v1[] = { cos( a_lon * DEG_TO_RAD ) * cos( a_lat * DEG_TO_RAD ),
+                    sin( a_lon * DEG_TO_RAD ) * cos( a_lat * DEG_TO_RAD ),
+                    sin( a_lat * DEG_TO_RAD ) };
+
+    double v2[] = { cos( b_lon * DEG_TO_RAD ) * cos( b_lat * DEG_TO_RAD ),
+                    sin( b_lon * DEG_TO_RAD ) * cos( b_lat * DEG_TO_RAD ),
+                    sin( b_lat * DEG_TO_RAD ) };
+
+    // Dot product these two vectors.
+    double dp = 0.0;
+    for ( int i = 0; i < sizeof( v1 ) / sizeof( v1[ 0 ] ); i++ )
+    dp += v1[ i ] * v2[ i ];
+
+    // Compute the angle between the vectors based on the dot product.
+    double angle = acos( dp );
+
+    // Return distance based on the radius of the earth.
+    return RADIUS_EARTH * angle;
 }
 
 // Still need to allocate memory for each park
@@ -140,6 +171,7 @@ void readParks( char const *filename, Catalog *catalog ) {
         // Free memory
         free( park_info );
         free( park_name );
+        free( cur_park );
 
         char *park_info[ 28 + 60 + 1 ] = NULL;
         *park_info = readline( park_file );
@@ -154,6 +186,8 @@ void readParks( char const *filename, Catalog *catalog ) {
             }
         }
     }
+
+    close( park_file );
 
 }
 
@@ -177,19 +211,21 @@ void listParks( Catalog *catalog, bool (*test)( Park const *park, char const *st
     printf( "%s", "ID  Name                                          Lat      Lon Counties\n");
 
     for ( int i = 0; i < catalog->count; i++ ) {
-        // Convert parks counties into the parks separated by a comma.
-        strcat( park_counties, catalog->list[ i ]->name );
-        for ( int i = 1; i < catalog->list[ i ]->numCounties; i++ ) {
-            strcat( park_counties, "," );
-            strcat( park_counties, catalog->list[ i ]->name );
-        }
-
         if ( test( catalog->list[ i ], str ) ) {
-            printf( "%3d ", catalog->list[ i ]->id );
-            printf( "%40s ", catalog->list[ i ]->name );
-            printf( "%-5.3lf", catalog->list[ i ]->lat );
-            printf( "%-5.3lf", catalog->list[ i ]->lon );
-            printf( "%s\n", park_counties);
+             // Convert parks counties into the parks separated by a comma.
+            strcat( park_counties, catalog->list[ i ]->counties[ 0 ] );
+            for ( int c = 1; c < catalog->list[ i ]->numCounties; i++ ) {
+                strcat( park_counties, "," );
+                strcat( park_counties, catalog->list[ i ]->counties[ c ] );
+            }
+
+            if ( test( catalog->list[ i ], str ) ) {
+                printf( "%3d ", catalog->list[ i ]->id );
+                printf( "%40s ", catalog->list[ i ]->name );
+                printf( "%-5.3lf", catalog->list[ i ]->lat );
+                printf( "%-5.3lf", catalog->list[ i ]->lon );
+                printf( "%s\n", park_counties);
+            }
         }
     }
 }
