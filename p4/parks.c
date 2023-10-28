@@ -1,11 +1,12 @@
 // Contains Main()
 // You can define the comparison functions in your top-level parks component and make them static
 
-#include <catalog.h>
+#include "catalog.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <input.h>
+#include <string.h>
+#include "input.h"
 
 #define CMD_LENGTH 6
 
@@ -42,7 +43,7 @@ static int nameComp( void const *va, void const *vb )
     }
 }
 
-static bool testCounty( Park *park, char *str ) {
+static bool testCounty( Park const *park, char const *str ) {
     int num_counties = sizeof( park->counties ) / sizeof( park-> counties[ 0 ] );
     for ( int i = 0; i < num_counties; i++ ) {
         // Return true if the park is associated with the county.
@@ -55,7 +56,7 @@ static bool testCounty( Park *park, char *str ) {
     return false;
 }
 
-static bool testTrue( Park *park, char *str ) {
+static bool testTrue( Park const *park, char const *str ) {
     return true;
 }
 
@@ -198,12 +199,12 @@ int main( int argc, char *argv[] ) {
             printf( "%s\n", "ID  Name                                     Distance" );
 
             for ( int i = 0; i < trip->count; i++ ) {
-                printf( "%s %40s ", trip->list[ i ]->id, trip->list[ i ]->name );
+                printf( "%d %40s ", trip->list[ i ]->id, trip->list[ i ]->name );
 
                 if ( i > 0 ) {
                     total_distance += distance( trip->list[ i - 1 ], trip->list[ i ] );
                 }
-                printf( "%-8.1d\n", total_distance );
+                printf( "%-8.1f\n", total_distance );
             }
         }
         else if ( strcmp( command, "quit" ) == 0 ) {

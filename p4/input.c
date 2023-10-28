@@ -1,6 +1,7 @@
 
-#include <input.h>
+#include "input.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 char *readLine( FILE *fp ) {
     int capacity = 3;

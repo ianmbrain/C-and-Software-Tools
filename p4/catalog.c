@@ -1,10 +1,10 @@
 
 // Include its own header as well,
-#include <catalog.h>
+#include "catalog.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <input.h>
+#include <string.h>
 #include <math.h>
 
 #define MAX_PARK_COUNTIES 5 
@@ -14,26 +14,6 @@
 #define RADIUS_EARTH 3959
 
 #define DEG_TO_RAD ( M_PI / 180 )
-
-struct ParkStruct {
-    int id;
-    char name[ PARK_NAME_LENGTH + 1 ];
-    double lat;
-    double lon;
-    int numCounties;
-    char counties[ 5 ][ COUNTY_NAME_LENGTH + 1 ];
-};
-
-typedef struct ParkStruct Park;
-
-// Array has initial capacity of 5.
-struct CatalogStruct {
-    Park **list;
-    int count;
-    int capacity; 
-};
-
-typedef struct CatalogStruct Catalog;
 
 // CITE THIS_______---------__________----------_________----------__________-----__--
 double distance( Park const *a, Park const *b ) {
@@ -89,11 +69,11 @@ void freeCatalog( Catalog *catalog ) {
 // This function reads all the parks from a park file with the given name. 
 // It makes an instance of the Park struct for each one and stores a pointer to that Park in the resizable array in catalog.
 void readParks( char const *filename, Catalog *catalog ) {
-    FILE *park_file = fopen( *filename, "r" );
+    FILE *park_file = fopen( filename, "r" );
 
     // Print file open error and exit the program if the park file cannot be opened.
     if ( !park_file ) {
-        fprintf( stderr, "%s%s", "Can't open file: ", *filename );
+        fprintf( stderr, "%s%s", "Can't open file: ", filename );
         exit( EXIT_FAILURE );
     }
 
@@ -110,11 +90,14 @@ void readParks( char const *filename, Catalog *catalog ) {
     // At this length, it may prevent the last county from being error checked
     //28 + 60 + 1
     // may need to change this to make it more like command in parks.c
-    char *park_info[ 100 ] = NULL;
-    *park_info = readline( park_file );
+    char *park_info = NULL;
+    park_info = readLine( park_file );
 
-    while ( *park_info != NULL ) {
-        char *park_name[ PARK_NAME_LENGTH + 1 ] = readline( park_file );
+    while ( park_info != NULL ) {
+        // char *park_name[ PARK_NAME_LENGTH + 1 ] = readLine( park_file );
+        // May need to check for the length elsewhere ____-------_______-------____---_-_-_-_-_-_-----___--
+        // Can check if not read correctly by setting it to NULL first
+        char *park_name = readLine( park_file );
 
         // Should this be a pointer? I think so to malloc
         // do we need to initialize this?
@@ -124,22 +107,22 @@ void readParks( char const *filename, Catalog *catalog ) {
         int n = 0;
         int num_county = 0;
         // Print invalid file error if the line is missing a field.
-        if ( sscanf( *park_info, "%d%lf%lf%n", &cur_park->id, &cur_park->lat, &cur_park->lon, &n ) != 3 ) {
-            fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
+        if ( sscanf( park_info, "%d%lf%lf%n", &cur_park->id, &cur_park->lat, &cur_park->lon, &n ) != 3 ) {
+            fprintf( stderr, "%s%s", "Invalid park file: ", filename );
             exit( EXIT_FAILURE );
         }
         // Read in parks and identify how many there are
         // Could be done using a while loop with scanf, so while == 1 do this and ++ the county numCounties
-        while ( sscanf( *( park_info + n ), "%s%n", cur_park->counties[ num_county ], &n ) == 1 ) {
+        while ( sscanf( ( park_info + n ), "%s%n", cur_park->counties[ num_county ], &n ) == 1 ) {
             // Print invalid file error if a county name is too long.
             if ( cur_park->counties[ num_county ][ COUNTY_NAME_LENGTH ] != '\0' ) {
-                fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
+                fprintf( stderr, "%s%s", "Invalid park file: ", filename );
                 exit( EXIT_FAILURE );
             }
 
             // Print invalid file error if there are more counties than allowed.
             if ( num_county > 5 ) {
-                fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
+                fprintf( stderr, "%s%s", "Invalid park file: ", filename );
                 exit( EXIT_FAILURE );
             }
             num_county++;
@@ -147,15 +130,15 @@ void readParks( char const *filename, Catalog *catalog ) {
 
         // Print invalid file error if the park does not contain any counties.
         if ( num_county == 0 ) {
-            fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
+            fprintf( stderr, "%s%s", "Invalid park file: ", filename );
             exit( EXIT_FAILURE );
         }
 
-        sscanf( *park_name, "%s", cur_park->name );
+        sscanf( park_name, "%s", cur_park->name );
 
         // Print invalid file error is the park name is too long.
         if ( cur_park->name[ PARK_NAME_LENGTH ] == '\n' ) {
-            fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
+            fprintf( stderr, "%s%s", "Invalid park file: ", filename );
             exit( EXIT_FAILURE );
         }
 
@@ -173,21 +156,21 @@ void readParks( char const *filename, Catalog *catalog ) {
         free( park_name );
         free( cur_park );
 
-        char *park_info[ 28 + 60 + 1 ] = NULL;
-        *park_info = readline( park_file );
+        park_info = NULL;
+        park_info = readLine( park_file );
     }
 
     // Print invlaid file error is two parks have the same id.
     for ( int i = 0; i < catalog->count; i++ ) {
         for ( int j = i + 1; j < catalog->count; j++ ) {
             if ( catalog->list[ i ]->id == catalog->list[ j ]->id ) {
-                fprintf( stderr, "%s%s", "Invalid park file: ", *filename );
+                fprintf( stderr, "%s%s", "Invalid park file: ", filename );
                 exit( EXIT_FAILURE );
             }
         }
     }
 
-    close( park_file );
+    fclose( park_file );
 
 }
 
