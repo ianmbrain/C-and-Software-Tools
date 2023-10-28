@@ -92,13 +92,14 @@ void readParks( char const *filename, Catalog *catalog ) {
     // may need to change this to make it more like command in parks.c
     char *park_info = NULL;
     park_info = readLine( park_file );
-    //fprintf( stderr, "%s\n", park_info );
 
     while ( park_info != NULL ) {
         // char *park_name[ PARK_NAME_LENGTH + 1 ] = readLine( park_file );
         // May need to check for the length elsewhere ____-------_______-------____---_-_-_-_-_-_-----___--
         // Can check if not read correctly by setting it to NULL first
         char *park_name = readLine( park_file );
+        // fprintf( stderr, "%s\n", park_info );
+        // fprintf( stderr, "%s\n", park_name );
 
         // Should this be a pointer? I think so to malloc
         // do we need to initialize this?
@@ -116,11 +117,13 @@ void readParks( char const *filename, Catalog *catalog ) {
         // Could be done using a while loop with scanf, so while == 1 do this and ++ the county numCounties
 
         // n_decrease ensures that n does not decrease after reading the entire park_info string.
-        int n_decrease = n;
-        while ( n >= n_decrease ) {
-            n_decrease = n;
+        int add_n = 0;
+        while ( sscanf( ( park_info + n ), "%s%n", cur_park->counties[ num_county ], &add_n ) == 1 ) {
+            n += add_n;
 
-            sscanf( ( park_info + n ), "%s%n", cur_park->counties[ num_county ], &n );
+            //fprintf( stderr, "%d\n", n);
+            //fprintf( stderr, "%d\n", n );
+            
             // Print invalid file error if a county name is too long.
             if ( cur_park->counties[ num_county ][ COUNTY_NAME_LENGTH ] != '\0' ) {
                 fprintf( stderr, "%s%s", "Invalid park file: ", filename );
@@ -132,9 +135,10 @@ void readParks( char const *filename, Catalog *catalog ) {
                 fprintf( stderr, "%s%s", "Invalid park file: ", filename );
                 exit( EXIT_FAILURE );
             }
-            // fprintf( stderr, "%s\n", cur_park->counties[ num_county ] );
+            //fprintf( stderr, "%s\n", cur_park->counties[ num_county ] );
             num_county++;
         }
+        cur_park->numCounties = num_county;
 
         // Print invalid file error if the park does not contain any counties.
         if ( num_county == 0 ) {
@@ -142,7 +146,8 @@ void readParks( char const *filename, Catalog *catalog ) {
             exit( EXIT_FAILURE );
         }
 
-        sscanf( park_name, "%s", cur_park->name );
+        strcpy( cur_park->name, park_name );
+        //sscanf( park_name, "%s", cur_park->name );
 
         // Print invalid file error is the park name is too long.
         if ( cur_park->name[ PARK_NAME_LENGTH ] == '\n' ) {
@@ -197,25 +202,32 @@ void sortParks( Catalog *catalog, int (* compare) ( void const *va, void const *
 // the string, str, which is passed to the function, to decide which parks to print. 
 // This function will be used for the list parks, list names, and list county commands. The function pointer is described in the “Listing Parks” section below.
 void listParks( Catalog *catalog, bool (*test)( Park const *park, char const *str ), char const *str ) {
-    char park_counties[ MAX_PARK_COUNTIES * COUNTY_NAME_LENGTH + 1 ] = "";
+    //char park_counties[ MAX_PARK_COUNTIES * COUNTY_NAME_LENGTH + 1 ] = "";
 
     printf( "%s", "ID  Name                                          Lat      Lon Counties\n");
 
     for ( int i = 0; i < catalog->count; i++ ) {
         if ( test( catalog->list[ i ], str ) ) {
              // Convert parks counties into the parks separated by a comma.
-            strcat( park_counties, catalog->list[ i ]->counties[ 0 ] );
-            for ( int c = 1; c < catalog->list[ i ]->numCounties; i++ ) {
-                strcat( park_counties, "," );
-                strcat( park_counties, catalog->list[ i ]->counties[ c ] );
-            }
+            // strcat( park_counties, catalog->list[ i ]->counties[ 0 ] );
+            // for ( int c = 1; c < catalog->list[ i ]->numCounties; c++ ) {
+            //     strcat( park_counties, "," );
+            //     strcat( park_counties, catalog->list[ i ]->counties[ c ] );
+            // }
+            // fprintf( stderr, "%d\n", catalog->list[ i ]->numCounties );
 
             if ( test( catalog->list[ i ], str ) ) {
-                printf( "%3d ", catalog->list[ i ]->id );
-                printf( "%40s ", catalog->list[ i ]->name );
-                printf( "%-5.3lf", catalog->list[ i ]->lat );
-                printf( "%-5.3lf", catalog->list[ i ]->lon );
-                printf( "%s\n", park_counties);
+                printf( "%-3d ", catalog->list[ i ]->id );
+                printf( "%-42s ", catalog->list[ i ]->name );
+                printf( "%-7.3lf ", catalog->list[ i ]->lat );
+                printf( "%-7.3lf ", catalog->list[ i ]->lon );
+                //printf( "%s\n", park_counties);
+                for ( int c = 0; c < catalog->list[ i ]->numCounties; c++ ) {
+                    if ( c < catalog->list[ i ]->numCounties - 1 )
+                        printf( "%s,", catalog->list[ i ]->counties[ c ] );
+                    else
+                        printf( "%s\n", catalog->list[ i ]->counties[ c ] );
+                }
             }
         }
     }

@@ -85,31 +85,54 @@ int main( int argc, char *argv[] ) {
     for ( int i = 1; i < argc; i++ ) {
         readParks( argv[ i ], catalog );
     }
-    
 
-    printf( "%s", "cmd> " );
-
-    char *user_input;
+    char *user_input = NULL;
     char command[ CMD_LENGTH + 1 ] = "";
 
     while( true ) {
         int n = 0;
+        int add_n = 0;
         user_input = readLine( stdin );
+        //fprintf( stderr, "%s\n", user_input );
+
+        printf( "%s", "cmd> " );
+
+        if ( user_input == NULL || strcmp( user_input, "quit" ) == 0 ) {
+            for ( int i = 0; i < catalog->count; i++ ) {
+                free( catalog->list[ i ] );
+            }
+
+            if ( user_input != NULL )
+                printf( "%s\n", user_input );
+
+            free( user_input );
+            free( catalog->list );
+            free( catalog );
+            free( trip->list );
+            free( trip );
+
+            exit( EXIT_SUCCESS );
+        }
 
         // Read the command of the user input.
         sscanf( user_input, "%s%n", command, &n );
 
         if ( strcmp( command, "list" ) == 0 ) {
-            sscanf( user_input + n, "%s%n", command, &n );
+            sscanf( user_input + n, "%s%n", command, &add_n );
+            n += add_n;
+            //fprintf( stderr, "%s\n", command );
 
-            if ( strcmp( command, "parks") ) {
+            if ( strcmp( command, "parks") == 0 ) {
+                printf( "%s\n", user_input );
                 sortParks( catalog, idComp );
                 listParks( catalog, testTrue, NULL );
+                //fprintf( stderr, "%s\n", "HERE___----__----_-_" );
             }
-            else if ( strcmp( command, "county") ) {
-                char county[ COUNTY_NAME_LENGTH + 1 ];  
+            else if ( strcmp( command, "county") == 0 ) {
+                printf( "%s\n", user_input );
+                char county[ COUNTY_NAME_LENGTH + 1 ];
                 
-                if ( sscanf( user_input + n, "%s%n", county, &n ) != 1 ) {
+                if ( sscanf( user_input + n, "%s", county ) != 1 ) {
                     fprintf( stderr, "%s\n", "Invalid command" );
                     continue;
                 }
@@ -117,13 +140,11 @@ int main( int argc, char *argv[] ) {
                 sortParks( catalog, nameComp );
                 listParks( catalog, testCounty, county );
             }
-            else if ( strcmp( command, "names") ) {
+            else if ( strcmp( command, "names") == 0 ) {
+                printf( "%s\n", user_input );
                 sortParks( catalog, nameComp );
                 listParks( catalog, testTrue, NULL );
             }
-
-            // This should be done before hand _____------______-------______-------_______-----___
-            printf( "%s\n", user_input );
         }
         else if ( strcmp( command, "add" ) == 0 ) {
             int park_id = 0;
@@ -207,21 +228,15 @@ int main( int argc, char *argv[] ) {
                 printf( "%-8.1f\n", total_distance );
             }
         }
-        else if ( strcmp( command, "quit" ) == 0 ) {
-            for ( int i = 0; i < catalog->count; i++ ) {
-                free( catalog->list[ i ] );
-            }
-
-            free( catalog->list );
-            free( catalog );
-            free( trip->list );
-            free( trip );
-
-            exit( EXIT_SUCCESS );
-        }
         else {
             // Print this message and ask for another command if an invalid command is entered.
             printf( "%s", "Invalid command" );
         }
+
+        free( user_input );
+        user_input = NULL;
+        printf( "%s", "\n" );
+
+        //fprintf( stderr, "%s\n", "HERE___----__----_-_" );
     }
 }
