@@ -92,6 +92,7 @@ void readParks( char const *filename, Catalog *catalog ) {
     // may need to change this to make it more like command in parks.c
     char *park_info = NULL;
     park_info = readLine( park_file );
+    //fprintf( stderr, "%s\n", park_info );
 
     while ( park_info != NULL ) {
         // char *park_name[ PARK_NAME_LENGTH + 1 ] = readLine( park_file );
@@ -113,7 +114,13 @@ void readParks( char const *filename, Catalog *catalog ) {
         }
         // Read in parks and identify how many there are
         // Could be done using a while loop with scanf, so while == 1 do this and ++ the county numCounties
-        while ( sscanf( ( park_info + n ), "%s%n", cur_park->counties[ num_county ], &n ) == 1 ) {
+
+        // n_decrease ensures that n does not decrease after reading the entire park_info string.
+        int n_decrease = n;
+        while ( n >= n_decrease ) {
+            n_decrease = n;
+
+            sscanf( ( park_info + n ), "%s%n", cur_park->counties[ num_county ], &n );
             // Print invalid file error if a county name is too long.
             if ( cur_park->counties[ num_county ][ COUNTY_NAME_LENGTH ] != '\0' ) {
                 fprintf( stderr, "%s%s", "Invalid park file: ", filename );
@@ -125,6 +132,7 @@ void readParks( char const *filename, Catalog *catalog ) {
                 fprintf( stderr, "%s%s", "Invalid park file: ", filename );
                 exit( EXIT_FAILURE );
             }
+            // fprintf( stderr, "%s\n", cur_park->counties[ num_county ] );
             num_county++;
         }
 
@@ -154,7 +162,7 @@ void readParks( char const *filename, Catalog *catalog ) {
         // Free memory
         free( park_info );
         free( park_name );
-        free( cur_park );
+        //free( cur_park );
 
         park_info = NULL;
         park_info = readLine( park_file );

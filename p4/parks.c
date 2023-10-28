@@ -81,8 +81,8 @@ int main( int argc, char *argv[] ) {
         exit( EXIT_FAILURE );
     }
 
-    // Read parks from inputted files into the catalog.
-    for ( int i = 0; i < argc; i++ ) {
+    // Read parks from inputted files into the catalog. Starts at one as the first argument is the executable.
+    for ( int i = 1; i < argc; i++ ) {
         readParks( argv[ i ], catalog );
     }
     
@@ -216,6 +216,8 @@ int main( int argc, char *argv[] ) {
             free( catalog );
             free( trip->list );
             free( trip );
+
+            exit( EXIT_SUCCESS );
         }
         else {
             // Print this message and ask for another command if an invalid command is entered.
