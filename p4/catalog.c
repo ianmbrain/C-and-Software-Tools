@@ -125,7 +125,7 @@ void readParks( char const *filename, Catalog *catalog ) {
             //fprintf( stderr, "%d\n", n );
             
             // Print invalid file error if a county name is too long.
-            if ( cur_park->counties[ num_county ][ COUNTY_NAME_LENGTH ] != '\0' ) {
+            if ( cur_park->counties[ num_county ][ strlen( cur_park->counties[ num_county ] ) ] != '\0' ) {
                 fprintf( stderr, "%s%s", "Invalid park file: ", filename );
                 exit( EXIT_FAILURE );
             }

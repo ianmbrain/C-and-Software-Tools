@@ -15,13 +15,15 @@
 
 static int idComp( void const *va, void const *vb )
 {
-    Park const *p1 = va;
-    Park const *p2 = vb;
+    const Park *p1 = va;
+    const Park *p2 = vb;
+    // fprintf( stderr, "%d\n", p1->id );
+    // fprintf( stderr, "%d\n", p2->id );
 
     if ( p1->id < p2->id ) {
         return -1;
     }
-    else if ( p1->id < p2->id ) {
+    else if ( p1->id > p2->id ) {
         return 1;
     }
     else {
@@ -125,6 +127,10 @@ int main( int argc, char *argv[] ) {
             if ( strcmp( command, "parks") == 0 ) {
                 printf( "%s\n", user_input );
                 sortParks( catalog, idComp );
+                // fprintf( stderr, ""[])
+                // for ( int i = 0; i < catalog->count; i++ ) {
+                //     fprintf( stderr, "%d\n", catalog->list[ i ]->id );
+                // }
                 listParks( catalog, testTrue, NULL );
                 //fprintf( stderr, "%s\n", "HERE___----__----_-_" );
             }
