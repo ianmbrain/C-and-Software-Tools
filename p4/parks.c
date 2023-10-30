@@ -112,16 +112,15 @@ int main( int argc, char *argv[] ) {
         printf( "%s", "cmd> " );
 
         if ( user_input == NULL || strcmp( user_input, "quit" ) == 0 ) {
-            for ( int i = 0; i < catalog->count; i++ ) {
-                free( catalog->list[ i ] );
-            }
+            // for ( int i = 0; i < catalog->count; i++ ) {
+            //     free( catalog->list[ i ] );
+            // }
 
             if ( user_input != NULL )
                 printf( "%s\n", user_input );
 
             free( user_input );
-            free( catalog->list );
-            free( catalog );
+            freeCatalog( catalog );
             free( trip->list );
             free( trip );
 

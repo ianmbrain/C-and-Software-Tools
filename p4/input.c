@@ -1,7 +1,8 @@
 /**
- * @file input.h
+ * @file input.c
  * @author Ian M Brain (imbrain)
- * This file provides functionality to read in a 
+ * This file provides functionality to read in a line of text from a file and return a pointer to that string.
+ * This functionality is used to read in park lines from in catalog.c and to read in user commands in parks.c.
   */
 
 #include "input.h"
