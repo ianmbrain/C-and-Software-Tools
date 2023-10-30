@@ -17,10 +17,10 @@
 
 // CITE THIS_______---------__________----------_________----------__________-----__--
 double distance( Park const *a, Park const *b ) {
-    int a_lon = a->lon;
-    int a_lat = a->lat;
-    int b_lon = b->lon;
-    int b_lat = b->lon;
+    double a_lon = a->lon;
+    double a_lat = a->lat;
+    double b_lon = b->lon;
+    double b_lat = b->lat;
 
     // OK, pretend the center of the earth is at the origin, turn these
     // two locations into vectors pointing from the origin.
@@ -74,6 +74,7 @@ void readParks( char const *filename, Catalog *catalog ) {
     // Print file open error and exit the program if the park file cannot be opened.
     if ( !park_file ) {
         fprintf( stderr, "%s%s", "Can't open file: ", filename );
+        fprintf( stderr, "%s", "\n" );
         exit( EXIT_FAILURE );
     }
 
@@ -97,20 +98,24 @@ void readParks( char const *filename, Catalog *catalog ) {
         // char *park_name[ PARK_NAME_LENGTH + 1 ] = readLine( park_file );
         // May need to check for the length elsewhere ____-------_______-------____---_-_-_-_-_-_-----___--
         // Can check if not read correctly by setting it to NULL first
-        char *park_name = readLine( park_file );
+        char *park_name = NULL;
+        park_name = readLine( park_file );
         // fprintf( stderr, "%s\n", park_info );
         // fprintf( stderr, "%s\n", park_name );
 
         // Should this be a pointer? I think so to malloc
         // do we need to initialize this?
-        Park *cur_park = (Park *) malloc( sizeof( Park ) );
+        Park *cur_park = NULL;
+        cur_park = (Park *) malloc( sizeof( Park ) );
 
         // Set each of the values of the park based on the file string.
         int n = 0;
         int num_county = 0;
         // Print invalid file error if the line is missing a field.
         if ( sscanf( park_info, "%d%lf%lf%n", &cur_park->id, &cur_park->lat, &cur_park->lon, &n ) != 3 ) {
-            fprintf( stderr, "%s%s", "Invalid park file: ", filename );
+            fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
+            free( park_info );
+            free( park_name );
             exit( EXIT_FAILURE );
         }
         // Read in parks and identify how many there are
@@ -126,13 +131,17 @@ void readParks( char const *filename, Catalog *catalog ) {
             
             // Print invalid file error if a county name is too long.
             if ( cur_park->counties[ num_county ][ strlen( cur_park->counties[ num_county ] ) ] != '\0' ) {
-                fprintf( stderr, "%s%s", "Invalid park file: ", filename );
+                fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
+                free( park_info );
+                free( park_name );
                 exit( EXIT_FAILURE );
             }
 
             // Print invalid file error if there are more counties than allowed.
             if ( num_county > 5 ) {
-                fprintf( stderr, "%s%s", "Invalid park file: ", filename );
+                fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
+                free( park_info );
+                free( park_name );
                 exit( EXIT_FAILURE );
             }
             //fprintf( stderr, "%s\n", cur_park->counties[ num_county ] );
@@ -142,16 +151,29 @@ void readParks( char const *filename, Catalog *catalog ) {
 
         // Print invalid file error if the park does not contain any counties.
         if ( num_county == 0 ) {
-            fprintf( stderr, "%s%s", "Invalid park file: ", filename );
+            fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
+            free( park_info );
+            free( park_name );
             exit( EXIT_FAILURE );
         }
 
+        if ( num_county > MAX_PARK_COUNTIES ) {
+            fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
+            free( park_info );
+            free( park_name );
+            exit( EXIT_FAILURE );
+        }
+
+        //fprintf( stderr, "%s\n", park_name);
         strcpy( cur_park->name, park_name );
         //sscanf( park_name, "%s", cur_park->name );
 
         // Print invalid file error is the park name is too long.
-        if ( cur_park->name[ PARK_NAME_LENGTH ] == '\n' ) {
-            fprintf( stderr, "%s%s", "Invalid park file: ", filename );
+        //fprintf( stderr, "%ld\n", strlen(cur_park->name ));
+        if ( strlen( cur_park->name ) > PARK_NAME_LENGTH ) {// cur_park->name[ strlen( park_name ) ] == '\n' || cur_park->name[ strlen( park_name ) ] == ' ' ) {
+            fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
+            free( park_info );
+            free( park_name );
             exit( EXIT_FAILURE );
         }
 
@@ -177,7 +199,7 @@ void readParks( char const *filename, Catalog *catalog ) {
     for ( int i = 0; i < catalog->count; i++ ) {
         for ( int j = i + 1; j < catalog->count; j++ ) {
             if ( catalog->list[ i ]->id == catalog->list[ j ]->id ) {
-                fprintf( stderr, "%s%s", "Invalid park file: ", filename );
+                fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
                 exit( EXIT_FAILURE );
             }
         }
@@ -190,12 +212,7 @@ void readParks( char const *filename, Catalog *catalog ) {
 // This function sorts the parks in the given catalog. 
 // It uses the qsort() function together with the function pointer parameter to order the parks. The function pointer is described in the “Sorting Parks” section below.
 void sortParks( Catalog *catalog, int (* compare) ( void const *va, void const *vb ) ) {
-    // Convert void pointers to the right type
-    // Then use them to access fields in the park struct and decide how they compare
-
-    // Should sizeof be park * pointer?
-    // Is list the first item? or should list be dereferenced to the first pointer _____-----_____-----______----____-----
-    qsort( catalog->list, catalog->count, sizeof( catalog->list[ 0 ] ), compare );
+    qsort( catalog->list, catalog->count, sizeof( Park * ), compare );
 }
 
 // This function prints all or some of the parks. It uses the function pointer parameter together with 
@@ -218,9 +235,9 @@ void listParks( Catalog *catalog, bool (*test)( Park const *park, char const *st
 
             if ( test( catalog->list[ i ], str ) ) {
                 printf( "%-3d ", catalog->list[ i ]->id );
-                printf( "%-42s ", catalog->list[ i ]->name );
-                printf( "%-7.3lf ", catalog->list[ i ]->lat );
-                printf( "%-7.3lf ", catalog->list[ i ]->lon );
+                printf( "%-40s ", catalog->list[ i ]->name );
+                printf( "%8.3lf ", catalog->list[ i ]->lat );
+                printf( "%8.3lf ", catalog->list[ i ]->lon );
                 //printf( "%s\n", park_counties);
                 for ( int c = 0; c < catalog->list[ i ]->numCounties; c++ ) {
                     if ( c < catalog->list[ i ]->numCounties - 1 )

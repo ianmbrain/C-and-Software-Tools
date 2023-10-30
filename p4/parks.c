@@ -15,15 +15,20 @@
 
 static int idComp( void const *va, void const *vb )
 {
-    const Park *p1 = va;
-    const Park *p2 = vb;
-    // fprintf( stderr, "%d\n", p1->id );
-    // fprintf( stderr, "%d\n", p2->id );
+    // const Park p1 = *(Park const *) va;
+    // const Park p2 = *(Park const *) vb;
+    Park * const *p1 = va;
+    Park * const *p2 = vb;
+    // const Park p1 = **(( Park * const * ) va);
+    // const Park p2 = **(( Park * const * ) va);
+    //fprintf( stderr, "%p   ", p1 );
+    //fprintf( stderr, "%d\n", (*p1)->id );
+    // fprintf( stderr, "%d\n", p2.id );
 
-    if ( p1->id < p2->id ) {
+    if ( (*( *p1 )).id < (*( *p2 )).id ) {
         return -1;
     }
-    else if ( p1->id > p2->id ) {
+    else if ( (*( *p1 )).id > (*( *p2 )).id ) {
         return 1;
     }
     else {
@@ -33,15 +38,19 @@ static int idComp( void const *va, void const *vb )
 
 static int nameComp( void const *va, void const *vb )
 {
-    Park const *p1 = va;
-    Park const *p2 = vb;
+    Park * const *p1 = va;
+    Park * const *p2 = vb;
 
-    int str_cmp = strcmp( p1->name, p2->name );
+    int str_cmp = strcmp( (*( *p1 )).name, (*( *p2 )).name );
+    //fprintf( stderr, "%s\n", p1->name);
     if ( str_cmp == 0 ) {
         return idComp( va, vb );
     }
+    else if ( str_cmp < 0 ) {
+        return -1;
+    }
     else {
-        return str_cmp;
+        return 1;
     }
 }
 
@@ -78,8 +87,10 @@ int main( int argc, char *argv[] ) {
 
     // Create a new catalog.
     Catalog *catalog = makeCatalog();
-    if ( argc == 0 ) {
-        fprintf( stderr, "%s", "usage: parks <park-file>*" );
+
+    // Throw and error if the input does not contain any files to read.
+    if ( argc == 1 ) {
+        fprintf( stderr, "%s\n", "usage: parks <park-file>*" );
         exit( EXIT_FAILURE );
     }
 
@@ -94,6 +105,7 @@ int main( int argc, char *argv[] ) {
     while( true ) {
         int n = 0;
         int add_n = 0;
+        user_input = "";
         user_input = readLine( stdin );
         //fprintf( stderr, "%s\n", user_input );
 
@@ -173,7 +185,8 @@ int main( int argc, char *argv[] ) {
 
             // Thow invalid command error if the id does not match an existing park id.
             if ( add_park == NULL ) {
-                fprintf( stderr, "%s\n", "Invalid command" );
+                printf( "%s\n", user_input );
+                printf( "%s\n\n", "Invalid command" );
                 continue;
             }
 
@@ -192,7 +205,7 @@ int main( int argc, char *argv[] ) {
             int park_id = -1;
             sscanf( user_input + n, "%d%n", &park_id, &n );
             // Park to remove.
-            Park *remove_park = NULL;
+            bool remove_park = false;
 
             // Throw invalid command error if the id is not an int.
             // What if this is a double??? ___---___----_____------______-------_____-------______------______------____-
@@ -204,17 +217,20 @@ int main( int argc, char *argv[] ) {
             // Search for the park to remove from the trip.
             for ( int i = 0; i < trip->count; i++ ) {
                 if ( trip->list[ i ]->id == park_id ) {
+                    remove_park = true;
                     for ( int j = i; j < trip -> count - 1; j++ ) {
                         trip->list[ j ] = trip->list[ j + 1 ];
                     }
 
                     trip->count--;
+                    break;
                 }
             }
 
             // Thow invalid command error if the id does not match an existing park id.
-            if ( remove_park == NULL ) {
-                fprintf( stderr, "%s\n", "Invalid command" );
+            if ( remove_park == false ) {
+                printf( "%s\n", user_input );
+                printf( "%s\n\n", "Invalid command" );
                 continue;
             }
 
@@ -222,21 +238,25 @@ int main( int argc, char *argv[] ) {
         }
         else if ( strcmp( command, "trip" ) == 0 ) {
             double total_distance = 0;
+            printf( "%s\n", user_input );
 
             printf( "%s\n", "ID  Name                                     Distance" );
 
             for ( int i = 0; i < trip->count; i++ ) {
-                printf( "%d %40s ", trip->list[ i ]->id, trip->list[ i ]->name );
+                printf( "%-3d ", trip->list[ i ]->id );
+                printf( "%-40s ", trip->list[ i ]->name );
+
 
                 if ( i > 0 ) {
-                    total_distance += distance( trip->list[ i - 1 ], trip->list[ i ] );
+                    total_distance += distance( trip->list[ i ], trip->list[ i - 1 ] );
                 }
-                printf( "%-8.1f\n", total_distance );
+                printf( "%8.1f\n", total_distance );
             }
         }
         else {
             // Print this message and ask for another command if an invalid command is entered.
-            printf( "%s", "Invalid command" );
+            printf( "%s\n", user_input );
+            printf( "%s\n", "Invalid command" );
         }
 
         free( user_input );
