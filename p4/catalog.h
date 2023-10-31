@@ -8,7 +8,6 @@
  * This functionality is used in parks.c to provide functionality related to parks and the catalog.
   */
 
-
 #include "input.h"
 #include <stdio.h>
 #include <stdlib.h>

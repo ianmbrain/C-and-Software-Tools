@@ -99,8 +99,7 @@ void readParks( char const *filename, Catalog *catalog ) {
 
     // Print file open error and exit the program if the park file cannot be opened.
     if ( !park_file ) {
-        fprintf( stderr, "%s%s", "Can't open file: ", filename );
-        fprintf( stderr, "%s", "\n" );
+        fprintf( stderr, "%s%s\n", "Can't open file: ", filename );
         exit( EXIT_FAILURE );
     }
 
@@ -212,7 +211,7 @@ void readParks( char const *filename, Catalog *catalog ) {
 }
 
 /**
- * Sorts the parks in the catalog based on a comparison function.
+ * Sorts the parks in the catalog based on a comparison function defined in parks.c.
  * Utilizes qsort() to sort each of the parks in the catalog.
  * @param catalog catalog containing the list of parks to sort.
  * @param compare function specifying how the parks should be sorted.
