@@ -82,7 +82,8 @@ static int nameComp( void const *va, void const *vb )
 */
 static bool testCounty( Park const *park, char const *str ) {
     // Number of counties associated with the park.
-    int num_counties = sizeof( park->counties ) / sizeof( park-> counties[ 0 ] );
+    int num_counties = 0;
+    num_counties = sizeof( park->counties ) / sizeof( park-> counties[ 0 ] );
 
     for ( int i = 0; i < num_counties; i++ ) {
         if ( strcmp( park->counties[ i ], str ) == 0 ) {
@@ -126,17 +127,13 @@ typedef struct TripStruct {
  * @return program exit status.
 */
 int main( int argc, char *argv[] ) {
-    // Allocate memory for the trip and the array of park pointers stored in the list.
-    Trip *trip = ( Trip * ) malloc( sizeof( Trip ) );
-    trip->list = (Park **) malloc( INITIAL_TRIP_SIZE * sizeof( Park * ) );
-    trip->count = 0;
-    trip->capacity = INITIAL_TRIP_SIZE;
-
     // Create and allocate a new catalog.
     Catalog *catalog = makeCatalog();
 
     // Throw and error if the input does not contain any files to read.
     if ( argc == 1 ) {
+        freeCatalog( catalog );
+
         fprintf( stderr, "%s\n", "usage: parks <park-file>*" );
         exit( EXIT_FAILURE );
     }
@@ -145,6 +142,12 @@ int main( int argc, char *argv[] ) {
     for ( int i = 1; i < argc; i++ ) {
         readParks( argv[ i ], catalog );
     }
+
+    // Allocate memory for the trip and the array of park pointers stored in the list.
+    Trip *trip = ( Trip * ) malloc( sizeof( Trip ) );
+    trip->list = (Park **) malloc( INITIAL_TRIP_SIZE * sizeof( Park * ) );
+    trip->count = 0;
+    trip->capacity = INITIAL_TRIP_SIZE;
 
     // Input of the user read fro mthe input file.
     char *user_input = NULL;
@@ -201,12 +204,14 @@ int main( int argc, char *argv[] ) {
                 // Print Invalid command if the user does not specify a county.
                 if ( sscanf( user_input + n, "%s", county ) != 1 ) {
                     fprintf( stderr, "%s\n", "Invalid command" );
+                    free( user_input );
                     continue;
                 }
 
                 // Print Invalid command if the length of the county name is too long.
                 else if ( county[ COUNTY_NAME_LENGTH ] != '\0' ) {
                     fprintf( stderr, "%s\n", "Invalid command" );
+                    free( user_input );
                     continue;
                 }
 
@@ -234,6 +239,7 @@ int main( int argc, char *argv[] ) {
             // Print Invalid command if the id is not an int.
             if ( park_id == -1 ) {
                 fprintf( stderr, "%s\n", "Invalid command" );
+                free( user_input );
                 continue;
             }
 
@@ -247,6 +253,7 @@ int main( int argc, char *argv[] ) {
             // Print Invalid command if the id does not match an existing park id.
             if ( add_park == NULL ) {
                 printf( "%s\n", user_input );
+                free( user_input );
                 printf( "%s\n\n", "Invalid command" );
                 continue;
             }
@@ -274,6 +281,7 @@ int main( int argc, char *argv[] ) {
             // Print Invalid command if the id is not an integer
             if ( park_id == -1 ) {
                 fprintf( stderr, "%s\n", "Invalid command" );
+                free( user_input );
                 continue;
             }
 
@@ -294,6 +302,7 @@ int main( int argc, char *argv[] ) {
             if ( remove_park == false ) {
                 printf( "%s\n", user_input );
                 printf( "%s\n\n", "Invalid command" );
+                free( user_input );
                 continue;
             }
 

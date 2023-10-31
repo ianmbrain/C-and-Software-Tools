@@ -100,6 +100,8 @@ void readParks( char const *filename, Catalog *catalog ) {
     // Print file open error and exit the program if the park file cannot be opened.
     if ( !park_file ) {
         fprintf( stderr, "%s%s\n", "Can't open file: ", filename );
+        freeCatalog( catalog );
+
         exit( EXIT_FAILURE );
     }
 
@@ -114,8 +116,14 @@ void readParks( char const *filename, Catalog *catalog ) {
         park_name = readLine( park_file );
 
         // Allocates memory for and sets a pointer to a new park.
-        Park *cur_park = NULL;
-        cur_park = (Park *) malloc( sizeof( Park ) );
+        Park *cur_park = ( Park * ) malloc( sizeof( Park ) );
+        // Initialize park fields that are strings.
+        strcpy( cur_park->counties[ 0 ], "" );
+        strcpy( cur_park->counties[ 1 ], "" );
+        strcpy( cur_park->counties[ 2 ], "" );
+        strcpy( cur_park->counties[ 3 ], "" );
+        strcpy( cur_park->counties[ 4 ], "" );
+        strcpy( cur_park->name, "" );
 
         // Tracks the where in a string has been read to.
         int n = 0;
@@ -127,6 +135,9 @@ void readParks( char const *filename, Catalog *catalog ) {
             fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
             free( park_info );
             free( park_name );
+            free( cur_park );
+            freeCatalog( catalog );
+            fclose( park_file );
 
             exit( EXIT_FAILURE );
         }
@@ -144,16 +155,39 @@ void readParks( char const *filename, Catalog *catalog ) {
                 fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
                 free( park_info );
                 free( park_name );
+                free( cur_park );
+                freeCatalog( catalog );
+                fclose( park_file );
+
                 exit( EXIT_FAILURE );
             }
 
             num_county++;
+            char county_overflow[ COUNTY_NAME_LENGTH ] = "";
+
+            // Print invalid file error if there are more counties than allowed.
+            if ( num_county == MAX_PARK_COUNTIES ) {
+                if ( sscanf( ( park_info + n ), "%s%n", county_overflow, &add_n ) == 1) {
+                    fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
+                    free( park_info );
+                    free( park_name );
+                    free( cur_park );
+                    freeCatalog( catalog );
+                    fclose( park_file );
+
+                    exit( EXIT_FAILURE );
+                }
+            }
 
             // Print invalid file error if there are more counties than allowed.
             if ( num_county > MAX_PARK_COUNTIES ) {
                 fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
                 free( park_info );
                 free( park_name );
+                free( cur_park );
+                freeCatalog( catalog );
+                fclose( park_file );
+
                 exit( EXIT_FAILURE );
             }
         }
@@ -165,6 +199,10 @@ void readParks( char const *filename, Catalog *catalog ) {
             fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
             free( park_info );
             free( park_name );
+            free( cur_park );
+            freeCatalog( catalog );
+            fclose( park_file );
+
             exit( EXIT_FAILURE );
         }
 
@@ -176,6 +214,10 @@ void readParks( char const *filename, Catalog *catalog ) {
             fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
             free( park_info );
             free( park_name );
+            free( cur_park );
+            freeCatalog( catalog );
+            fclose( park_file );
+            
             exit( EXIT_FAILURE );
         }
 
@@ -201,6 +243,9 @@ void readParks( char const *filename, Catalog *catalog ) {
         for ( int j = i + 1; j < catalog->count; j++ ) {
             if ( catalog->list[ i ]->id == catalog->list[ j ]->id ) {
                 fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
+                freeCatalog( catalog );
+                fclose( park_file );
+
                 exit( EXIT_FAILURE );
             }
         }
