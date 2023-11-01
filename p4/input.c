@@ -17,12 +17,6 @@
 /** Initial length of the line read in. Starts at one to ensure that there is space to set the null termination character. */
 #define INITIAL_LINE_LENGTH 1
 
-/**
- * Reads a line of text from the specified file.
- * Return null if the end of file is reached and a pointer to a string containing the line otherwise.
- * @param fp file to read the line from.
- * @return pointer to a string that stores the line of text or null if end of file is reached.
-*/
 char *readLine( FILE *fp ) {
     // Capacity of the char array
     int capacity = INITIAL_LINE_CAPACITY;
