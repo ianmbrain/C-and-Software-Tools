@@ -45,7 +45,7 @@ char *readLine( FILE *fp ) {
 
         // Resize the array when the length reaches capacity.
         if ( len >= capacity ) {
-            capacity *= 2;
+            capacity *= DOUBLE_CAPACITY;
             text_line = ( char * ) realloc( text_line, capacity * sizeof( char ) );
         }
 

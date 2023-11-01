@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/** Magnitude to increase capacity by when resizing an array. */
+#define DOUBLE_CAPACITY 2
+
 /**
  * Reads a line of text from the specified file.
  * Return null if the end of file is reached and a pointer to a string containing the line otherwise.

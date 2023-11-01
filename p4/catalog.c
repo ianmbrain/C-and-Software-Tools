@@ -21,6 +21,9 @@
 /** Radius of the earth in miles. This value is based on the radius from exercise 14. */
 #define RADIUS_EARTH 3959
 
+/** Return value of sscanf when reading id, longitude, and latitude. */
+#define READ_LINE_VALUES 3
+
 /** Multiplier for converting degrees to radians. This value is based on the value from exercise 14. */
 #define DEG_TO_RAD ( M_PI / 180 )
 
@@ -101,7 +104,7 @@ void readParks( char const *filename, Catalog *catalog ) {
         int num_county = 0;
 
         // Print invalid file error if the line is missing a field and free memory used for the catalog and park info and name.
-        if ( sscanf( park_info, "%d%lf%lf%n", &cur_park->id, &cur_park->lat, &cur_park->lon, &n ) != 3 ) {
+        if ( sscanf( park_info, "%d%lf%lf%n", &cur_park->id, &cur_park->lat, &cur_park->lon, &n ) != READ_LINE_VALUES ) {
             fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
             free( park_info );
             free( park_name );
@@ -193,7 +196,7 @@ void readParks( char const *filename, Catalog *catalog ) {
 
         // Reference the park pointer in the catalog list of parks. Memory for the park is freed at the end of the program. Resize the park list if the count of parks reaches the capacity.
         if ( catalog->count >= catalog->capacity ) {
-            catalog->capacity *= 2;
+            catalog->capacity *= DOUBLE_CAPACITY;
             catalog->list = (Park **) realloc( catalog->list, catalog->capacity * sizeof( Park * ) );
         }
         catalog->list[ catalog->count ] = cur_park;

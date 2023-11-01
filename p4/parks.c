@@ -260,7 +260,7 @@ int main( int argc, char *argv[] ) {
 
             // Add the park to the trip and resize the trip array when capacity is reached.
             if ( trip->count >= trip->capacity ) {
-                trip->capacity *= 2;
+                trip->capacity *= DOUBLE_CAPACITY;
                 trip->list = (Park **) realloc( trip->list, trip->capacity * sizeof( Park * ) );
             }
 
