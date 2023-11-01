@@ -113,7 +113,7 @@ static bool testTrue( Park const *park, char const *str ) {
 typedef struct TripStruct {
     Park **list;
     int count;
-    int capacity; 
+    int capacity;
 } Trip;
 
 /**
@@ -269,10 +269,10 @@ int main( int argc, char *argv[] ) {
 
             printf( "%s\n", user_input );
         }
-        
+
         // Remove the specified park from the trip if the command is remove.
         else if ( strcmp( command, "remove" ) == 0 ) {
-            // Id of the park to remove
+            // Id of the park to remove.
             int park_id = -1;
             sscanf( user_input + n, "%d%n", &park_id, &n );
             // Boolean specifying if the park id matches a park in the trip
@@ -308,7 +308,7 @@ int main( int argc, char *argv[] ) {
 
             printf( "%s\n", user_input );
         }
-        
+
         // Print out the parks in the trip specifying their id, name, and cumulative distance of the trip.
         else if ( strcmp( command, "trip" ) == 0 ) {
             // Total distance of the trip updated with each park
@@ -328,7 +328,7 @@ int main( int argc, char *argv[] ) {
             }
         }
         
-        // Print Invalid command if the user enters and invalid command
+        // Print Invalid command if the user enters and invalid command.
         else {
             printf( "%s\n", user_input );
             printf( "%s\n", "Invalid command" );

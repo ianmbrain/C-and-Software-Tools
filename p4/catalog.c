@@ -94,7 +94,7 @@ void freeCatalog( Catalog *catalog ) {
  * @param catalog catalog to store the parks within.
 */
 void readParks( char const *filename, Catalog *catalog ) {
-    // Opens the file with the specified file name
+    // Opens the file with the specified file name.
     FILE *park_file = fopen( filename, "r" );
 
     // Print file open error and exit the program if the park file cannot be opened.
@@ -109,7 +109,7 @@ void readParks( char const *filename, Catalog *catalog ) {
     char *park_info = NULL;
     park_info = readLine( park_file );
 
-    // Continue to read in parks from the park file if there are new lines to read
+    // Continue to read in parks from the park file if there are new lines to read.
     while ( park_info != NULL ) {
         // Read line from the park file containing the name of the park.
         char *park_name = NULL;
@@ -118,11 +118,9 @@ void readParks( char const *filename, Catalog *catalog ) {
         // Allocates memory for and sets a pointer to a new park.
         Park *cur_park = ( Park * ) malloc( sizeof( Park ) );
         // Initialize park fields that are strings.
-        strcpy( cur_park->counties[ 0 ], "" );
-        strcpy( cur_park->counties[ 1 ], "" );
-        strcpy( cur_park->counties[ 2 ], "" );
-        strcpy( cur_park->counties[ 3 ], "" );
-        strcpy( cur_park->counties[ 4 ], "" );
+        for ( int i = 0; i < MAX_PARK_COUNTIES; i++ ) {
+            strcpy( cur_park->counties[ i ], "" );
+        }
         strcpy( cur_park->name, "" );
 
         // Tracks the where in a string has been read to.
@@ -149,7 +147,7 @@ void readParks( char const *filename, Catalog *catalog ) {
         while ( sscanf( ( park_info + n ), "%s%n", cur_park->counties[ num_county ], &add_n ) == 1 ) {
             // Increment n by the number of characters read in the string.
             n += add_n;
-            
+
             // Print invalid file error if a county name is too long.
             if ( cur_park->counties[ num_county ][ strlen( cur_park->counties[ num_county ] ) ] != '\0' ) {
                 fprintf( stderr, "%s%s\n", "Invalid park file: ", filename );
@@ -270,12 +268,12 @@ void sortParks( Catalog *catalog, int (* compare) ( void const *va, void const *
  * Prints the park id, name, latitude, longitude, and counties.
  * Only prints out the parks specified by the test function parameter.
  * If printing out parks based on their counties, the str parameter will be the county.
- * @param catalog catalog containing the parks to be printed. 
+ * @param catalog catalog containing the parks to be printed.
  * @param test function that determins what parks to be printed.
  * @param str string to compare each park to thereby determining if it should be printed.
 */
 void listParks( Catalog *catalog, bool (*test)( Park const *park, char const *str ), char const *str ) {
-    // Header to print before the parks specifying what each park field represents
+    // Header to print before the parks specifying what each park field represents.
     printf( "%s", "ID  Name                                          Lat      Lon Counties\n");
 
     for ( int i = 0; i < catalog->count; i++ ) {

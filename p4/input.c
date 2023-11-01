@@ -11,6 +11,12 @@
 #include <stdbool.h>
 #include <string.h>
 
+/** Initial capacity of the line read in. */
+#define INITIAL_LINE_CAPACITY 3
+
+/** Initial length of the line read in. Starts at one to ensure that there is space to set the null termination character. */
+#define INITIAL_LINE_LENGTH 1
+
 /**
  * Reads a line of text from the specified file.
  * Return null if the end of file is reached and a pointer to a string containing the line otherwise.
@@ -19,9 +25,9 @@
 */
 char *readLine( FILE *fp ) {
     // Capacity of the char array
-    int capacity = 3;
+    int capacity = INITIAL_LINE_CAPACITY;
     // Length of the string. Starts at one to ensure that there is space to set the null termination character.
-    int len = 1;
+    int len = INITIAL_LINE_LENGTH;
     // Char pointer that holds the string.
     char *text_line = ( char * ) malloc( capacity * sizeof( char ) );
     // Current character read in from the line.

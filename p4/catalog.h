@@ -20,7 +20,7 @@
 #define COUNTY_NAME_LENGTH 12
 
 /** Max number of counties a park can be associated with. */
-#define MAX_PARK_COUNTIES 5 
+#define MAX_PARK_COUNTIES 5
 
 /**
  * Struct defining a park.
