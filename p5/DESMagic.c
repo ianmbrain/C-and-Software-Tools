@@ -8,6 +8,11 @@
     Most of these values are documented in the header file.
 */
 
+// The DES algorithm uses a lot of magic numbers. These determine how bits are permuted, 
+//how far bits should be shifted and how blocks of six bits should be mapped to 4-bit values. 
+//The DESMagic component contains these carefully chosen values. By putting all these in a separate 
+//implementation file, you should be able to avoid using magic numbers in most of the rest of your code.
+
 #include "DESMagic.h"
 
 int leftSubkeyPerm[ SUBKEY_HALF_BITS ] = {
