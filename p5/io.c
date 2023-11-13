@@ -3,6 +3,7 @@
 
 #include "io.h"
 #include "DES.h"
+#include <stdio.h>
 
 void readBlock( FILE *fp, DESBlock *block ) {
 

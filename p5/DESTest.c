@@ -38,7 +38,7 @@ int main()
   // down past the blocks of code below.  That will enable tests of
   // various functions you're expected to implement.
 
-#ifdef DISABLE_TESTS
+
   
   ////////////////////////////////////////////////////////////////////////
   // Test prepareKey()
@@ -104,7 +104,7 @@ int main()
     putBit( data, 32, 1 );
     TestCase( data[ 3 ] == 0xA9 );
   }
-  
+
   ////////////////////////////////////////////////////////////////////////
   // Test permute()
 
@@ -160,6 +160,7 @@ int main()
     TestCase( cmpBytes( K[16], (byte []){0xCB, 0x3D, 0x8B, 0x0E, 0x17, 0xF5 }, 6 ) );
   }
 
+#ifdef DISABLE_TESTS
   ////////////////////////////////////////////////////////////////////////
   // Test sBox()
 
