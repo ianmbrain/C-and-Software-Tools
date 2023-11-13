@@ -490,7 +490,77 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
 }
 
 void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx ) {
-    
+    // B is one of the 6 byte/48 bit elements of K.
+    // First get the index to start in input at using idx * 6 + 1 formula
+        // get the 6 bits
+        // Get the row index from first and last bit
+        // get column index
+        // the result from the s table is transformed to binary and put in output
+        // What table of sbox is used depends on idx ( at the end)
+    // ___-_-_--_-_--____---____--___- Note that idx counts from zero for B1, one for B2
+
+    int index = idx * 6;
+    byte b1[ 6 ] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+    for ( int i = 1; i < 7; i++ ) {
+        index += 1;
+
+        // Which byte of input the index is in.
+        int input_byte = ( index - 1 ) / 8;
+
+        // Which bit of the input byte the index is.
+        int input_bit = index % 8;
+        if ( input_bit == 0 )
+            input_bit = 8;
+
+        // Move the bit to the lowest order bit.
+        unsigned char input_value = ( input[ input_byte ] >> ( 8 - input_bit ) ) & 0x01;
+
+        // Set the corresponding array value to the value of the bit.
+        b1[ i - 1 ] = input_value;
+    }
+
+    // Determine the row and column values
+    int row = ( (b1[ 0 ] << 1) | b1[ 5 ] );
+    int col = ( (b1[ 1 ] << 3 ) | 
+                (b1[ 2 ] << 2 ) | 
+                (b1[ 3 ] << 1 ) | 
+                (b1[ 4 ]) );
+
+    // Determine what index of sbox to use.
+    index = idx * 6 + 1;
+    int sbox_index = (index - 1) / 6;
+
+    int sbox_output = sBoxTable[ sbox_index ][ row ][ col ];
+
+    // Convert the sbox integer to binary
+    byte output_byte = 0x00;
+
+    int test_bit = 8;
+
+    while ( test_bit != 0 ) {
+        if ( sbox_output / test_bit != 0 ) {
+            if ( test_bit == 8 ) {
+                output_byte = output_byte | 0x80;
+            }
+            else if ( test_bit == 4 ) {
+                output_byte = output_byte | 0x40;
+            }
+            else if ( test_bit == 2 ) {
+                output_byte = output_byte | 0x20;
+            }
+            else if ( test_bit == 1 ) {
+                output_byte = output_byte | 0x10;
+            }
+            sbox_output -= test_bit;
+
+        }
+
+        test_bit /= 2;
+    }
+
+    // Set the output byte to the transformed sbox value.
+    output[ 0 ] = output_byte;
 }
 
 // void fFunction( byte result[ BLOCK_HALF_BYTES ], byte const R[ BLOCK_HALF_BYTES ], byte const K[ SUBKEY_BYTES ] ) {

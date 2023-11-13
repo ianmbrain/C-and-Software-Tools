@@ -45,3 +45,5 @@ void putBit( byte data[], int idx, int val );
 void permute( byte output[], byte const input[], int const perm[], int n );
 
 void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLOCK_BYTES ] );
+
+void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx );
