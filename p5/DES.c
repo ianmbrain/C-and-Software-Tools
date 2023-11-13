@@ -323,9 +323,177 @@ void permute( byte output[], byte const input[], int const perm[], int n ) {
     // fprintf( stderr, "%x\n", output[ 1 ] );
 }
 
-// void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLOCK_BYTES ] ) {
+void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLOCK_BYTES ] ) {
+    // Create the left and right permutation from the given key.
+    byte left_perm[ SUBKEY_HALF_BYTES ];
+    permute( left_perm, key, leftSubkeyPerm, SUBKEY_HALF_BITS );
 
-// }
+    byte right_perm[ SUBKEY_HALF_BYTES ];
+    permute( right_perm, key, rightSubkeyPerm, SUBKEY_HALF_BITS );
+
+    // Left rotate the bits in the key based on the subkey shift schedule.
+    
+    // will loop through the shift schedule (starting at 1).
+        // At each index. I will getbit() those bits (1 or 2) and put them on the other side
+        // with each one of these (c1 & d1, c2 & d2...) they should be combined into a 56 bit key and permuted into a 48 bit key.
+        // these 48 bit keys should be stored in K as the sub keys.
+
+    int c_bit_one = 0;
+    int c_bit_two = 0;
+    int c_bit_three = 0;
+    int c_bit_four = 0;
+
+    int d_bit_one = 0;
+    int d_bit_two = 0;
+    int d_bit_three = 0;
+    int d_bit_four = 0;
+
+    for ( int i = 1; i < ROUND_COUNT; i++ ) {
+        // If the shift schedule is one, get one bit.
+        if ( subkeyShiftSchedule[ i ] == 1 ) {
+            // Get the first bit from each perm.
+            // c_bit_one = getBit( left_perm, 1 );
+            // d_bit_one = getBit( right_perm, 1 );
+
+            // Shift bits in each perm one to the left
+            // left_perm = left_perm << 1;
+            // right_perm = right_perm << 1;
+            // for ( int i = 0; i < SUBKEY_HALF_BYTES; i++ ) {
+            //     // The last byte is a full byte but only represents four bits. The 0x00 last four bits are not relevant.
+            //     if ( i = SUBKEY_HALF_BYTES - 1 ) {
+            //         // for put bit use 4.
+            //     }
+            //     else {
+            //         // Get the first bit from each perm.
+            //         c_bit_one = gitBit( left_perm[ i ], 1 );
+            //         c_bit_two = gitBit( left_perm[ i ], 1 );
+            //         c_bit_three = gitBit( left_perm[ i ], 1 );
+            //         c_bit_four = gitBit( left_perm[ i ], 1 );
+
+            //         putbit( )
+                    
+            //         d_bit_one = getBit( right_perm[ i ], 1 );
+
+            //         //HERE _--_-_-_-_-_-_-_-_-_----___---_-=-----_-__-_-_-____--__--___---
+            //         // Want to get the first bit of first byte and put it in 4th bit of last byte.
+            //         // Then get first bit of second byte and put it in the 8 bit of the first byte.
+            //     }
+
+            // Get the first bit from each byte.
+            c_bit_one = getBit( left_perm[ 0 ], 1 );
+            c_bit_two = getBit( left_perm[ 1 ], 1 );
+            c_bit_three = getBit( left_perm[ 2 ], 1 );
+            c_bit_four = getBit( left_perm[ 3 ], 1 );
+
+            d_bit_one = getBit( right_perm[ 0 ], 1 );
+            d_bit_two = getBit( right_perm[ 1 ], 1 );
+            d_bit_three = getBit( right_perm[ 2 ], 1 );
+            d_bit_four = getBit( right_perm[ 3 ], 1 );
+
+            // Shift each byte to the left by one.
+            left_perm[ 0 ] = left_perm[ 0 ] << 1;
+            left_perm[ 1 ] = left_perm[ 1 ] << 1;
+            left_perm[ 2 ] = left_perm[ 2 ] << 1;
+            left_perm[ 3 ] = left_perm[ 3 ] << 1;
+
+            right_perm[ 0 ] = right_perm[ 0 ] << 1;
+            right_perm[ 1 ] = right_perm[ 1 ] << 1;
+            right_perm[ 2 ] = right_perm[ 2 ] << 1;
+            right_perm[ 3 ] = right_perm[ 3 ] << 1;
+
+            // Put each bit in the correct place.
+            putBit( left_perm[ 0 ], 8, c_bit_two );
+            putBit( left_perm[ 1 ], 8, c_bit_three );
+            putBit( left_perm[ 2 ], 8, c_bit_four );
+            putBit( left_perm[ 3 ], 4, c_bit_one );
+
+            putBit( right_perm[ 0 ], 8, d_bit_two );
+            putBit( right_perm[ 1 ], 8, d_bit_three );
+            putBit( right_perm[ 2 ], 8, d_bit_four );
+            putBit( right_perm[ 3 ], 4, d_bit_one );
+        }
+        // If the shift schedule is two, get two bits.
+        else {
+            for ( int j = 0; j < 2; j++ ) {
+                c_bit_one = getBit( left_perm[ 0 ], 1 );
+                c_bit_two = getBit( left_perm[ 1 ], 1 );
+                c_bit_three = getBit( left_perm[ 2 ], 1 );
+                c_bit_four = getBit( left_perm[ 3 ], 1 );
+
+                d_bit_one = getBit( right_perm[ 0 ], 1 );
+                d_bit_two = getBit( right_perm[ 1 ], 1 );
+                d_bit_three = getBit( right_perm[ 2 ], 1 );
+                d_bit_four = getBit( right_perm[ 3 ], 1 );
+
+                // Shift each byte to the left by one.
+                left_perm[ 0 ] = left_perm[ 0 ] << 1;
+                left_perm[ 1 ] = left_perm[ 1 ] << 1;
+                left_perm[ 2 ] = left_perm[ 2 ] << 1;
+                left_perm[ 3 ] = left_perm[ 3 ] << 1;
+
+                right_perm[ 0 ] = right_perm[ 0 ] << 1;
+                right_perm[ 1 ] = right_perm[ 1 ] << 1;
+                right_perm[ 2 ] = right_perm[ 2 ] << 1;
+                right_perm[ 3 ] = right_perm[ 3 ] << 1;
+
+                // Put each bit in the correct place.
+                putBit( left_perm[ 0 ], 8, c_bit_two );
+                putBit( left_perm[ 1 ], 8, c_bit_three );
+                putBit( left_perm[ 2 ], 8, c_bit_four );
+                putBit( left_perm[ 3 ], 4, c_bit_one );
+
+                putBit( right_perm[ 0 ], 8, d_bit_two );
+                putBit( right_perm[ 1 ], 8, d_bit_three );
+                putBit( right_perm[ 2 ], 8, d_bit_four );
+                putBit( right_perm[ 3 ], 4, d_bit_one );
+            }
+        }
+
+        // Combine the subkeys into one 56 bit key.
+        // When combining, we need to get rid of the last four bits in each key to make them truly 24 bits
+        byte left_right_key[ 7 ];
+
+        // Copy bytes from the left perm.
+        for ( int b = 0; b < 4; b++ ) {
+            if ( b < 3 ) {
+                left_right_key[ b ] = left_perm[ b ];
+            }
+            // On the last by, get the last four bits from the left perm and the first four bits from the second perm.
+            else {
+                byte last_byte = 0x00;
+
+                last_byte = last_byte | left_perm[ b ];
+                //last_byte = last_byte << 4;
+                last_byte = last_byte | ( right_perm[ 0 ] >> 4 );
+
+                left_right_key[ b ] = last_byte;
+            }
+        }
+
+        // Copy the bytes from the right perm. Each byte is a combination of the last and first four bits from sequential bytes.
+        for ( int b = 4; b < 7; b++ ) {
+            byte last_byte = 0x00;
+
+            last_byte = last_byte | ( right_perm[ b - 4 ] << 4 );
+            //last_byte = last_byte << 4;
+            last_byte = last_byte | ( right_perm[ b - 3 ] >> 4 );
+
+            left_right_key[ b ] = last_byte;
+        }
+
+        // Permute the 56 bit key combination into a 48 bit key.
+        byte output_key[ 6 ];
+        permute( output_key, left_right_key, subkeyPerm, SUBKEY_BITS );
+
+        // Add the permuted 48 bit key to the K array.
+        for ( int b = 0; b < 6; b++ ) {
+            K[ i ][ b ] = output_key[ b ];
+        }
+    }
+
+
+
+}
 
 // void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx ) {
 
