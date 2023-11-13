@@ -160,7 +160,6 @@ int main()
     TestCase( cmpBytes( K[16], (byte []){0xCB, 0x3D, 0x8B, 0x0E, 0x17, 0xF5 }, 6 ) );
   }
 
-#ifdef DISABLE_TESTS
   ////////////////////////////////////////////////////////////////////////
   // Test sBox()
 
@@ -185,7 +184,8 @@ int main()
     sBox( output, B, 7 );
     TestCase( output[ 0 ] == 0x70 );
   }
-  
+
+#ifdef DISABLE_TESTS
 
   ////////////////////////////////////////////////////////////////////////
   // Test fFunction()

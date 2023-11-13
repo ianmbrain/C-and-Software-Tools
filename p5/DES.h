@@ -35,3 +35,13 @@ typedef struct {
       be shorter. */
   int len;
 } DESBlock;
+
+void prepareKey( byte key[ BLOCK_BYTES ], char const *textKey );
+
+int getBit( byte const data[], int idx );
+
+void putBit( byte data[], int idx, int val );
+
+void permute( byte output[], byte const input[], int const perm[], int n );
+
+void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLOCK_BYTES ] );
