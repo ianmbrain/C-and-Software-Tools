@@ -185,8 +185,6 @@ int main()
     TestCase( output[ 0 ] == 0x70 );
   }
 
-#ifdef DISABLE_TESTS
-
   ////////////////////////////////////////////////////////////////////////
   // Test fFunction()
 
@@ -231,6 +229,8 @@ int main()
     TestCase( cmpBytes( block.data, (byte []){0x85, 0xE8, 0x13, 0x54,
                                               0x0F, 0x0A, 0xB4, 0x05}, 8 ) );
   }
+
+  #ifdef DISABLE_TESTS
 
   ////////////////////////////////////////////////////////////////////////
   // Test decryptBlock()

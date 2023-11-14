@@ -61,14 +61,17 @@ int getBit( byte const data[], int idx ) {
     // create and binary/hex value based on idx
     // compare the array block and this
 
-    int a_index = (idx - 1) / 8;
+    int a_index = 0;
+    a_index = (idx - 1) / 8;
     //fprintf( stderr, "\n%x\n", data[ a_index ]);
-    int norm_index = idx;
+    int norm_index = 0;
+    norm_index = idx;
     if ( idx > 8 ) {
         norm_index = idx % 8;
     }
 
-    int b_index = 8 - norm_index;
+    int b_index = 0;
+    b_index = 8 - norm_index;
     //fprintf( stderr, "\n%d\n", b_index);
     // if ( ( data[ a_index ] & ( 0x01 << b_index ) ) != 0 )
     //     return 1;
@@ -563,13 +566,82 @@ void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx ) {
     output[ 0 ] = output_byte;
 }
 
-// void fFunction( byte result[ BLOCK_HALF_BYTES ], byte const R[ BLOCK_HALF_BYTES ], byte const K[ SUBKEY_BYTES ] ) {
+void fFunction( byte result[ BLOCK_HALF_BYTES ], byte const R[ BLOCK_HALF_BYTES ], byte const K[ SUBKEY_BYTES ] ) {
+    // Create the expanded r value using a 48 bit permutation.
+    byte expanded_r[ SUBKEY_BYTES ];
+    permute( expanded_r, R, expandedRSelector, SUBKEY_BITS );
 
-// }
+    // Combine expanded r and K using exclusive or operation.
+    byte B[ SUBKEY_BYTES ];
+    for ( int i = 0; i < SUBKEY_BYTES; i++ ) {
+        B[ i ] = expanded_r[ i ] ^ K[ i ];
+    }
 
-// void encryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] ) {
+    // Result of each sBox() calculation.
+    byte sbox_bits[ 1 ];
+    // Cumulative result of the sBox calculations.
+    byte sbox_result[ BLOCK_HALF_BYTES ];
 
-// }
+    for ( int i = 0; i < 8; i++ ) {
+        // sBox() each six bits of B into four bit values.
+        sBox( sbox_bits, B, i);
+
+        int val = 0;
+        for ( int b = 1; b <= 4; b++ ) {
+            // Obtain each bit from the four bit value.
+            val = getBit( sbox_bits, b );
+            // Put that bit value at the correct index in the result.
+            putBit( sbox_result, ( 4 * i + b ), val );
+        }
+    }
+
+    // Permute the result into the correct result.
+    permute( result, sbox_result, fFunctionPerm, 32 );
+}
+
+void encryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] ) {
+    //take DESBlock and permute into two separate 32 bit arrays
+        // Each time, combine R with K(i) using the fFunction()
+        // Combine with previous L value using exclusive or
+        // After all of this, combine the L and R blocks together
+
+    byte L[ BLOCK_HALF_BYTES ];
+    byte R[ BLOCK_HALF_BYTES ];
+    byte l_next[ BLOCK_HALF_BYTES ];
+    byte r_next[ BLOCK_HALF_BYTES ];
+
+    permute( L, block->data, leftInitialPerm, 32 );
+    permute( R, block->data, rightInitialPerm, 32 );
+
+    for ( int i = 1; i <= 16; i++ ) {
+        // Perform the fFunction() or R using the corresponding K value.
+        fFunction( r_next, R, K[ i ] );
+
+        // Copy R into l_next.
+        for ( int b = 0; b < 4; b++ )
+            l_next[ b ] = R[ b ];
+
+        // Set R equal to the exclusive or value of r_next and L.
+        for ( int b = 0; b < 4; b++ )
+            R[ b ] = r_next[ b ] ^ L[ b ];
+
+        // Set L to the previous value of R, which is l_next.
+        for ( int b = 0; b < 4; b++ )
+            L[ b ] = l_next[ b ];
+    }
+
+    // Combine R and L.
+    byte final[ BLOCK_BYTES ];
+    for ( int i = 0; i < 8; i++ ) {
+        if ( i < 4 )
+            final[ i ] = R[ i ];
+        else
+            final[ i ] = L[ i - 4 ];
+    }
+
+    // Permute this final value back into the result block.
+    permute( block->data, final, finalPerm, BLOCK_BITS );
+}
 
 // void decryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] ) {
 

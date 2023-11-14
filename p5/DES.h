@@ -47,3 +47,7 @@ void permute( byte output[], byte const input[], int const perm[], int n );
 void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLOCK_BYTES ] );
 
 void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx );
+
+void fFunction( byte result[ BLOCK_HALF_BYTES ], byte const R[ BLOCK_HALF_BYTES ], byte const K[ SUBKEY_BYTES ] );
+
+void encryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] );
