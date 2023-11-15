@@ -230,8 +230,6 @@ int main()
                                               0x0F, 0x0A, 0xB4, 0x05}, 8 ) );
   }
 
-  #ifdef DISABLE_TESTS
-
   ////////////////////////////////////////////////////////////////////////
   // Test decryptBlock()
 
@@ -266,6 +264,8 @@ int main()
 
   // Once you move the #ifdef DISABLE_TESTS to here, you've enabled
   // all the tests.
+
+  #ifdef DISABLE_TESTS
 
 #endif
   

@@ -643,6 +643,40 @@ void encryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] 
     permute( block->data, final, finalPerm, BLOCK_BITS );
 }
 
-// void decryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] ) {
+void decryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] ) {
+    byte L[ BLOCK_HALF_BYTES ];
+    byte R[ BLOCK_HALF_BYTES ];
+    byte l_next[ BLOCK_HALF_BYTES ];
+    byte r_next[ BLOCK_HALF_BYTES ];
 
-// }
+    permute( L, block->data, leftInitialPerm, 32 );
+    permute( R, block->data, rightInitialPerm, 32 );
+
+    for ( int i = 16; i >= 1; i-- ) {
+        // Perform the fFunction() or R using the corresponding K value.
+        fFunction( r_next, R, K[ i ] );
+
+        // Copy R into l_next.
+        for ( int b = 0; b < 4; b++ )
+            l_next[ b ] = R[ b ];
+
+        // Set R equal to the exclusive or value of r_next and L.
+        for ( int b = 0; b < 4; b++ )
+            R[ b ] = r_next[ b ] ^ L[ b ];
+
+        // Set L to the previous value of R, which is l_next.
+        for ( int b = 0; b < 4; b++ )
+            L[ b ] = l_next[ b ];
+    }
+
+    byte final[ BLOCK_BYTES ];
+    for ( int i = 0; i < 8; i++ ) {
+        if ( i < 4 )
+            final[ i ] = R[ i ];
+        else
+            final[ i ] = L[ i - 4 ];
+    }
+
+    // Permute this final value back into the result block.
+    permute( block->data, final, finalPerm, BLOCK_BITS );
+}

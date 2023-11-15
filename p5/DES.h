@@ -5,6 +5,18 @@
 */
 
 #include "DESMagic.h"
+#include <stdlib.h>
+
+int leftSubkeyPerm[ SUBKEY_HALF_BITS ];
+int rightSubkeyPerm[ SUBKEY_HALF_BITS ];
+int subkeyShiftSchedule[ ROUND_COUNT ];
+int subkeyPerm[ SUBKEY_BITS ];
+int leftInitialPerm[ BLOCK_HALF_BITS ];
+int rightInitialPerm[ BLOCK_HALF_BITS ];
+int expandedRSelector[ SUBKEY_BITS ];
+int sBoxTable[ SBOX_COUNT ][ SBOX_ROWS ][ SBOX_COLS ];
+int fFunctionPerm[ BLOCK_HALF_BITS ];
+int finalPerm[ BLOCK_BITS ];
 
 /** Number of bits in a byte. */
 #define BYTE_SIZE 8
@@ -26,6 +38,9 @@
 /** Number of bytes to store a whole subkey (K_1 .. K_16). */
 #define SUBKEY_BYTES ROUND_TO_BYTES( SUBKEY_BITS )
 
+#ifndef DES_STRUCT
+#define DES_STRUCT
+
 /** Type used to represent a block to encrypt or decrypt with DES. */
 typedef struct {
   /** Sequence of bytes in the block. */
@@ -35,6 +50,8 @@ typedef struct {
       be shorter. */
   int len;
 } DESBlock;
+
+#endif
 
 void prepareKey( byte key[ BLOCK_BYTES ], char const *textKey );
 
@@ -51,3 +68,5 @@ void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx );
 void fFunction( byte result[ BLOCK_HALF_BYTES ], byte const R[ BLOCK_HALF_BYTES ], byte const K[ SUBKEY_BYTES ] );
 
 void encryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] );
+
+void decryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] );
