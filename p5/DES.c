@@ -13,6 +13,9 @@
 #include <stdio.h>
 #include <string.h>
 
+/** Value to adjust the index by when calulating which byte the index is within. */
+#define INDEX_ADJUSTMENT 1
+
 /**
  * Copies the provided textKey to an output key.
  * If the textKey is less than eight characters in length then zeros are added to the end of the key.
@@ -44,35 +47,31 @@ void prepareKey( byte key[ BLOCK_BYTES ], char const *textKey ) {
     }
 }
 
-// This function returns zero or one based on the value of the bit at index idx 
-// in the given array of bytes. For example, getbit( data, 1 ) should return 1 if the high-order 
-// bit of the first byte of data is set. This function, and the next one will make it 
-// very easy to perform the bit manipulation used by the DES algorithm
+/**
+ * Determines whether the bit at the specified index is zero or one.
+ * This function is used to determine the bit at specified indexes in other functions.
+ * @param data array of bytes to examine.
+ * @param idx index of the bit to check is one or zero.
+ * @return one or zero based on the value of the bit at the specified index.
+*/
 int getBit( byte const data[], int idx ) {
-    // get length of data
-    // create 
+    // Index of the byte idx is within.
+    int byte_index = 0;
+    byte_index = (idx - INDEX_ADJUSTMENT) / BYTE_SIZE;
 
-    // maybe determine what array index idx is in (3 would be in index 1)
-    // create and binary/hex value based on idx
-    // compare the array block and this
+    // Bit position of idx within a byte.
+    int bit_index = 0;
+    bit_index = idx % BYTE_SIZE;
+    // If the bit index is zero it indicates idx is a multiple of eith and should thus be the eigth index of the byte.
+    if ( bit_index == 0 )
+        bit_index = BYTE_SIZE;
 
-    int a_index = 0;
-    a_index = (idx - 1) / 8;
-    //fprintf( stderr, "\n%x\n", data[ a_index ]);
-    int norm_index = 0;
-    norm_index = idx;
-    if ( idx > 8 ) {
-        norm_index = idx % 8;
-    }
-
+    // Index used to determine what index should be checked based on bit_index.
     int b_index = 0;
-    b_index = 8 - norm_index;
-    //fprintf( stderr, "\n%d\n", b_index);
-    // if ( ( data[ a_index ] & ( 0x01 << b_index ) ) != 0 )
-    //     return 1;
-    // else
-    //     return 0;
-    return ( data[ a_index ] & ( 0x01 << b_index ) ) != 0;
+    b_index = BYTE_SIZE - bit_index;
+
+    // Moves the one bit to the position of bit_index and returns whether the bit is one or zero.
+    return ( data[ byte_index ] & ( 0x01 << b_index ) ) != 0;
 }
 
 void putBit( byte data[], int idx, int val ) {
