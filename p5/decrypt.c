@@ -80,9 +80,14 @@ int main( int argc, char *argv[] ) {
         // for ( int b = 0; b < 8; b++ ) {
         //     fprintf( stderr, "\n%x", block->data[b] );
         // }
-        
-        //fseek( output, i * 8, SEEK_CUR );
-        // fprintf( stderr, "\n\n%d\n", block->len );
+
+        // If there was padding added to the end of the cipher text, decrease the length to prevent padding from being written to the file.
+        for ( int i = block->len; i > 0; i-- ) {
+            if ( ( block->data[ i ] | 0x00 ) == 0 ) {
+                block->len--;
+            }
+        }
+
         writeBlock( output, block );
     }
     // DESBlock *block = ( DESBlock * )malloc( sizeof( DESBlock ) );
