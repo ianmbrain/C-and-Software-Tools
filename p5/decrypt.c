@@ -19,6 +19,16 @@
 /** Command line argument that contains the output file name. */
 #define CMD_OUTPUT 3
 
+void printBits( byte const data[], int bcount )
+{
+    for ( int i = 1; i <= bcount; i++ ) {
+        fprintf( stderr, "\n%c\n", getBit( data, i ) ? '1' : '0' );
+        if ( i % 8 == 0 ) {
+            fprintf( stderr, "\n%d ----------- \n", i / 8 );
+        }
+    }
+}
+
 int main( int argc, char *argv[] ) {
     if ( argc != CMD_ARGS ) {
         fprintf( stderr, "usage: decrypt <key> <input_file> <output_file>\n");
@@ -44,16 +54,13 @@ int main( int argc, char *argv[] ) {
     int file_length = 0;
     fseek( file, 0, SEEK_END );
     file_length = ftell( file );
+    //fprintf( stderr, "\n%d\n", file_length);
     fseek( file, -file_length, SEEK_END );
 
     if ( file_length % 8 != 0 ) {
         fprintf( stderr, "%s%s\n", "Bad ciphertext file length: ", argv[ CMD_FILE ] );
         exit( EXIT_FAILURE );
     }
-
-    DESBlock *block = ( DESBlock * )malloc( sizeof( DESBlock ) );
-
-    readBlock( file, block );
 
     // Convert the provided key into bytes.
     byte key[ BLOCK_BYTES ] = {};
@@ -63,10 +70,37 @@ int main( int argc, char *argv[] ) {
     byte K[ ROUND_COUNT ][ SUBKEY_BYTES ] = {};
     generateSubkeys( K, key );
 
-    // Encrypt the file.
-    decryptBlock( block, K );
+    DESBlock *block = ( DESBlock * )malloc( sizeof( DESBlock ) );
+    FILE *output = fopen( argv[ CMD_OUTPUT ], "wb" );
+    for ( int i = 0; i < file_length / 8; i++ ) {
+        readBlock( file, block );
+
+        // Decrypt the file.
+        decryptBlock( block, K );
+        // for ( int b = 0; b < 8; b++ ) {
+        //     fprintf( stderr, "\n%x", block->data[b] );
+        // }
+        
+        //fseek( output, i * 8, SEEK_CUR );
+        // fprintf( stderr, "\n\n%d\n", block->len );
+        writeBlock( output, block );
+    }
+    // DESBlock *block = ( DESBlock * )malloc( sizeof( DESBlock ) );
+
+    // readBlock( file, block );
+
+    // // Convert the provided key into bytes.
+    // byte key[ BLOCK_BYTES ] = {};
+    // prepareKey( key, argv[ CMD_KEY ] );
+
+    // // Generate the subkeys from the provided key.
+    // byte K[ ROUND_COUNT ][ SUBKEY_BYTES ] = {};
+    // generateSubkeys( K, key );
+
+    // // Encrypt the file.
+    // decryptBlock( block, K );
 
     // Write the encrypted file to the provided output file.
-    FILE *output = fopen( argv[ CMD_OUTPUT ], "wb" );
-    writeBlock( output, block );
+    // FILE *output = fopen( argv[ CMD_OUTPUT ], "wb" );
+    // writeBlock( output, block );
 }
