@@ -13,40 +13,35 @@
 #include <stdio.h>
 #include <string.h>
 
-//This function checks the given text key to make sure it’s not too long. 
-// It copies the characters of this key from textKey to the key array and pads with zero bytes up to the length of a DES block.
+/**
+ * Copies the provided textKey to an output key.
+ * If the textKey is less than eight characters in length then zeros are added to the end of the key.
+ * Exit as failure if the key to longer than eight characters.
+ * @param textKey key that must be less than or equal to eight bytes in length.
+ * @param key key padded with zeros to be length eight.
+*/
 void prepareKey( byte key[ BLOCK_BYTES ], char const *textKey ) {
+    // Length of the key
     int key_len = strlen( textKey );
 
-    if ( key_len > 8 ) {
+    // Exit as failure if the encryption key is longer than eight characters.
+    if ( key_len > BYTE_SIZE ) {
         fprintf( stderr, "Key too long\n" );
         exit( EXIT_FAILURE );
     }
 
+    // Copy the characters of the text key into the key
     for ( int i = 0; i < key_len; i++ ) {
         key[ i ] = textKey[ i ];
-        // if ( key[ i ] == 0x61 ) {
-        //     fprintf( stderr, "\n_-_--__--___\n");
-        // }
-        // else {
-        //     fprintf( stderr, "\n NO \n");
-        // }
-
-        //sprintf( key[ i ], "%x", textKey[ i ] );
-        //fprintf( stderr, "\n_-_--__--___\n");
-        //fprintf( stderr, "%x", key[ i ] );
     }
 
-    if ( key_len < 8 ) {
-        while ( key_len < 8 ) {
+    // Pad the key with zeros if the length is under eight characters.
+    if ( key_len < BYTE_SIZE ) {
+        while ( key_len < BYTE_SIZE ) {
             key[ key_len ] = 0;
             key_len++;
         }
     }
-
-    // for ( int i = 0; i < key_len; i++ ) {
-    //     fprintf( stderr, "%x\n", key[ i ]);
-    // }
 }
 
 // This function returns zero or one based on the value of the bit at index idx 
