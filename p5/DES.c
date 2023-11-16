@@ -50,7 +50,7 @@ void prepareKey( byte key[ BLOCK_BYTES ], char const *textKey ) {
 /**
  * Determines whether the bit at the specified index is zero or one.
  * This function is used to determine the bit at specified indexes in other functions.
- * @param data array of bytes to examine.
+ * @param data array of bytes to alter.
  * @param idx index of the bit to check is one or zero.
  * @return one or zero based on the value of the bit at the specified index.
 */
@@ -74,35 +74,29 @@ int getBit( byte const data[], int idx ) {
     return ( data[ byte_index ] & ( 0x01 << b_index ) ) != 0;
 }
 
+/**
+ * Clears or sets the bit at the specified index of the data depending on whether the value is one or zero.
+ * Used on other function to enable bits at specified index to be set or cleared.
+ * @param data array of bytes to alter.
+ * @param idx index of bit to set or clear.
+ * @param val one or zero depending on whether the bit should be set or cleared.
+*/
 void putBit( byte data[], int idx, int val ) {
-    int a_index = (idx - 1) / 8;
-    //fprintf( stderr, "\n%x\n", data[ a_index ]);
-    int norm_index = idx;
-    if ( idx > 8 ) {
-        norm_index = idx % 8;
-    }
-    // If idx is a multiple of 8 the modulo will make it 0. This value is really the 8th index.
-    if ( norm_index == 0 ) {
-        norm_index = 8;
+    int byte_index = (idx - INDEX_ADJUSTMENT) / BYTE_SIZE;
+    int bit_index = idx % BYTE_SIZE;
+
+    // If the bit index is zero it indicates idx is a multiple of eith and should thus be the eigth index of the byte.
+    if ( bit_index == 0 ) {
+        bit_index = BYTE_SIZE;
     }
 
-    int b_index = 8 - norm_index;
-
-    // Problem is that it is being left shifted but then 0s are being added in its place
-    // make it signed and perform a right shift?
+    // Use the bitwise and operator to clear the bit at the index if the value to set is zero.
     if ( val == 0 ) {
-        // if ( idx == 1 )
-        //     data[ a_index ] = data[ a_index ] & 0x7f;
-        // else if ( idx == 2 )
-        //     data[ a_index ] = data[ a_index ] & 0xbf;
-        // else
-        //     data[ a_index ] = data[ a_index ] & ( (signed char) 0xbf >> ( norm_index - 2 ) );
-        data[ a_index ] = data[ a_index ] & ( 0xFEFF >> norm_index );
+        data[ byte_index ] = data[ byte_index ] & ( 0xFEFF >> bit_index );
     }
+    // Use the bitwise or operator to set the bit at the index if the value to set is one.
     else
-        data[ a_index ] = data[ a_index ] | ( 0x01 << b_index );  
-    //fprintf( stderr, "\n%x\n", data[a_index] );
-
+        data[ byte_index ] = data[ byte_index ] | ( 0x0100 >> bit_index );  
 }
 
 void permute( byte output[], byte const input[], int const perm[], int n ) {
