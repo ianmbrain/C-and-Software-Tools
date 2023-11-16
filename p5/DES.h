@@ -7,16 +7,16 @@
 #include "DESMagic.h"
 #include <stdlib.h>
 
-int leftSubkeyPerm[ SUBKEY_HALF_BITS ];
-int rightSubkeyPerm[ SUBKEY_HALF_BITS ];
-int subkeyShiftSchedule[ ROUND_COUNT ];
-int subkeyPerm[ SUBKEY_BITS ];
-int leftInitialPerm[ BLOCK_HALF_BITS ];
-int rightInitialPerm[ BLOCK_HALF_BITS ];
-int expandedRSelector[ SUBKEY_BITS ];
-int sBoxTable[ SBOX_COUNT ][ SBOX_ROWS ][ SBOX_COLS ];
-int fFunctionPerm[ BLOCK_HALF_BITS ];
-int finalPerm[ BLOCK_BITS ];
+// int leftSubkeyPerm[ SUBKEY_HALF_BITS ];
+// int rightSubkeyPerm[ SUBKEY_HALF_BITS ];
+// int subkeyShiftSchedule[ ROUND_COUNT ];
+// int subkeyPerm[ SUBKEY_BITS ];
+// int leftInitialPerm[ BLOCK_HALF_BITS ];
+// int rightInitialPerm[ BLOCK_HALF_BITS ];
+// int expandedRSelector[ SUBKEY_BITS ];
+// int sBoxTable[ SBOX_COUNT ][ SBOX_ROWS ][ SBOX_COLS ];
+// int fFunctionPerm[ BLOCK_HALF_BITS ];
+// int finalPerm[ BLOCK_BITS ];
 
 /** Number of bits in a byte. */
 #define BYTE_SIZE 8

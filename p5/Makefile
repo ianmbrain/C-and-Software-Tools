@@ -3,11 +3,11 @@ CFLAGS = -Wall -std=c99 -g
 
 all: encrypt decrypt
 
-decrypt: decrypt.o DES.o io.o
-	gcc decrypt.o io.o DES.o -o decrypt
+decrypt: decrypt.o DES.o io.o DESMagic.o
+	gcc decrypt.o io.o DES.o DESMagic.o -o decrypt
 
-encrypt: encrypt.o DES.o io.o
-	gcc encrypt.o io.o DES.o -o encrypt
+encrypt: encrypt.o DES.o io.o DESMagic.o
+	gcc encrypt.o io.o DES.o DESMagic.o -o encrypt
 
 DESTest: DESTest.o DES.o DESMagic.o
 	gcc DESTest.o DES.o DESMagic.o -o DESTest
@@ -25,3 +25,6 @@ clean:
 	rm -f encrypt
 	rm -f DESTest
 	rm -f output.bin
+	rm -f output.txt
+	rm -f stderr.txt
+	rm -f stdout.txt

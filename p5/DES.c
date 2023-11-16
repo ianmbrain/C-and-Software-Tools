@@ -134,6 +134,12 @@ void permute( byte output[], byte const input[], int const perm[], int n ) {
     int p_byte = 0;
     int i_idx = 0;
     //unsigned char i_value = 0x00;
+    // for ( int b = 0; b < 8; b++ ) {
+    //     fprintf( stderr, "\n%x\n", input[ b ] );
+    // }
+
+    
+
 
     for ( int i = 0; i < n; i++ ) {
         p_idx = 0;
@@ -220,6 +226,7 @@ void permute( byte output[], byte const input[], int const perm[], int n ) {
             output_value = output_value >> ( n - ( 8 * last_byte ) );
 
             output[ last_byte ] = output[ last_byte ] & ( unsigned char ) output_value;
+            //fprintf( stderr, "\n%d\n", n);
         }
 
     }
@@ -335,6 +342,9 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
 
     byte right_perm[ SUBKEY_HALF_BYTES ];
     permute( right_perm, key, rightSubkeyPerm, SUBKEY_HALF_BITS );
+    // for ( int b = 0; b < 4; b++ ) {
+    //         fprintf( stderr, "\n%x\n", right_perm[ b ] );
+    // }
 
     // Left rotate the bits in the key based on the subkey shift schedule.
     
@@ -449,7 +459,7 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
         }
 
         // Combine the subkeys into one 56 bit key.
-        // When combining, we need to get rid of the last four bits in each key to make them truly 24 bits
+        // When combining, we need to get rid of the last four bits in each key to make them truly 28 bits
         byte left_right_key[ 7 ];
 
         // Copy bytes from the left perm.
@@ -609,9 +619,15 @@ void encryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] 
     byte R[ BLOCK_HALF_BYTES ];
     byte l_next[ BLOCK_HALF_BYTES ];
     byte r_next[ BLOCK_HALF_BYTES ];
+    // for ( int i = 0; i < 6; i++ ) {
+    //     fprintf( stderr, "\n%x\n", K[ 1 ][ i ]);
+    //     fprintf( stderr, "\n%x\n", block->data[ i ]);
+    //     fprintf( stderr, "\n------------\n" );
+    // }
 
     permute( L, block->data, leftInitialPerm, 32 );
     permute( R, block->data, rightInitialPerm, 32 );
+    // fprintf( stderr, "\n%x\n", R[ 2 ] );
 
     for ( int i = 1; i <= 16; i++ ) {
         // Perform the fFunction() or R using the corresponding K value.
