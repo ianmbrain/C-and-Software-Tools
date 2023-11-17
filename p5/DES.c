@@ -66,12 +66,8 @@ int getBit( byte const data[], int idx ) {
     if ( bit_index == 0 )
         bit_index = BYTE_SIZE;
 
-    // Index used to determine what index should be checked based on bit_index.
-    int b_index = 0;
-    b_index = BYTE_SIZE - bit_index;
-
     // Moves the one bit to the position of bit_index and returns whether the bit is one or zero.
-    return ( data[ byte_index ] & ( 0x01 << b_index ) ) != 0;
+    return ( data[ byte_index ] & ( 0x0100 >> bit_index ) ) != 0;
 }
 
 /**
@@ -99,228 +95,37 @@ void putBit( byte data[], int idx, int val ) {
         data[ byte_index ] = data[ byte_index ] | ( 0x0100 >> bit_index );  
 }
 
+/**
+ * Copies a specified number of bits from the input data to the output data.
+ * The bit copied from input is specified by an index within the perm array.
+ * The index from perm corresponds to each value in the perm array from zero to one less than n.
+ * @param output data to set the bit values in.
+ * @param input data to get the bit values from.
+ * @param perm data to get the indexes from.
+ * @param n number of bits to copy from input to output.
+*/
 void permute( byte output[], byte const input[], int const perm[], int n ) {
-    // copying bits from input based on each value in perm
-    // if n is not a multiple of 8, the remaining bits will be 0
-
-    // loop through perm
-    // on each loop, find what array index in input/output the element is at
-    // also find the normalized index
-    // get what binary value to copy from the input array based on the perm value index
-    // get copy that value to the output array
-    // don't forget to pad with 0s
-
-    // for loop with 0 to n. gets the first n bits based on the perm index from index array and puts them in output
-        // get perm index at index i
-        // find that value in input array (is it 0 or 1)
-    // them set in output to 0 or 1. 
-        // need to do a similar thing to divide up input/output into indexes and possible normalize n to be 1-8
-        // REMEMBER - i is 0 to 1.
-    // do padding.
-    
+    // Index based on the perm value.
     int p_idx = 0;
-    int p_byte = 0;
-    int i_idx = 0;
-    //unsigned char i_value = 0x00;
-    // for ( int b = 0; b < 8; b++ ) {
-    //     fprintf( stderr, "\n%x\n", input[ b ] );
-    // }
 
-    
-
-
-    for ( int i = 0; i < n; i++ ) {
+    for ( int i = 1; i <= n; i++ ) {
         p_idx = 0;
-        p_byte = 0;
-        i_idx = 0;
-        //i_value = 0x00;
-        p_idx = perm[ i ];
+        p_idx = perm[ i - 1 ];
 
-        // What byte of the input array the value is in.
-        p_byte =  ( p_idx - 1 ) / 8;
+        // Get the bit at the perm specified index from the input data.
+        int value = getBit( input, p_idx );
+        // Set that bit value to the correct index in output.
+        putBit( output, ( i ), value );
 
-        // Normalize the perm index value to be between 1 - 8.
-        if ( p_idx > 8 )
-            i_idx = p_idx % 8;
-        else
-            i_idx = p_idx;
-
-        if ( i_idx == 0 ) {
-            i_idx = 8;
+        // Set the remaining bits of the last byte to 0 if n isn't a multiple of eight.
+        if( ( n % BYTE_SIZE ) != 0 ) {
+            // Value of the index raised to the next highest multiple of eight.
+            int even_byte = ( ( n / BYTE_SIZE ) + 1 ) * BYTE_SIZE;
+            for ( int i = n + 1; i <= even_byte; i++ ) {
+                putBit( output, ( i ), 0 );
+            }
         }
-
-        // Get the value at the perm index value in the input array.
-        unsigned char temp_mask = 0x80;
-
-        // temp_mask is either 0 or 1 depending on the value of the bit at the perm index value.
-        temp_mask = input[ p_byte ] & ( temp_mask >> ( i_idx - 1 ) );
-
-        // If the temp_mask value is 0 the set the bit at the first index of the output array to 0.
-        if ( ( temp_mask || 0x00 ) == 0 ) {
-            // i + 1 is treated as the index of output to set. Short is used to fit 16 bits.
-            unsigned short output_value = 0xFEFF;
-
-            int output_idx = 0;
-            if ( ( i + 1 ) > 8 )
-                output_idx = ( i + 1 ) % 8;
-            else
-                output_idx = ( i + 1 );
-
-            if ( output_idx == 0 )
-                output_idx = 8;
-
-            output_value = output_value >> output_idx;
-
-            int output_byte = i / 8;
-
-            output[ output_byte ] = output[ output_byte ] & ( unsigned char ) output_value;
-        }
-        else if ( ( temp_mask || 0x00 ) == 1 ) {
-            unsigned short output_value = 0x0100;
-
-            int output_idx = 0;
-            if ( ( i + 1 ) > 8 )
-                output_idx = ( i + 1 ) % 8;
-            else
-                output_idx = ( i + 1 );
-
-            if ( output_idx == 0 )
-                output_idx = 8;
-
-            output_value = output_value >> output_idx;
-
-            int output_byte = i / 8;
-
-            output[ output_byte ] = output[ output_byte ] | ( unsigned char ) output_value;
-        }
-        // if ( i == 8 ) {
-        //     fprintf( stderr, "\n------%s\n", "HERE");
-        // }
-        // fprintf( stderr, "\n%x\n", output[ 0 ]);
-        // fprintf( stderr, "%x\n", output[ 1 ]);
-
-        // Set the remaining bits of the last byte to 0 if n isn't a multiple of 8.
-        if ( ( n % 8 ) != 0 ) {
-            // Ex: n = 9
-            // 16 - 9 = 7 bits to turn to 0.
-            // 9 - 8 = 1 bit to remain set as normal (1 or 0)
-                // create a mask with all 0s except first bits that were already set.
-                // & this mask with the second byte
-
-            unsigned short output_value = 0xFF00;
-
-            int last_byte = ( n / 8 );
-
-            output_value = output_value >> ( n - ( 8 * last_byte ) );
-
-            output[ last_byte ] = output[ last_byte ] & ( unsigned char ) output_value;
-            //fprintf( stderr, "\n%d\n", n);
-        }
-
     }
-
-//     int a_index = 0;
-//     int idx = 0;
-//     unsigned char i_index = 0x80;
-//     unsigned char i_value = 0;
-// //    output[ 0 ] = 0x00;
-// //     output[ 1 ] = 0x00; 
-
-//     for ( int i = 0; i < n; i++ ) {
-//         idx = perm[ i ] % 8;
-//         if ( idx == 0 ) {
-//             idx = 8;
-//         }
-//         //fprintf( stderr, "\n%d\n", idx);
-//         //a_index = ( n - 1 ) / 8;
-//         //a_index = i / 8;
-//         a_index = perm[ i ] / 8;
-//         i_value = input[ a_index ];
-//         // fprintf( stderr, "\n%x\n", i_value);
-
-//         // Get the binary value from input based on the perm index value.
-//         i_index = i_index >> ( idx - 1 );
-//         // i_value = input[ i ] & i_index;
-//         //fprintf( stderr, "\n%x\n", i_index);
-//         i_value = i_value & i_index;
-//         //fprintf( stderr, "\n%x\n", i_value);
-//         // Convert the i_value to binary 0 or 1. Copy the input array binary value to the output array at the correct index.
-//         fprintf( stderr, "\n-------%d\n", i / 8);
-//         if ( ( i_value && 0xFF) == 1) {
-//             i_value = 0x80;
-//             //fprintf( stderr, "\n%x\n", i_value);
-//             // i % 8 is required so that values above 8 are at transformed to the correct index.
-//             int output_index = i % 8;
-//             if ( output_index == 0 )
-//                 output_index = 8;
-                
-//             i_value = i_value >> output_index;
-//             // if ( (i/8) == 1 ) {
-//             //     fprintf( stderr, "\n-------%s\n", "HERE");
-//             //     fprintf( stderr, "\n-------%x\n", i_value);
-//             // }
-//             //fprintf( stderr, "\n%x\n", i_value);
-//             //fprintf( stderr, "\n%x\n", i_value);
-//             output[ i / 8 ] = output[ i / 8 ] | i_value;
-            
-//         }
-//         else {
-//             //i_value = 0xFF00;
-//             //fprintf( stderr, "\n%x\n", i_value);
-//             // fprintf( stderr, "\n%x\n", i_value);
-//             if ( i >= 1 ) {
-//                 signed char s_value = 0x80;
-
-//                 int output_index = i % 8;
-//                 if ( output_index == 0 )
-//                     output_index = 8;
-
-//                 s_value = s_value >> ( output_index - 1 );
-//                 output[ i / 8 ] = output[ i / 8 ] & s_value;
-//                 // fprintf( stderr, "\n-------%x\n", s_value);
-//             }
-//             else {
-//                 i_value = 0x00;
-
-//                 int output_index = i % 8;
-//                 if ( output_index == 0 )
-//                     output_index = 8;
-
-//                 i_value = i_value >> ( output_index );
-//                 output[ i / 8 ] = output[ i / 8 ] & i_value;
-//                 // fprintf( stderr, "\n-------%x\n", i_value);
-//             }
-//             // fprintf( stderr, "\n-------%x\n", i_value);
-//             // output[ i / 8 ] = output[ i / 8 ] & i_value;
-//         }
-//         // fprintf( stderr, "\n%x\n", i / 8);
-//         fprintf( stderr, "\n%x\n", output[ 0 ]);
-//         fprintf( stderr, "%x\n", output[ 1 ]);
-//         //fprintf( stderr, "\n%x\n", i_value);
-
-//         // Copy the input array value to the output array.
-
-//         output[ i ] = output[ i ] | i_value;
-
-//         i_index = 0x80;
-//     }
-
-//     // Pad the ending of output with 0s if n is not a multiple of 8.
-//     if ( ( n % 8 ) != 0 ) {
-//         int n_remainder = n % 8;
-
-//         // If n is 9, the remainer will be 1. This must be changed to 7 as 7 0s must be added, not 1.
-//         //n_remainder = ( 8 - n_remainder );
-//         fprintf( stderr, "\n HERE \n");
-//         for ( int i = n_remainder + 1; i <= 8; i++ ) {
-//             i_value = 0xFEFF >> i;
-
-//             output[ a_index ] = output[ a_index ] & i_value;
-//         }
-//     }
-
-    // fprintf( stderr, "\n%x\n", output[ 0 ] );
-    // fprintf( stderr, "%x\n", output[ 1 ] );
 }
 
 void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLOCK_BYTES ] ) {
@@ -330,16 +135,6 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
 
     byte right_perm[ SUBKEY_HALF_BYTES ];
     permute( right_perm, key, rightSubkeyPerm, SUBKEY_HALF_BITS );
-    // for ( int b = 0; b < 4; b++ ) {
-    //         fprintf( stderr, "\n%x\n", right_perm[ b ] );
-    // }
-
-    // Left rotate the bits in the key based on the subkey shift schedule.
-    
-    // will loop through the shift schedule (starting at 1).
-        // At each index. I will getbit() those bits (1 or 2) and put them on the other side
-        // with each one of these (c1 & d1, c2 & d2...) they should be combined into a 56 bit key and permuted into a 48 bit key.
-        // these 48 bit keys should be stored in K as the sub keys.
 
     int c_bit_one = 0;
     int c_bit_two = 0;
@@ -360,20 +155,10 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
             c_bit_three = getBit( left_perm, 17 );
             c_bit_four = getBit( left_perm, 25 );
 
-            // fprintf( stderr, "\n%d", c_bit_one );
-            // fprintf( stderr, "\n%d", c_bit_two );
-            // fprintf( stderr, "\n%d", c_bit_three );
-            // fprintf( stderr, "\n%d", c_bit_four );
-
             d_bit_one = getBit( right_perm, 1 );
             d_bit_two = getBit( right_perm, 9 );
             d_bit_three = getBit( right_perm, 17 );
             d_bit_four = getBit( right_perm, 25 );
-
-            // fprintf( stderr, "\n%d", d_bit_one );
-            // fprintf( stderr, "\n%d", d_bit_two );
-            // fprintf( stderr, "\n%d", d_bit_three );
-            // fprintf( stderr, "\n%d", d_bit_four );
 
             // Shift each byte to the left by one.
             left_perm[ 0 ] = left_perm[ 0 ] << 1;
@@ -397,11 +182,6 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
             putBit( right_perm, 24, d_bit_four );
             putBit( right_perm, 28, d_bit_one );
 
-            // fprintf( stderr, "\nONE");
-            // // fprintf( stderr, "\n%x\n", left_perm );
-            // // fprintf( stderr, "%x\n", right_perm );
-            // fprintf( stderr, "\n%x\n", left_perm[ 0 ] );
-            // fprintf( stderr, "\n%x\n", right_perm[ 0 ] );
         }
         // If the shift schedule is two, get two bits.
         else {
@@ -437,12 +217,6 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
                 putBit( right_perm, 16, d_bit_three );
                 putBit( right_perm, 24, d_bit_four );
                 putBit( right_perm, 28, d_bit_one );
-
-                // fprintf( stderr, "\nTWO");
-                // // fprintf( stderr, "\n%x\n", left_perm );
-                // // fprintf( stderr, "%x\n", right_perm );
-                // fprintf( stderr, "\n%x\n", left_perm[ 0 ] );
-                // fprintf( stderr, "\n%x\n", right_perm[ 0 ] );
             }
         }
 
@@ -486,7 +260,6 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
         for ( int b = 0; b < 6; b++ ) {
             K[ i ][ b ] = output_key[ b ];
         }
-        // fprintf( stderr, "\n%x\n", output_key );
     }
 }
 
