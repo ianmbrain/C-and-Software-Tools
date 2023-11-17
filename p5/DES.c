@@ -1,11 +1,10 @@
-/** 
-    @file DES.c
-    @author
-    Implementation of the DES algorithm.
+/**
+ * @file DES.c
+ * @author Ian M Brain (imbrain)
+ * This file provides the core functionality for encryption and decryption byt implementing the DES algorithm
+ * This functionality includes preparing the key, getting and setting bits, ecrypting and decryption block data, and additional functionality.
+ * These functions are used in the ecrypt.c and decrypt.c to encrypt or decrypt blocks of data respectively and prepare subkeys.
 */
-
-// This is where the DES algorithms for encryption and decryption are implemented. 
-// It’s broken up into several small functions for the various steps, so these can be tested and debugged independently
 
 #include "DESMagic.h"
 #include "DES.h"

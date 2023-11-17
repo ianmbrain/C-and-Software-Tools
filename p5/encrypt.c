@@ -1,7 +1,11 @@
-
-//This is the main component for the encrypt program. 
-//It contains the main function and uses the other components to read the input file, 
-//to perform encryption and to write out the ciphertext output.
+/**
+ * @file encrypt.c
+ * @author Ian M Brain (imbrain)
+ * This file is the main file for the encryption program.
+ * The main function command line arguments include the encrypt program, encyption key, a file to encrypt, and an output file.
+ * This file uses functions from DES.c to generate the subkeys and encrypt the file.
+ * Also uses functions from io.c to read and write eight byte blocks of data from the input and output file.
+*/
 
 #include "io.h"
 #include "DES.h"
@@ -19,7 +23,17 @@
 /** Command line argument that contains the output file name. */
 #define CMD_OUTPUT 3
 
-
+/**
+ * Main function used to encrypt files.
+ * Takes in command line arguments of a encryption key, file to encrypt, and an output file.
+ * Encrypts a file using the encryption key and writes the encrypted data to an output file.
+ * Uses functions from DES.c to generate subkeys and encrypt the block.
+ * Uses functions from io.c to read and write eight byte blocks of data from the input and output file.
+ * Exits as a failure if there are an invalid number of command arguments, invalid input or output file, or invalid encryption key.
+ * @param argc number of command line arguments.
+ * @param argv array of command line argumnets values.
+ * @return zero if the command line arguments are invalid or one if the program passes.
+*/
 int main( int argc, char *argv[] ) {
     // Exit as failure if there are an invalid number of command arguments.
     if ( argc != CMD_ARGS ) {

@@ -1,3 +1,9 @@
+/**
+ * @file io.h
+ * @author Ian M Brain (imbrain)
+ * This file provides functionality to read and write eight byte blocks of data from a file to a provided DESBlock.
+ * These functions are used in encrypt.c and decrypt.c to read data from input files and write data to ouput files.
+*/
 
 #include "DES.h"
 #include <stdio.h>

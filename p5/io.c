@@ -1,5 +1,9 @@
-
-// This component is responsible for reading input and writing output files a block at a time.
+/**
+ * @file io.c
+ * @author Ian M Brain (imbrain)
+ * This file provides functionality to read and write eight byte blocks of data from a file to a provided DESBlock.
+ * These functions are used in encrypt.c and decrypt.c to read data from input files and write data to ouput files.
+*/
 
 #include "io.h"
 #include "DES.h"
