@@ -156,7 +156,7 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
             }
 
             // Put each bit in the correct place.
-            int put_index = 8;
+            int put_index = BYTE_SIZE;
             putBit( left_perm, put_index, c_bit_two );
             putBit( right_perm, put_index, d_bit_two );
 
@@ -174,7 +174,7 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
         }
         // If the shift schedule is two, get two bits.
         else {
-            for ( int j = 0; j < 2; j++ ) {
+            for ( int j = 0; j <= 1; j++ ) {
                 // Get the first bit from each byte.
                 int get_index = 1;
                 c_bit_one = getBit( left_perm, get_index );
@@ -262,7 +262,7 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
 
 void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx ) {
     // Adjusted index of the input value.
-    int index = idx * 6;
+    int index = idx * SBOX_INPUT_BITS;
     byte b1[ SBOX_INPUT_BITS ] = {};
 
     for ( int i = 0; i < SBOX_INPUT_BITS; i++ ) {
