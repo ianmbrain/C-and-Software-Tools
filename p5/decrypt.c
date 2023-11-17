@@ -84,7 +84,7 @@ int main( int argc, char *argv[] ) {
     // Allocate memory to the block
     DESBlock *block = ( DESBlock * )malloc( sizeof( DESBlock ) );
 
-    for ( int i = 0; i < file_length / 8; i++ ) {
+    for ( int i = 0; i < file_length / BYTE_SIZE; i++ ) {
         // Read the eight bytes of data from the file to the block.
         readBlock( file, block );
 

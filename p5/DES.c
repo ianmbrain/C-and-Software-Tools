@@ -18,6 +18,12 @@
 /** Number of bits in half a byte. */
 #define HALF_BYTE 4
 
+/** Bit value used to clear specific bits. */
+#define CLEAR_BITS 0xFEFF
+
+/** Bit value used to set specific bits. */
+#define SET_BITS 0x0100
+
 /** Value to adjust the index by when calulating which byte the index is within. */
 #define INDEX_ADJUSTMENT 1
 
@@ -58,7 +64,7 @@ int getBit( byte const data[], int idx ) {
         bit_index = BYTE_SIZE;
 
     // Moves the one bit to the position of bit_index and returns whether the bit is one or zero.
-    return ( data[ byte_index ] & ( 0x0100 >> bit_index ) ) != 0;
+    return ( data[ byte_index ] & ( SET_BITS >> bit_index ) ) != 0;
 }
 
 void putBit( byte data[], int idx, int val ) {
@@ -72,11 +78,11 @@ void putBit( byte data[], int idx, int val ) {
 
     // Use the bitwise and operator to clear the bit at the index if the value to set is zero.
     if ( val == 0 ) {
-        data[ byte_index ] = data[ byte_index ] & ( 0xFEFF >> bit_index );
+        data[ byte_index ] = data[ byte_index ] & ( CLEAR_BITS >> bit_index );
     }
     // Use the bitwise or operator to set the bit at the index if the value to set is one.
     else
-        data[ byte_index ] = data[ byte_index ] | ( 0x0100 >> bit_index );  
+        data[ byte_index ] = data[ byte_index ] | ( SET_BITS >> bit_index );  
 }
 
 void permute( byte output[], byte const input[], int const perm[], int n ) {
@@ -291,22 +297,22 @@ void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx ) {
     int sbox_output = sBoxTable[ sbox_index ][ row ][ col ];
 
     // Convert the sbox integer to binary.
-    byte output_byte = 0x00;
+    byte output_byte[ 1 ] = { 0x00 };
     int test_bit = BYTE_SIZE;
 
     while ( test_bit != 0 ) {
         if ( sbox_output / test_bit != 0 ) {
             if ( test_bit == 8 ) {
-                output_byte = output_byte | 0x80;
+                putBit( output_byte, 1, 1 );
             }
             else if ( test_bit == 4 ) {
-                output_byte = output_byte | 0x40;
+                putBit( output_byte, 2, 1 );
             }
             else if ( test_bit == 2 ) {
-                output_byte = output_byte | 0x20;
+                putBit( output_byte, 3, 1 );
             }
             else if ( test_bit == 1 ) {
-                output_byte = output_byte | 0x10;
+                putBit( output_byte, 4, 1 );
             }
             sbox_output -= test_bit;
 
@@ -316,7 +322,7 @@ void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx ) {
     }
 
     // Set the output byte to the transformed sbox value.
-    output[ 0 ] = output_byte;
+    output[ 0 ] = output_byte[ 0 ];
 }
 
 void fFunction( byte result[ BLOCK_HALF_BYTES ], byte const R[ BLOCK_HALF_BYTES ], byte const K[ SUBKEY_BYTES ] ) {
