@@ -4,7 +4,7 @@
 //to perform encryption and to write out the ciphertext output.
 
 #include "io.h"
-#include "DES.h" // ___--_____---_____--____--_---_--_--__--_----
+#include "DES.h"
 #include <string.h>
 
 /** Expected number of command line arguments. */
@@ -18,6 +18,7 @@
 
 /** Command line argument that contains the output file name. */
 #define CMD_OUTPUT 3
+
 
 int main( int argc, char *argv[] ) {
     // Exit as failure if there are an invalid number of command arguments.
@@ -34,13 +35,6 @@ int main( int argc, char *argv[] ) {
         perror( argv[ CMD_FILE ] );
         exit( EXIT_FAILURE );
     }
-
-    // ALREADY INCLUDED IN PREPARE KEY
-    // Exit as failure if the encryption key is longer than allowed.
-    // if ( strlen( argv[ CMD_KEY ] ) > 8 ) {
-    //     fprintf( stderr, "Key too long\n");
-    //     exit( EXIT_FAILURE );
-    // }
 
     // Convert the provided key into bytes.
     byte key[ BLOCK_BYTES ] = {};
@@ -59,36 +53,47 @@ int main( int argc, char *argv[] ) {
         exit( EXIT_FAILURE );
     }
 
+    // Initialize the DESBlock.
     DESBlock *block = ( DESBlock * )malloc( sizeof( DESBlock ) );
 
+    // Determine the length of the file.
     int file_length = 0;
     fseek( file, 0, SEEK_END );
     file_length = ftell( file );
     fseek( file, -file_length, SEEK_END );
 
-    if ( file_length % 8 != 0 ) {
+    // Set the file length to the next multiple of eight larger than the file length if the file is not a multiple of eight.
+    if ( file_length % BYTE_SIZE != 0 ) {
         int c = 0;
-        c = file_length / 8;
-        file_length = ( c + 1 ) * 8;
+        c = file_length / BYTE_SIZE;
+        file_length = ( c + 1 ) * BYTE_SIZE;
     }
 
-    for ( int i = 0; i < file_length / 8; i++ ) {
+    for ( int i = 0; i < file_length / BYTE_SIZE; i++ ) {
+        // Read eight bytes of data from the file to the block.
         readBlock( file, block );
 
-        if ( block->len != 8 ) {
-            int pad_count = 8 - block->len;
+        // Add padding to the last block if the file legnth was not a multiple of eight.
+        if ( block->len != BYTE_SIZE ) {
+            int pad_count = BYTE_SIZE - block->len;
 
             for ( int b = 0; b < pad_count; b++ ) {
                 block->data[ block->len + b ] =  0x00;
             }
 
-            block->len = 8;
+            block->len = BYTE_SIZE;
 
         }
 
-        // Encrypt the file.
+        // Encrypt the block data.
         encryptBlock( block, K );
 
+        // Write the block data to the output file.
         writeBlock( output, block );
     }
+
+    // Free the block memory and close the files.
+    free( block );
+    fclose( file );
+    fclose( output );
 }

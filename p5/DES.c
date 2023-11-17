@@ -129,10 +129,11 @@ void permute( byte output[], byte const input[], int const perm[], int n ) {
 }
 
 void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLOCK_BYTES ] ) {
-    // Create the left and right permutation from the given key.
+    // Create the left permutation from the given key.
     byte left_perm[ SUBKEY_HALF_BYTES ];
     permute( left_perm, key, leftSubkeyPerm, SUBKEY_HALF_BITS );
 
+    // Create the right permutation from the given key.
     byte right_perm[ SUBKEY_HALF_BYTES ];
     permute( right_perm, key, rightSubkeyPerm, SUBKEY_HALF_BITS );
 
@@ -147,6 +148,43 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
     int d_bit_four = 0;
 
     for ( int i = 1; i < ROUND_COUNT; i++ ) {
+        // for ( int i = 0; i <= SUBKEY_HALF_BYTES/ BYTE_SIZE; i++ ) {
+        //         if ( i == ( SUBKEY_HALF_BYTES / BYTE_SIZE - 1)  )
+        //             c_bit_one = getBit( left_perm, ( i * BYTE_SIZE ) + 1 - BYTE_SIZE / 2 );
+        //         else
+        //             c_bit_one = getBit( left_perm, ( i * BYTE_SIZE ) + 1 );
+        //         // c_bit_two = getBit( left_perm, 9 );
+        //         // c_bit_three = getBit( left_perm, 17 );
+        //         // c_bit_four = getBit( left_perm, 25 );
+
+        //         if ( i == ( SUBKEY_HALF_BYTES / BYTE_SIZE - 1)  )
+        //             d_bit_one = getBit( right_perm, ( i * BYTE_SIZE ) + 1 - BYTE_SIZE / 2 );
+        //         else
+        //             d_bit_one = getBit( right_perm, ( i * BYTE_SIZE ) + 1 );
+        //         // d_bit_two = getBit( right_perm, 9 );
+        //         // d_bit_three = getBit( right_perm, 17 );
+        //         // d_bit_four = getBit( right_perm, 25 );
+
+        //         // Shift each byte to the left by one.
+        //         left_perm[ i ] = left_perm[ i ] << 1;
+        //         right_perm[ i ] = right_perm[ i ] << 1;
+
+        //         if ( i == ( SUBKEY_HALF_BYTES / BYTE_SIZE - 1)  )
+        //             putBit( left_perm, ( i + 1 ) * BYTE_SIZE - BYTE_SIZE / 2, c_bit_two );
+        //         else
+        //             putBit( left_perm, ( i + 1 ) * BYTE_SIZE, c_bit_two );
+        //         // putBit( left_perm, 16, c_bit_three );
+        //         // putBit( left_perm, 24, c_bit_four );
+        //         // putBit( left_perm, 28, c_bit_one );
+
+        //         if ( i == ( SUBKEY_HALF_BYTES / BYTE_SIZE - 1)  )
+        //             putBit( right_perm, ( i + 1 ) * BYTE_SIZE - BYTE_SIZE / 2, d_bit_two );
+        //         else
+        //             putBit( right_perm, ( i + 1 ) * BYTE_SIZE, d_bit_two );
+        //         // putBit( right_perm, 16, d_bit_three );
+        //         // putBit( right_perm, 24, d_bit_four );
+        //         // putBit( right_perm, 28, d_bit_one );
+        //     }
         // If the shift schedule is one, get one bit.
         if ( subkeyShiftSchedule[ i ] == 1 ) {
             // Get the first bit from each byte.
@@ -263,35 +301,37 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
     }
 }
 
+/**
+ * This function takes an output byte, and array of six bytes as input, and and index ranging from zero to seven.
+ * Idx is multiplied by seven and added by one to six to get six consecutive bit values from the input data.
+ * The six bits are then used to determine the row and column to look up a value from an sBox table.
+ * The value specified in the sBox table is converted to binary and stored in the output data.
+ * This function is used within the fFunction to each six bit value of R into a four bit output value.
+ * @param output byte to store the output.
+ * @param input byte data to get sbox indexes from.
+ * @param idx index ranging from zero to seven.
+*/
 void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx ) {
-    // B is one of the 6 byte/48 bit elements of K.
-    // First get the index to start in input at using idx * 6 + 1 formula
-        // get the 6 bits
-        // Get the row index from first and last bit
-        // get column index
-        // the result from the s table is transformed to binary and put in output
-        // What table of sbox is used depends on idx ( at the end)
-    // ___-_-_--_-_--____---____--___- Note that idx counts from zero for B1, one for B2
-
+    // Adjusted index of the input value.
     int index = idx * 6;
-    byte b1[ 6 ] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    byte b1[ SBOX_INPUT_BITS ] = {};
 
-    for ( int i = 1; i < 7; i++ ) {
+    for ( int i = 0; i < SBOX_INPUT_BITS; i++ ) {
         index += 1;
 
         // Which byte of input the index is in.
-        int input_byte = ( index - 1 ) / 8;
+        int input_byte = ( index - 1 ) / BYTE_SIZE;
 
         // Which bit of the input byte the index is.
-        int input_bit = index % 8;
+        int input_bit = index % BYTE_SIZE;
         if ( input_bit == 0 )
-            input_bit = 8;
+            input_bit = BYTE_SIZE;
 
         // Move the bit to the lowest order bit.
-        unsigned char input_value = ( input[ input_byte ] >> ( 8 - input_bit ) ) & 0x01;
+        byte input_value = ( input[ input_byte ] >> ( BYTE_SIZE - input_bit ) ) & 0x01;
 
         // Set the corresponding array value to the value of the bit.
-        b1[ i - 1 ] = input_value;
+        b1[ i ] = input_value;
     }
 
     // Determine the row and column values
@@ -302,15 +342,14 @@ void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx ) {
                 (b1[ 4 ]) );
 
     // Determine what index of sbox to use.
-    index = idx * 6 + 1;
-    int sbox_index = (index - 1) / 6;
+    index = idx * SBOX_INPUT_BITS + 1;
+    int sbox_index = (index - 1) / SBOX_INPUT_BITS;
 
     int sbox_output = sBoxTable[ sbox_index ][ row ][ col ];
 
-    // Convert the sbox integer to binary
+    // Convert the sbox integer to binary.
     byte output_byte = 0x00;
-
-    int test_bit = 8;
+    int test_bit = BYTE_SIZE;
 
     while ( test_bit != 0 ) {
         if ( sbox_output / test_bit != 0 ) {
@@ -337,6 +376,15 @@ void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx ) {
     output[ 0 ] = output_byte;
 }
 
+/**
+ * This function takes a four byte result value and input value as well as a six byte key value.
+ * The input value is permuted to six bytes and modified using the key value.
+ * Each six bits of this value are transformed into four bit values using sBox.
+ * These are combined into four bytes and permuted into the result value.
+ * @param result four byte rearranged version of the R value.
+ * @param R four byte value to rearrange.
+ * @param K six byte value used to further rearrange the R value.
+*/
 void fFunction( byte result[ BLOCK_HALF_BYTES ], byte const R[ BLOCK_HALF_BYTES ], byte const K[ SUBKEY_BYTES ] ) {
     // Create the expanded r value using a 48 bit permutation.
     byte expanded_r[ SUBKEY_BYTES ];
@@ -353,16 +401,16 @@ void fFunction( byte result[ BLOCK_HALF_BYTES ], byte const R[ BLOCK_HALF_BYTES 
     // Cumulative result of the sBox calculations.
     byte sbox_result[ BLOCK_HALF_BYTES ];
 
-    for ( int i = 0; i < 8; i++ ) {
+    for ( int i = 0; i < BYTE_SIZE; i++ ) {
         // sBox() each six bits of B into four bit values.
         sBox( sbox_bits, B, i);
 
         int val = 0;
-        for ( int b = 1; b <= 4; b++ ) {
+        for ( int b = 1; b <= SBOX_ROWS; b++ ) {
             // Obtain each bit from the four bit value.
             val = getBit( sbox_bits, b );
             // Put that bit value at the correct index in the result.
-            putBit( sbox_result, ( 4 * i + b ), val );
+            putBit( sbox_result, ( SBOX_ROWS * i + b ), val );
         }
     }
 
@@ -370,88 +418,95 @@ void fFunction( byte result[ BLOCK_HALF_BYTES ], byte const R[ BLOCK_HALF_BYTES 
     permute( result, sbox_result, fFunctionPerm, 32 );
 }
 
+/**
+ * Encrypts a block of eight bytes using the data of sixteen keys.
+ * The block is first permuted into two 32 bit balues.
+ * The encryption process then uses the fFucntion to to rearrange the bit values based on each key.
+ * Used in encrypt.c to encrypt each eight blocks of data.
+ * @param block block containing the eight byte data to encrypt.
+ * @param K sixteen key data.
+*/
 void encryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] ) {
-    //take DESBlock and permute into two separate 32 bit arrays
-        // Each time, combine R with K(i) using the fFunction()
-        // Combine with previous L value using exclusive or
-        // After all of this, combine the L and R blocks together
-
     byte L[ BLOCK_HALF_BYTES ];
     byte R[ BLOCK_HALF_BYTES ];
     byte l_next[ BLOCK_HALF_BYTES ];
     byte r_next[ BLOCK_HALF_BYTES ];
-    // for ( int i = 0; i < 6; i++ ) {
-    //     fprintf( stderr, "\n%x\n", K[ 1 ][ i ]);
-    //     fprintf( stderr, "\n%x\n", block->data[ i ]);
-    //     fprintf( stderr, "\n------------\n" );
-    // }
 
-    permute( L, block->data, leftInitialPerm, 32 );
-    permute( R, block->data, rightInitialPerm, 32 );
-    // fprintf( stderr, "\n%x\n", R[ 2 ] );
+    permute( L, block->data, leftInitialPerm, BLOCK_HALF_BYTES * BYTE_SIZE );
+    permute( R, block->data, rightInitialPerm, BLOCK_HALF_BYTES * BYTE_SIZE );
 
     for ( int i = 1; i <= 16; i++ ) {
-        // Perform the fFunction() or R using the corresponding K value.
+        // Perform the fFunction() on R using the corresponding K value.
         fFunction( r_next, R, K[ i ] );
 
         // Copy R into l_next.
-        for ( int b = 0; b < 4; b++ )
+        for ( int b = 0; b < BLOCK_HALF_BYTES; b++ )
             l_next[ b ] = R[ b ];
 
         // Set R equal to the exclusive or value of r_next and L.
-        for ( int b = 0; b < 4; b++ )
+        for ( int b = 0; b < BLOCK_HALF_BYTES; b++ )
             R[ b ] = r_next[ b ] ^ L[ b ];
 
         // Set L to the previous value of R, which is l_next.
-        for ( int b = 0; b < 4; b++ )
+        for ( int b = 0; b < BLOCK_HALF_BYTES; b++ )
             L[ b ] = l_next[ b ];
     }
 
     // Combine R and L.
     byte final[ BLOCK_BYTES ];
-    for ( int i = 0; i < 8; i++ ) {
-        if ( i < 4 )
+    for ( int i = 0; i < BYTE_SIZE; i++ ) {
+        if ( i < BLOCK_HALF_BYTES )
             final[ i ] = R[ i ];
         else
-            final[ i ] = L[ i - 4 ];
+            final[ i ] = L[ i - BLOCK_HALF_BYTES ];
     }
 
     // Permute this final value back into the result block.
     permute( block->data, final, finalPerm, BLOCK_BITS );
 }
 
+/**
+ * Decrypts a block of eight bytes using the data of sixteen keys.
+ * The block is first permuted into two 32 bit balues.
+ * The encryption process then uses the fFucntion to to rearrange the bit values based on each key.
+ * Decryption differs from encryption in that decryption uses the keys in reverse order.
+ * Used in decrypt.c to decrypt each eight blocks of data.
+ * @param block block containing the eight byte data to encrypt.
+ * @param K sixteen key data.
+*/
 void decryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] ) {
     byte L[ BLOCK_HALF_BYTES ];
     byte R[ BLOCK_HALF_BYTES ];
     byte l_next[ BLOCK_HALF_BYTES ];
     byte r_next[ BLOCK_HALF_BYTES ];
 
-    permute( L, block->data, leftInitialPerm, 32 );
-    permute( R, block->data, rightInitialPerm, 32 );
+    permute( L, block->data, leftInitialPerm, BLOCK_HALF_BYTES * BYTE_SIZE );
+    permute( R, block->data, rightInitialPerm, BLOCK_HALF_BYTES * BYTE_SIZE );
 
     for ( int i = 16; i >= 1; i-- ) {
-        // Perform the fFunction() or R using the corresponding K value.
+        // Perform the fFunction() on R using the corresponding K value.
         fFunction( r_next, R, K[ i ] );
 
         // Copy R into l_next.
-        for ( int b = 0; b < 4; b++ )
+        for ( int b = 0; b < BLOCK_HALF_BYTES; b++ )
             l_next[ b ] = R[ b ];
 
         // Set R equal to the exclusive or value of r_next and L.
-        for ( int b = 0; b < 4; b++ )
+        for ( int b = 0; b < BLOCK_HALF_BYTES; b++ )
             R[ b ] = r_next[ b ] ^ L[ b ];
 
         // Set L to the previous value of R, which is l_next.
-        for ( int b = 0; b < 4; b++ )
+        for ( int b = 0; b < BLOCK_HALF_BYTES; b++ )
             L[ b ] = l_next[ b ];
     }
 
+    // Combine R and L.
     byte final[ BLOCK_BYTES ];
-    for ( int i = 0; i < 8; i++ ) {
-        if ( i < 4 )
+    for ( int i = 0; i < BYTE_SIZE; i++ ) {
+        if ( i < BLOCK_HALF_BYTES )
             final[ i ] = R[ i ];
         else
-            final[ i ] = L[ i - 4 ];
+            final[ i ] = L[ i - BLOCK_HALF_BYTES ];
     }
 
     // Permute this final value back into the result block.

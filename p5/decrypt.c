@@ -35,22 +35,14 @@ int main( int argc, char *argv[] ) {
         exit( EXIT_FAILURE );
     }
 
-    // ALREADY INCLUDED IN PREPARE KEY
-    // Exit as failure if the encryption key is longer than allowed.
-    // if ( strlen( argv[ CMD_KEY ] ) > 8 ) {
-    //     fprintf( stderr, "Key too long\n");
-    //     exit( EXIT_FAILURE );
-    // }
-
     // Determine the length of the input file.
-    // Length of the file.
     int file_length = 0;
     fseek( file, 0, SEEK_END );
     file_length = ftell( file );
     fseek( file, -file_length, SEEK_END );
 
     // Exit as failure if the decryption file length is not a multiple of eight.    
-    if ( file_length % 8 != 0 ) {
+    if ( file_length % BYTE_SIZE != 0 ) {
         fprintf( stderr, "%s%s\n", "Bad ciphertext file length: ", argv[ CMD_FILE ] );
         exit( EXIT_FAILURE );
     }
@@ -72,11 +64,14 @@ int main( int argc, char *argv[] ) {
         exit( EXIT_FAILURE );
     }
 
+    // Allocate memory to the block
     DESBlock *block = ( DESBlock * )malloc( sizeof( DESBlock ) );
+
     for ( int i = 0; i < file_length / 8; i++ ) {
+        // Read the eight bytes of data from the file to the block.
         readBlock( file, block );
 
-        // Decrypt the file.
+        // Decrypt the block data.
         decryptBlock( block, K );
 
         // If there was padding added to the end of the cipher text, decrease the length to prevent padding from being written to the file.
@@ -86,6 +81,12 @@ int main( int argc, char *argv[] ) {
             }
         }
 
+        // Write the block of data to the output file.
         writeBlock( output, block );
     }
+
+    // Free the block memory and close the files.
+    free( block );
+    fclose( file );
+    fclose( output );
 }
