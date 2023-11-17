@@ -32,7 +32,7 @@
  * Exits as a failure if there are an invalid number of command arguments, invalid input or output file, or invalid encryption key.
  * @param argc number of command line arguments.
  * @param argv array of command line argumnets values.
- * @return zero if the command line arguments are invalid or one if the program passes.
+ * @return one if the command line arguments are invalid or zero if the program passes.
 */
 int main( int argc, char *argv[] ) {
     // Exit as failure if there are an invalid number of command arguments.
@@ -40,6 +40,10 @@ int main( int argc, char *argv[] ) {
         fprintf( stderr, "usage: encryt <key> <input_file> <output_file>\n");
         exit( EXIT_FAILURE );
     }
+
+    // Convert the provided key into bytes.
+    byte key[ BLOCK_BYTES ] = {};
+    prepareKey( key, argv[ CMD_KEY ] );
 
     // Open the input file.
     FILE *file = fopen( argv[ CMD_FILE ], "rb" );
@@ -50,10 +54,6 @@ int main( int argc, char *argv[] ) {
         exit( EXIT_FAILURE );
     }
 
-    // Convert the provided key into bytes.
-    byte key[ BLOCK_BYTES ] = {};
-    prepareKey( key, argv[ CMD_KEY ] );
-
     // Generate the subkeys from the provided key.
     byte K[ ROUND_COUNT ][ SUBKEY_BYTES ] = {};
     generateSubkeys( K, key );
@@ -63,6 +63,7 @@ int main( int argc, char *argv[] ) {
 
     // Exit as failure if the input file cannot be opened.
     if ( output == NULL ) {
+        fclose( file );
         perror( argv[ CMD_OUTPUT ] );
         exit( EXIT_FAILURE );
     }

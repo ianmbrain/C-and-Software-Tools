@@ -33,7 +33,7 @@
  * invalid encryption key, or if the input file length is not a multiple of eight.
  * @param argc number of command line arguments.
  * @param argv array of command line argumnets values.
- * @return zero if the command line arguments are invalid or one if the program passes.
+ * @return one if the command line arguments are invalid or zero if the program passes.
 */
 int main( int argc, char *argv[] ) {
     // Exit as failure if there are an invalid number of command arguments.
@@ -41,6 +41,14 @@ int main( int argc, char *argv[] ) {
         fprintf( stderr, "usage: decrypt <key> <input_file> <output_file>\n");
         exit( EXIT_FAILURE );
     }
+
+    // Convert the provided key into bytes.
+    byte key[ BLOCK_BYTES ] = {};
+    prepareKey( key, argv[ CMD_KEY ] );
+
+    // Generate the subkeys from the provided key.
+    byte K[ ROUND_COUNT ][ SUBKEY_BYTES ] = {};
+    generateSubkeys( K, key );
 
     // Open the input file.
     FILE *file = fopen( argv[ CMD_FILE ], "rb" );
@@ -59,17 +67,10 @@ int main( int argc, char *argv[] ) {
 
     // Exit as failure if the decryption file length is not a multiple of eight.    
     if ( file_length % BYTE_SIZE != 0 ) {
+        fclose( file );
         fprintf( stderr, "%s%s\n", "Bad ciphertext file length: ", argv[ CMD_FILE ] );
         exit( EXIT_FAILURE );
     }
-
-    // Convert the provided key into bytes.
-    byte key[ BLOCK_BYTES ] = {};
-    prepareKey( key, argv[ CMD_KEY ] );
-
-    // Generate the subkeys from the provided key.
-    byte K[ ROUND_COUNT ][ SUBKEY_BYTES ] = {};
-    generateSubkeys( K, key );
 
     // Open the output file.
     FILE *output = fopen( argv[ CMD_OUTPUT ], "wb" );

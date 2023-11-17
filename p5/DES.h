@@ -82,6 +82,15 @@ void putBit( byte data[], int idx, int val );
 */
 void permute( byte output[], byte const input[], int const perm[], int n );
 
+/**
+ * This function is useed in encrypt.c and decrypt.c to generate subkeys from the given key.
+ * Takes a eight byte and creates sixteen size byte subkeys from it.
+ * This is done by creating two 28 bit permutations of the key and left rotating the bits.
+ * The two keys are combined after each left rotation and then permutated into a six byte value.
+ * These key are used in the fFunction().
+ * @param K array of subkeys generated from the key.
+ * @param key key used to create the subkeys.
+*/
 void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLOCK_BYTES ] );
 
 /**

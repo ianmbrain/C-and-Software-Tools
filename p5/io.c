@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 void readBlock( FILE *fp, DESBlock *block ) {
-    block->len = fread( block->data, 1, 8, fp );
+    block->len = fread( block->data, 1, BYTE_SIZE, fp );
 }
 
 void writeBlock( FILE *fp, DESBlock const *block ) {

@@ -12,6 +12,12 @@
 #include <stdio.h>
 #include <string.h>
 
+/** Value of the combined permutated halves of the key used withing generateSubkeys(). */
+#define GENERATE_COMBINED_KEYS 7
+
+/** Number of bits in half a byte. */
+#define HALF_BYTE 4
+
 /** Value to adjust the index by when calulating which byte the index is within. */
 #define INDEX_ADJUSTMENT 1
 
@@ -106,134 +112,112 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
     byte right_perm[ SUBKEY_HALF_BYTES ];
     permute( right_perm, key, rightSubkeyPerm, SUBKEY_HALF_BITS );
 
+    // Bits move in the left permutation.
     int c_bit_one = 0;
     int c_bit_two = 0;
     int c_bit_three = 0;
     int c_bit_four = 0;
 
+    // Bits move in the right permutation.
     int d_bit_one = 0;
     int d_bit_two = 0;
     int d_bit_three = 0;
     int d_bit_four = 0;
 
     for ( int i = 1; i < ROUND_COUNT; i++ ) {
-        // for ( int i = 0; i <= SUBKEY_HALF_BYTES/ BYTE_SIZE; i++ ) {
-        //         if ( i == ( SUBKEY_HALF_BYTES / BYTE_SIZE - 1)  )
-        //             c_bit_one = getBit( left_perm, ( i * BYTE_SIZE ) + 1 - BYTE_SIZE / 2 );
-        //         else
-        //             c_bit_one = getBit( left_perm, ( i * BYTE_SIZE ) + 1 );
-        //         // c_bit_two = getBit( left_perm, 9 );
-        //         // c_bit_three = getBit( left_perm, 17 );
-        //         // c_bit_four = getBit( left_perm, 25 );
-
-        //         if ( i == ( SUBKEY_HALF_BYTES / BYTE_SIZE - 1)  )
-        //             d_bit_one = getBit( right_perm, ( i * BYTE_SIZE ) + 1 - BYTE_SIZE / 2 );
-        //         else
-        //             d_bit_one = getBit( right_perm, ( i * BYTE_SIZE ) + 1 );
-        //         // d_bit_two = getBit( right_perm, 9 );
-        //         // d_bit_three = getBit( right_perm, 17 );
-        //         // d_bit_four = getBit( right_perm, 25 );
-
-        //         // Shift each byte to the left by one.
-        //         left_perm[ i ] = left_perm[ i ] << 1;
-        //         right_perm[ i ] = right_perm[ i ] << 1;
-
-        //         if ( i == ( SUBKEY_HALF_BYTES / BYTE_SIZE - 1)  )
-        //             putBit( left_perm, ( i + 1 ) * BYTE_SIZE - BYTE_SIZE / 2, c_bit_two );
-        //         else
-        //             putBit( left_perm, ( i + 1 ) * BYTE_SIZE, c_bit_two );
-        //         // putBit( left_perm, 16, c_bit_three );
-        //         // putBit( left_perm, 24, c_bit_four );
-        //         // putBit( left_perm, 28, c_bit_one );
-
-        //         if ( i == ( SUBKEY_HALF_BYTES / BYTE_SIZE - 1)  )
-        //             putBit( right_perm, ( i + 1 ) * BYTE_SIZE - BYTE_SIZE / 2, d_bit_two );
-        //         else
-        //             putBit( right_perm, ( i + 1 ) * BYTE_SIZE, d_bit_two );
-        //         // putBit( right_perm, 16, d_bit_three );
-        //         // putBit( right_perm, 24, d_bit_four );
-        //         // putBit( right_perm, 28, d_bit_one );
-        //     }
-        // If the shift schedule is one, get one bit.
         if ( subkeyShiftSchedule[ i ] == 1 ) {
             // Get the first bit from each byte.
-            c_bit_one = getBit( left_perm, 1 );
-            c_bit_two = getBit( left_perm, 9 );
-            c_bit_three = getBit( left_perm, 17 );
-            c_bit_four = getBit( left_perm, 25 );
+            int get_index = 1;
+            c_bit_one = getBit( left_perm, get_index );
+            d_bit_one = getBit( right_perm, get_index );
 
-            d_bit_one = getBit( right_perm, 1 );
-            d_bit_two = getBit( right_perm, 9 );
-            d_bit_three = getBit( right_perm, 17 );
-            d_bit_four = getBit( right_perm, 25 );
+            get_index += BYTE_SIZE;
+            c_bit_two = getBit( left_perm, get_index );
+            d_bit_two = getBit( right_perm, get_index );
+
+            get_index += BYTE_SIZE;
+            c_bit_three = getBit( left_perm, get_index );
+            d_bit_three = getBit( right_perm, get_index );
+
+            get_index += BYTE_SIZE;
+            c_bit_four = getBit( left_perm, get_index );
+            d_bit_four = getBit( right_perm, get_index );
 
             // Shift each byte to the left by one.
-            left_perm[ 0 ] = left_perm[ 0 ] << 1;
-            left_perm[ 1 ] = left_perm[ 1 ] << 1;
-            left_perm[ 2 ] = left_perm[ 2 ] << 1;
-            left_perm[ 3 ] = left_perm[ 3 ] << 1;
-
-            right_perm[ 0 ] = right_perm[ 0 ] << 1;
-            right_perm[ 1 ] = right_perm[ 1 ] << 1;
-            right_perm[ 2 ] = right_perm[ 2 ] << 1;
-            right_perm[ 3 ] = right_perm[ 3 ] << 1;
+            for ( int i = 0; i < SUBKEY_HALF_BYTES; i++ ) {
+                left_perm[ i ] = left_perm[ i ] << 1;
+                right_perm[ i ] = right_perm[ i ] << 1;
+            }
 
             // Put each bit in the correct place.
-            putBit( left_perm, 8, c_bit_two );
-            putBit( left_perm, 16, c_bit_three );
-            putBit( left_perm, 24, c_bit_four );
-            putBit( left_perm, 28, c_bit_one );
+            int put_index = 8;
+            putBit( left_perm, put_index, c_bit_two );
+            putBit( right_perm, put_index, d_bit_two );
 
-            putBit( right_perm, 8, d_bit_two );
-            putBit( right_perm, 16, d_bit_three );
-            putBit( right_perm, 24, d_bit_four );
-            putBit( right_perm, 28, d_bit_one );
+            put_index += BYTE_SIZE;
+            putBit( left_perm, put_index, c_bit_three );
+            putBit( right_perm, put_index, d_bit_three );
 
+            put_index += BYTE_SIZE;
+            putBit( left_perm, put_index, c_bit_four );
+            putBit( right_perm, put_index, d_bit_four );
+
+            put_index += HALF_BYTE;
+            putBit( left_perm, put_index, c_bit_one );
+            putBit( right_perm, put_index, d_bit_one );
         }
         // If the shift schedule is two, get two bits.
         else {
             for ( int j = 0; j < 2; j++ ) {
-                c_bit_one = getBit( left_perm, 1 );
-                c_bit_two = getBit( left_perm, 9 );
-                c_bit_three = getBit( left_perm, 17 );
-                c_bit_four = getBit( left_perm, 25 );
+                // Get the first bit from each byte.
+                int get_index = 1;
+                c_bit_one = getBit( left_perm, get_index );
+                d_bit_one = getBit( right_perm, get_index );
 
-                d_bit_one = getBit( right_perm, 1 );
-                d_bit_two = getBit( right_perm, 9 );
-                d_bit_three = getBit( right_perm, 17 );
-                d_bit_four = getBit( right_perm, 25 );
+                get_index += BYTE_SIZE;
+                c_bit_two = getBit( left_perm, get_index );
+                d_bit_two = getBit( right_perm, get_index );
+
+                get_index += BYTE_SIZE;
+                c_bit_three = getBit( left_perm, get_index );
+                d_bit_three = getBit( right_perm, get_index );
+
+                get_index += BYTE_SIZE;
+                c_bit_four = getBit( left_perm, get_index );
+                d_bit_four = getBit( right_perm, get_index );
 
                 // Shift each byte to the left by one.
-                left_perm[ 0 ] = left_perm[ 0 ] << 1;
-                left_perm[ 1 ] = left_perm[ 1 ] << 1;
-                left_perm[ 2 ] = left_perm[ 2 ] << 1;
-                left_perm[ 3 ] = left_perm[ 3 ] << 1;
-
-                right_perm[ 0 ] = right_perm[ 0 ] << 1;
-                right_perm[ 1 ] = right_perm[ 1 ] << 1;
-                right_perm[ 2 ] = right_perm[ 2 ] << 1;
-                right_perm[ 3 ] = right_perm[ 3 ] << 1;
+                for ( int i = 0; i < SUBKEY_HALF_BYTES; i++ ) {
+                    left_perm[ i ] = left_perm[ i ] << 1;
+                    right_perm[ i ] = right_perm[ i ] << 1;
+                }
 
                 // Put each bit in the correct place.
-                putBit( left_perm, 8, c_bit_two );
-                putBit( left_perm, 16, c_bit_three );
-                putBit( left_perm, 24, c_bit_four );
-                putBit( left_perm, 28, c_bit_one );
+                int put_index = BYTE_SIZE;
+                putBit( left_perm, put_index, c_bit_two );
+                putBit( right_perm, put_index, d_bit_two );
 
-                putBit( right_perm, 8, d_bit_two );
-                putBit( right_perm, 16, d_bit_three );
-                putBit( right_perm, 24, d_bit_four );
-                putBit( right_perm, 28, d_bit_one );
+                put_index += BYTE_SIZE;
+                putBit( left_perm, put_index, c_bit_three );
+                putBit( right_perm, put_index, d_bit_three );
+
+                put_index += BYTE_SIZE;
+                putBit( left_perm, put_index, c_bit_four );
+                putBit( right_perm, put_index, d_bit_four );
+
+                put_index += HALF_BYTE;
+                putBit( left_perm, put_index, c_bit_one );
+                putBit( right_perm, put_index, d_bit_one );
             }
         }
 
         // Combine the subkeys into one 56 bit key.
-        // When combining, we need to get rid of the last four bits in each key to make them truly 28 bits
-        byte left_right_key[ 7 ];
+        // When combining the last four bits in each key must be removed to make them truly 28 bits
+        byte left_right_key[ GENERATE_COMBINED_KEYS ];
 
         // Copy bytes from the left perm.
-        for ( int b = 0; b < 4; b++ ) {
-            if ( b < 3 ) {
+        for ( int b = 0; b < BLOCK_HALF_BYTES; b++ ) {
+            if ( b < ( BLOCK_HALF_BYTES - 1 ) ) {
                 left_right_key[ b ] = left_perm[ b ];
             }
             // On the last by, get the last four bits from the left perm and the first four bits from the second perm.
@@ -241,30 +225,30 @@ void generateSubkeys( byte K[ ROUND_COUNT ][ SUBKEY_BYTES ], byte const key[ BLO
                 byte last_byte = 0x00;
 
                 last_byte = last_byte | left_perm[ b ];
-                //last_byte = last_byte << 4;
-                last_byte = last_byte | ( right_perm[ 0 ] >> 4 );
+
+                last_byte = last_byte | ( right_perm[ 0 ] >> BLOCK_HALF_BYTES );
 
                 left_right_key[ b ] = last_byte;
             }
         }
 
         // Copy the bytes from the right perm. Each byte is a combination of the last and first four bits from sequential bytes.
-        for ( int b = 4; b < 7; b++ ) {
+        for ( int b = BLOCK_HALF_BYTES; b <= SUBKEY_BYTES; b++ ) {
             byte last_byte = 0x00;
 
-            last_byte = last_byte | ( right_perm[ b - 4 ] << 4 );
-            //last_byte = last_byte << 4;
-            last_byte = last_byte | ( right_perm[ b - 3 ] >> 4 );
+            last_byte = last_byte | ( right_perm[ b - BLOCK_HALF_BYTES ] << BLOCK_HALF_BYTES );
+
+            last_byte = last_byte | ( right_perm[ b - ( BLOCK_HALF_BYTES - 1 ) ] >> BLOCK_HALF_BYTES );
 
             left_right_key[ b ] = last_byte;
         }
 
         // Permute the 56 bit key combination into a 48 bit key.
-        byte output_key[ 6 ];
+        byte output_key[ SUBKEY_BYTES ];
         permute( output_key, left_right_key, subkeyPerm, SUBKEY_BITS );
 
         // Add the permuted 48 bit key to the K array.
-        for ( int b = 0; b < 6; b++ ) {
+        for ( int b = 0; b < SUBKEY_BYTES; b++ ) {
             K[ i ][ b ] = output_key[ b ];
         }
     }
@@ -365,7 +349,7 @@ void fFunction( byte result[ BLOCK_HALF_BYTES ], byte const R[ BLOCK_HALF_BYTES 
     }
 
     // Permute the result into the correct result.
-    permute( result, sbox_result, fFunctionPerm, 32 );
+    permute( result, sbox_result, fFunctionPerm, BLOCK_HALF_BITS );
 }
 
 void encryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] ) {
@@ -374,10 +358,10 @@ void encryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] 
     byte l_next[ BLOCK_HALF_BYTES ];
     byte r_next[ BLOCK_HALF_BYTES ];
 
-    permute( L, block->data, leftInitialPerm, BLOCK_HALF_BYTES * BYTE_SIZE );
-    permute( R, block->data, rightInitialPerm, BLOCK_HALF_BYTES * BYTE_SIZE );
+    permute( L, block->data, leftInitialPerm, BLOCK_HALF_BITS);
+    permute( R, block->data, rightInitialPerm, BLOCK_HALF_BITS );
 
-    for ( int i = 1; i <= 16; i++ ) {
+    for ( int i = 1; i < ROUND_COUNT; i++ ) {
         // Perform the fFunction() on R using the corresponding K value.
         fFunction( r_next, R, K[ i ] );
 
@@ -413,10 +397,10 @@ void decryptBlock( DESBlock *block, byte const K[ ROUND_COUNT ][ SUBKEY_BYTES ] 
     byte l_next[ BLOCK_HALF_BYTES ];
     byte r_next[ BLOCK_HALF_BYTES ];
 
-    permute( L, block->data, leftInitialPerm, BLOCK_HALF_BYTES * BYTE_SIZE );
-    permute( R, block->data, rightInitialPerm, BLOCK_HALF_BYTES * BYTE_SIZE );
+    permute( L, block->data, leftInitialPerm, BLOCK_HALF_BITS );
+    permute( R, block->data, rightInitialPerm, BLOCK_HALF_BITS );
 
-    for ( int i = 16; i >= 1; i-- ) {
+    for ( int i = ROUND_COUNT - 1; i >= 1; i-- ) {
         // Perform the fFunction() on R using the corresponding K value.
         fFunction( r_next, R, K[ i ] );
 
