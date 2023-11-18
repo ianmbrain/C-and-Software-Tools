@@ -1,7 +1,7 @@
 /**
  * @file DES.c
  * @author Ian M Brain (imbrain)
- * This file provides the core functionality for encryption and decryption byt implementing the DES algorithm
+ * This file provides the core functionality for encryption and decryption byt implementing the DES algorithm.
  * This functionality includes preparing the key, getting and setting bits, ecrypting and decryption block data, and additional functionality.
  * These functions are used in the ecrypt.c and decrypt.c to encrypt or decrypt blocks of data respectively and prepare subkeys.
 */
@@ -28,7 +28,7 @@
 #define INDEX_ADJUSTMENT 1
 
 void prepareKey( byte key[ BLOCK_BYTES ], char const *textKey ) {
-    // Length of the key
+    // Length of the key.
     int key_len = strlen( textKey );
 
     // Exit as failure if the encryption key is longer than eight characters.
@@ -285,9 +285,9 @@ void sBox( byte output[ 1 ], byte const input[ SUBKEY_BYTES ], int idx ) {
 
     // Determine the row and column values
     int row = ( (b1[ 0 ] << 1) | b1[ 5 ] );
-    int col = ( (b1[ 1 ] << 3 ) | 
-                (b1[ 2 ] << 2 ) | 
-                (b1[ 3 ] << 1 ) | 
+    int col = ( (b1[ 1 ] << 3 ) |
+                (b1[ 2 ] << 2 ) |
+                (b1[ 3 ] << 1 ) |
                 (b1[ 4 ]) );
 
     // Determine what index of sbox to use.

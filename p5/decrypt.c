@@ -65,7 +65,7 @@ int main( int argc, char *argv[] ) {
     file_length = ftell( file );
     fseek( file, -file_length, SEEK_END );
 
-    // Exit as failure if the decryption file length is not a multiple of eight.    
+    // Exit as failure if the decryption file length is not a multiple of eight.
     if ( file_length % BYTE_SIZE != 0 ) {
         fclose( file );
         fprintf( stderr, "%s%s\n", "Bad ciphertext file length: ", argv[ CMD_FILE ] );
