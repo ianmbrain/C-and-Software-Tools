@@ -8,6 +8,8 @@
 #include <stdlib.h>
 
 #include "value.h"
+// Only using for testing, can get rid of this _---__-_-_-_-----______--______--____----__-
+#include <stdio.h>
 
 typedef struct MapPairStruct MapPair;
 
@@ -51,18 +53,20 @@ Map *makeMap( int len )
 
 int mapSize( Map *m )
 {
-  int cum_size = 0;
+  // int cum_size = 0;
 
-  for ( int i = 0; i < m->tlen; i++ ) {
-    MapPair *temp_mapPair = ( m->table );
+  // for ( int i = 0; i < m->tlen; i++ ) {
+  //   MapPair *temp_mapPair = *( m->table );
 
-    while ( temp_mapPair != NULL ) {
-      cum_size++;
-      temp_mapPair = temp_mapPair->next;
-    }
-  }
+  //   while ( temp_mapPair != NULL ) {
+  //     cum_size++;
+  //     temp_mapPair = temp_mapPair->next;
+  //   }
+  // }
 
-  return cum_size;
+  // return cum_size;
+
+  return m->size;
 }
 
 void mapSet( Map *m, Value *key, Value *val )
@@ -71,8 +75,7 @@ void mapSet( Map *m, Value *key, Value *val )
   hash_val = hash_val % m->tlen;
 
   // Replace the value for the given value if the key already exists in the map.
-  MapPair **cur_pair = m->table[ hash_val ];
-
+  MapPair **cur_pair = &( m->table[ hash_val ] ) ;
   while ( *cur_pair && !( *cur_pair )->key.equals( &( *cur_pair )->key, key ) ) {
     cur_pair = &( *cur_pair )->next;
   }
@@ -86,12 +89,15 @@ void mapSet( Map *m, Value *key, Value *val )
     MapPair *new_pair = ( MapPair * ) malloc( sizeof( MapPair ) );
     new_pair->key = *key;
     new_pair->val = *val;
-    new_pair->next = cur_pair;
+    new_pair->next = *cur_pair;
+    *cur_pair = new_pair;
     m->size++;
-  }
+    
+    // printf( "\nHERE\n" );
 
-  free( key );
-  free( val );
+    // free( key );
+    // free( val );
+  }
 
   // while ( cur_pair->next != NULL ) {
   //   if ( cur_pair->key.equals( &( cur_pair->key ), key ) ) {
@@ -110,7 +116,9 @@ Value *mapGet( Map *m, Value *key )
   unsigned int hash_val = key->hash( key );
   hash_val = hash_val % m->tlen;
 
-  MapPair **cur_pair = m->table[ hash_val ];
+  MapPair **cur_pair = &( m->table[ hash_val ] );
+
+  // printf( "\n%d\n", (*cur_pair)->val.ival );
 
   while ( *cur_pair && !( *cur_pair )->key.equals( &( *cur_pair )->key, key ) ) {
     cur_pair = &( *cur_pair )->next;
@@ -129,7 +137,7 @@ bool mapRemove( Map *m, Value *key )
   unsigned int hash_val = key->hash( key );
   hash_val = hash_val % m->tlen;
 
-  MapPair **cur_pair = m->table[ hash_val ];
+  MapPair **cur_pair = &( m->table[ hash_val ] );
 
   while ( *cur_pair && !( *cur_pair )->key.equals( &( *cur_pair )->key, key ) ) {
     cur_pair = &( *cur_pair )->next;
@@ -155,7 +163,7 @@ void freeMap( Map *m )
   // Free the memory within each table item.
   for ( int i = 0; i < m->tlen; i++ ) {
     // Maybe should be table + i --_____--_----_-_-_-_-_-_---
-    MapPair **cur_pair = m->table[ i ];
+    MapPair **cur_pair = &( m->table[ i ] );
 
     while ( *cur_pair ) {
       MapPair *free_pair = *cur_pair;
