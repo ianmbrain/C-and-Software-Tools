@@ -79,3 +79,83 @@ int parseInteger( Value *v, char const *str )
 
 //////////////////////////////////////////////////////////
 // String implementation.
+
+static void printString( Value const *v )
+{
+  printf( "%s", v->vptr );
+}
+
+static void moveString( Value const *src, Value *dest )
+{
+  dest->vptr = src->vptr;
+
+  dest->print = src->print;
+  dest->move = src->move;
+  dest->equals = src->equals;
+  dest->hash = src->hash;
+  dest->empty = src->empty;
+}
+
+static bool equalsString( Value const *v, Value const *other )
+{
+  // Make sure the other object is also an Integer.
+  // (i.e., it uses the same print funtion)
+  if ( other->print != printInteger )
+    return false;
+
+  if ( strcmp( v, other ) == 0 ) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+/**
+ * This code is based on the Jenkins Hash Function found in this wikipedia article: https://en.wikipedia.org/wiki/Jenkins_hash_function
+*/
+static unsigned int hashString( Value const *v )
+{
+  unsigned int hash_value = 0;
+  int size = 0;
+  int str_len = strlen( v->vptr );
+  char *str_value = v->vptr;
+
+  while ( size < str_len ) {
+    hash_value += ( str_value[ size++ ] - '0' );
+    hash_value += hash_value << 10;
+    hash_value ^= hash_value >> 6;
+  }
+
+  hash_value += hash_value << 3;
+  hash_value ^= hash_value >> 11;
+  hash_value += hash_value << 15;
+  return hash_value;
+}
+
+static void emptyString( Value *v )
+{
+  free( v->vptr );
+}
+
+int parseString( Value *v, char const *str )
+{
+  int len;
+  char str_value[20] = "";
+  if ( sscanf( str, "%s%n", str_value, &len ) != 1 )
+    return 0;
+
+  char *str = ( char * ) malloc( strlen( str_value ) +1 );
+  strcpy( str, str_value );
+
+  // Fill in all the fields of v for an integer type of value.
+  v->print = printString;
+  v->move = moveString;
+  v->equals = equalsString;
+  v->hash = hashString;
+  v->empty = emptyString;
+  v->vptr = str;
+
+  // Return how much of str we parsed.
+  return len;
+}

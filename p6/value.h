@@ -67,4 +67,6 @@ struct ValueStruct {
 */
 int parseInteger( Value *v, char const *str );
 
+int parseString( Value *v, char const *str );
+
 #endif
