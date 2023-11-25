@@ -3,6 +3,7 @@
 #include "value.h"
 #include "input.h"
 #include "map.h"
+#include <string.h>
 
 //The driver component is the top-level, main component. 
 //Using the other components, it reads and processes commands from standard input, 
@@ -21,13 +22,21 @@ int main( int argc, char *argv[] )
         int n = 0;
         int add_n = 0;
 
+        user_input = NULL;
         user_input = readLine( stdin );
 
         printf( "%s", "cmd> " );
 
+        // If the user does not enter a command, exit the program.
+        if ( user_input == NULL ) {
+            return EXIT_SUCCESS;
+        }
+
         sscanf( user_input, "%s%n", command, &n );
 
         if ( strcmp( command, "set" ) == 0 ) {
+            printf( "%s\n", user_input );
+
             // Initialize the key and value structs.
             Value key = {};
             Value val = {};
@@ -61,11 +70,13 @@ int main( int argc, char *argv[] )
 
             // Set the key and value pair in the map.
             mapSet( map, &key, &val );
+            printf( "\n" );
         }
         else if ( strcmp( command, "get" ) == 0 ) {
+            printf( "%s\n", user_input );
+
             // Initialize the key and value structs.
             Value key = {};
-            bool is_string = false;
 
             add_n = parseInteger( &key, user_input + n );
 
@@ -73,7 +84,6 @@ int main( int argc, char *argv[] )
             if ( add_n == 0 ) {
                 // Parse the key as a string
                 add_n = parseString( &key, user_input + n );
-                is_string = true;
             }
 
             // Command is invalid if a key is not specified.
@@ -83,12 +93,19 @@ int main( int argc, char *argv[] )
 
             Value *val = mapGet( map, &key );
 
-            if ( is_string ) {
-                char *str_val = val->vptr;
-                printf( "%s\n", str_val );
-            }
+            // if ( is_string ) {
+            //     char *str_val = val->vptr;
+            //     printf( "%s\n", str_val );
+            // }
+            // else {
+            //     printf( "%d\n", val->ival);
+            // }
+
+            if ( val == NULL )
+                printf( "Undefined\n\n" );
             else {
-                printf( "%d\n", val->ival);
+                val->print( val );
+                printf( "\n\n" );
             }
         }
         else if ( strcmp( command, "remove" ) == 0 ) {
@@ -115,6 +132,7 @@ int main( int argc, char *argv[] )
                 printf( "Invalid command\n" );
         }
         else if ( strcmp( command, "size" ) == 0 ) {
+            printf( "%s\n", command );
             Value key = {};
 
             // Test if there are any integer values after the command.
@@ -131,7 +149,7 @@ int main( int argc, char *argv[] )
 
             // Print the size of the map.
             int size_val = mapSize( map );
-            ptinf( "%d\n", size_val );
+            printf( "%d\n\n", size_val );
         }
         else if ( strcmp( command, "quit" ) == 0 ) {
             printf( "quit\n" );

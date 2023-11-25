@@ -27,3 +27,4 @@ clean:
 	rm -f stringTest
 	rm -f mapTest
 	rm -f output.txt
+	rm -f stderr.txt
