@@ -109,6 +109,8 @@ int main( int argc, char *argv[] )
             }
         }
         else if ( strcmp( command, "remove" ) == 0 ) {
+            printf( "%s\n", user_input );
+
             Value key = {};
             bool removed = false;
 
@@ -130,6 +132,8 @@ int main( int argc, char *argv[] )
             // Print invalid command if the pair corresponding to the key was not removed.
             if ( !removed )
                 printf( "Invalid command\n" );
+
+            printf( "\n" );
         }
         else if ( strcmp( command, "size" ) == 0 ) {
             printf( "%s\n", command );
