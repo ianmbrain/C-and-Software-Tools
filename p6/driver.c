@@ -30,6 +30,8 @@ int main( int argc, char *argv[] )
         // If the user does not enter a command, exit the program.
         if ( user_input == NULL ) {
             free( user_input );
+            freeMap( map );
+
             return EXIT_SUCCESS;
         }
 
@@ -93,6 +95,7 @@ int main( int argc, char *argv[] )
             }
 
             Value *val = mapGet( map, &key );
+            key.empty( &key );
 
             // if ( is_string ) {
             //     char *str_val = val->vptr;
@@ -129,6 +132,8 @@ int main( int argc, char *argv[] )
             }
 
             removed = mapRemove( map, &key );
+            // Free the memory allocated to parse the string
+            key.empty( &key );
 
             // Print invalid command if the pair corresponding to the key was not removed.
             if ( !removed )
@@ -146,6 +151,9 @@ int main( int argc, char *argv[] )
             // Test if there are any string values after the command.
             if ( add_n == 0 ) {
                 add_n = parseString( &key, user_input + n );
+
+                // Free the memory used to parse any remaining string values after the command.
+                key.empty( &key );
             }
 
             // Command is invalid command if any other parameters are included
@@ -160,6 +168,8 @@ int main( int argc, char *argv[] )
             printf( "quit\n" );
 
             free( user_input );
+            freeMap( map );
+
             return EXIT_SUCCESS;
         }
         // Print invalid command if the command is not valid

@@ -82,8 +82,13 @@ void mapSet( Map *m, Value *key, Value *val )
 
   // Replace the value for the given value if the key already exists in the map.
   if ( *cur_pair ) {
-    // ( *cur_pair )->val = *val;
+    // Empty the old value of the pair before the new value is moved to it.
+    ( *cur_pair )->val.empty( &( *cur_pair )->val );
+
     ( *cur_pair )->val.move( val, &( *cur_pair )->val );
+
+    // If a new value is moved to the key, free the key used to parse the key value.
+    key->empty( key );
   }
   // Create a new map pair and add it to the table if the key does not exist.
   else {
@@ -93,6 +98,10 @@ void mapSet( Map *m, Value *key, Value *val )
     new_pair->next = *cur_pair;
     *cur_pair = new_pair;
     m->size++;
+
+    // Free the memory for the key and value structs.
+    // key->empty( key );
+    // val->empty( val );
   }
 }
 
