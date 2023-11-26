@@ -82,8 +82,8 @@ void mapSet( Map *m, Value *key, Value *val )
 
   // Replace the value for the given value if the key already exists in the map.
   if ( *cur_pair ) {
-    ( *cur_pair )->val = *val;
-    // ( *cur_pair )->val.move( &( *cur_pair )->val, val );
+    // ( *cur_pair )->val = *val;
+    ( *cur_pair )->val.move( val, &( *cur_pair )->val );
   }
   // Create a new map pair and add it to the table if the key does not exist.
   else {
@@ -93,21 +93,7 @@ void mapSet( Map *m, Value *key, Value *val )
     new_pair->next = *cur_pair;
     *cur_pair = new_pair;
     m->size++;
-    
-    // printf( "\nHERE\n" );
-
-    // free( key );
-    // free( val );
   }
-
-  // while ( cur_pair->next != NULL ) {
-  //   if ( cur_pair->key.equals( &( cur_pair->key ), key ) ) {
-  //     cur_pair->val = *val;
-
-  //     cur_pair = cur_p
-  //     break;
-  //   }
-  // }
 }
 
 Value *mapGet( Map *m, Value *key )
@@ -148,6 +134,8 @@ bool mapRemove( Map *m, Value *key )
     MapPair *remove_pair = *cur_pair;
     *cur_pair = ( *cur_pair )->next;
 
+    remove_pair->key.empty( &remove_pair->key );
+    remove_pair->val.empty( &remove_pair->val );
     free( remove_pair );
     m->size--;
     return true;
@@ -170,6 +158,8 @@ void freeMap( Map *m )
       MapPair *free_pair = *cur_pair;
       *cur_pair = ( *cur_pair )->next;
 
+      free_pair->key.empty( &free_pair->key );
+      free_pair->val.empty( &free_pair->val );
       free( free_pair );
     }
   }
