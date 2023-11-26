@@ -3,7 +3,7 @@ CFLAGS += -Wall -std=c99 -g
 LDLIBS += -o
 
 driver: driver.o input.o value.o map.o
-	gcc driver.o input.o value.o map.o -o driver
+	gcc driver.o input.o value.o map.o -fprofile-arcs -ftest-coverage -lgcov -o driver
 
 stringTest: stringTest.o value.o
 	gcc stringTest.o value.o -o stringTest
