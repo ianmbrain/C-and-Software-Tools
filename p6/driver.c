@@ -29,6 +29,7 @@ int main( int argc, char *argv[] )
 
         // If the user does not enter a command, exit the program.
         if ( user_input == NULL ) {
+            free( user_input );
             return EXIT_SUCCESS;
         }
 
@@ -157,6 +158,8 @@ int main( int argc, char *argv[] )
         }
         else if ( strcmp( command, "quit" ) == 0 ) {
             printf( "quit\n" );
+
+            free( user_input );
             return EXIT_SUCCESS;
         }
         // Print invalid command if the command is not valid
@@ -164,6 +167,8 @@ int main( int argc, char *argv[] )
             printf( "%s\n", user_input );
             printf( "Invalid Command\n" );
         }
+
+        free( user_input );
     }
 
     

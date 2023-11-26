@@ -83,6 +83,7 @@ void mapSet( Map *m, Value *key, Value *val )
   // Replace the value for the given value if the key already exists in the map.
   if ( *cur_pair ) {
     ( *cur_pair )->val = *val;
+    // ( *cur_pair )->val.move( &( *cur_pair )->val, val );
   }
   // Create a new map pair and add it to the table if the key does not exist.
   else {

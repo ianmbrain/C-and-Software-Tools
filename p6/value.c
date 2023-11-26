@@ -149,12 +149,74 @@ static void emptyString( Value *v )
 int parseString( Value *v, char const *str )
 {
   // int len = 0;
-  // char str_value[50] = "";
-  // if ( sscanf( str, "\"%[^\"]\"%n", str_value, &len ) != 1 )
-  //   return 0;
+  // int num_read = 0;
+  // int capacity = 5;
 
-  // char *v_str = ( char * ) malloc( strlen( str_value ) +1 );
-  // strcpy( v_str, str_value );
+  // char *text_string = ( char * ) malloc( capacity * sizeof( char ) );
+  // char cur_char = ' ';
+
+  // int scan_i = 0;
+  // scan_i = sscanf( str, "%c", &cur_char );
+  // // num_read++;
+
+  // bool first_quote = false;
+  // bool second_quote = false;
+
+  // while ( true ) {
+  //   //printf( "\n%c\n", cur_char );
+  //   if ( scan_i == EOF ) {
+  //     break;
+  //   }
+
+  //   if ( len + 1 >= capacity ) {
+  //     //printf( "\nHERE4\n");
+  //     capacity *= 2;
+  //     text_string = ( char * ) realloc( text_string, capacity * sizeof( char ) );
+  //   }
+
+  //   if ( cur_char == '"' && first_quote ) {
+  //     //printf( "\nHERE3\n");
+  //     text_string[ len ] = cur_char;
+  //     text_string[ len + 1 ] = '\0';
+  //     len++;
+
+  //     break;
+  //   }
+
+  //   if ( cur_char == '"' && !first_quote ) {
+  //     first_quote = true;
+  //     //printf( "\nHERE1\n");
+  //   }
+
+  //   if ( first_quote && !second_quote ) {
+  //     //printf( "\nHERE2\n");
+  //     text_string[ len ] = cur_char;
+  //     text_string[ len + 1 ] = '\0';
+  //     len++;
+  //   }
+  //   // If the first quote has not been included, increment the number read.
+  //   else {
+  //     num_read++;
+  //   }
+
+  //   scan_i = 0;
+  //   // printf( "\n%c\n", cur_char );
+  //   // printf( "%d\n", num_read );
+  //   scan_i = sscanf( str + len + num_read, "%c", &cur_char );
+  // }
+
+  // // Fill in all the fields of v for an integer type of value.
+  // v->print = printString;
+  // v->move = moveString;
+  // v->equals = equalsString;
+  // v->hash = hashString;
+  // v->empty = emptyString;
+  // v->vptr = text_string;
+
+  // // Return how much of str we parsed.
+  // return len + num_read;
+
+  // _______________________________________________________
 
   int len = 0;
   int num_read = 0;
@@ -180,6 +242,41 @@ int parseString( Value *v, char const *str )
       //printf( "\nHERE4\n");
       capacity *= 2;
       text_string = ( char * ) realloc( text_string, capacity * sizeof( char ) );
+    }
+
+    // Extra credit forward slash.
+    if ( cur_char == '\\' ) {
+      // Get the character after the new line.
+      num_read++;
+      sscanf( str + len + num_read, "%c", &cur_char );
+
+      //fprintf( stderr, "\n%c\n", cur_char );
+
+      if ( cur_char == 'n') {
+        text_string[ len ] = '\n';
+        text_string[ len + 1 ] = '\0';
+        len++;
+      }
+      else if ( cur_char == 't' ) {
+        text_string[ len ] = '\t';
+        text_string[ len + 1 ] = '\0';
+        len++;
+      }
+      else if ( cur_char == '\\' ) {
+        text_string[ len ] = '\\';
+        text_string[ len + 1 ] = '\0';
+        len++;
+      }
+      else if ( cur_char == '\"' ) {
+        text_string[ len ] = cur_char;
+        text_string[ len + 1 ] = '\0';
+        len++;
+      }
+
+      scan_i = 0;
+      scan_i = sscanf( str + len + num_read, "%c", &cur_char );
+
+      continue;
     }
 
     if ( cur_char == '"' && first_quote ) {
