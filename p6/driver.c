@@ -284,6 +284,4 @@ int main( int argc, char *argv[] )
         // Free the user input after use.
         free( user_input );
     }
-
-    
 }
