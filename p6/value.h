@@ -4,6 +4,8 @@
     Header for the value component, representing a value containing either integer functionality or string functionality.
     Provides methods and a value for each value struct.
     Provides functions to parse integers and strings for provided textual input.
+    This functionality is used within map to work with each value struct.
+    This functionality is used within driver to parse integers and strings from values.
  */
 
 #ifndef VALUE_H

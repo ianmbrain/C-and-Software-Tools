@@ -1,8 +1,12 @@
 /**
     @file value.c
     @author Ian M Brain (imbrain)
-    Implementation for the value component, with support for integer
-    and (eventually) string values.
+    Implementation for the value component.
+    Provides functionality for integer and string values.
+    Each value type has a method to print, move, equal, hash, and empty the value.
+    Each value type also has a method to parse the integer or string value from string input.
+    This functionality is used within map to work with each value struct.
+    This functionality is used within driver to parse integers and strings from values.
   */
 
 #include "value.h"
@@ -10,6 +14,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+
+/** Initial capacity of the string memory address. */
+#define INIT_CAPACITY 5
+
+/** Double the allowable memory capacity when reallocing. */
+#define CAPACITY_RESIZE 2
 
 //////////////////////////////////////////////////////////
 // Integer implementation.
@@ -161,7 +171,7 @@ int parseString( Value *v, char const *str )
   // Number of characters read not included in the string.
   int num_read = 0;
   // Capacity of the string used for realloc.
-  int capacity = 5;
+  int capacity = INIT_CAPACITY;
 
   // String containing parsed test.
   char *text_string = ( char * ) malloc( capacity * sizeof( char ) );
@@ -185,7 +195,7 @@ int parseString( Value *v, char const *str )
 
     // Realloc the string memory when capacity is reached. Plus one ensures there is space for the null terminator.
     if ( len + 1 >= capacity ) {
-      capacity *= 2;
+      capacity *= CAPACITY_RESIZE;
       text_string = ( char * ) realloc( text_string, capacity * sizeof( char ) );
     }
 
