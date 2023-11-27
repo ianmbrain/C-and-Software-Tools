@@ -5,8 +5,8 @@
     Provides functionality for integer and string values.
     Each value type has a method to print, move, equal, hash, and empty the value.
     Each value type also has a method to parse the integer or string value from string input.
-    This functionality is used within map to work with each value struct.
-    This functionality is used within driver to parse integers and strings from values.
+    This functionality is used in map to work with each value struct.
+    This functionality is used in driver to parse integers and strings from values.
   */
 
 #include "value.h"
