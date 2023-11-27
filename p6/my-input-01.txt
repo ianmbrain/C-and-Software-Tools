@@ -1,0 +1,9 @@
+set 10 "forward\\slash"
+set 20 "horizontal\ttab"
+set 30 "new\nline"
+set 40 "quotation\"mark"
+get 10
+get 20
+get 30
+get 40
+quit

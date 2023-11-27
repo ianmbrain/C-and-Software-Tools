@@ -100,11 +100,6 @@ static void moveString( Value const *src, Value *dest )
 
 static bool equalsString( Value const *v, Value const *other )
 {
-  // Make sure the other object is also an Integer.
-  // (i.e., it uses the same print funtion)
-  if ( other->print != printString )
-    return false;
-
   char *v_string = v->vptr;
   char *o_string = other->vptr;
 

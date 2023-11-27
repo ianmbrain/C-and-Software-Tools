@@ -1,0 +1,2 @@
+invalid command
+quit "invalid"

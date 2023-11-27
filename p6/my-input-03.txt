@@ -1,0 +1,14 @@
+set 10 5
+set 20 "second"
+set "first" 10
+set "third" "fourth"
+set "fifth" 50
+set "sixth" 60
+get 10
+get 20
+get "first"
+get "third"
+get "non existent"
+get "first" "invalid"
+get
+quit

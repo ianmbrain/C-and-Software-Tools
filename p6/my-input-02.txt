@@ -1,0 +1,9 @@
+set 10 5
+set 20 "second"
+set "first" 10
+set "third" "fourth"
+set "invalid"
+set "too" "many" "values"
+set invalid
+set
+quit
