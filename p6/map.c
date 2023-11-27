@@ -53,19 +53,6 @@ Map *makeMap( int len )
 
 int mapSize( Map *m )
 {
-  // int cum_size = 0;
-
-  // for ( int i = 0; i < m->tlen; i++ ) {
-  //   MapPair *temp_mapPair = *( m->table );
-
-  //   while ( temp_mapPair != NULL ) {
-  //     cum_size++;
-  //     temp_mapPair = temp_mapPair->next;
-  //   }
-  // }
-
-  // return cum_size;
-
   return m->size;
 }
 
