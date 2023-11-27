@@ -14,6 +14,7 @@
 /**
  * Reads a line of text from the specified file.
  * Return null if the end of file is reached and a pointer to a string containing the line otherwise.
+ * The code for this function is based on the readLine function that I completed in project 4 on 11/1/2023.
  * @param fp file to read the line from.
  * @return pointer to a string that stores the line of text or null if end of file is reached.
 */

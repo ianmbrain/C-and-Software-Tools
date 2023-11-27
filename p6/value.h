@@ -1,8 +1,9 @@
 /**
     @file value.h
-    @author
-    Header for the value component, representing either an integer or
-    string value.
+    @author Ian M Brain (imbrain)
+    Header for the value component, representing a value containing either integer functionality or string functionality.
+    Provides methods and a value for each value struct.
+    Provides functions to parse integers and strings for provided textual input.
  */
 
 #ifndef VALUE_H
@@ -14,7 +15,8 @@
 typedef struct ValueStruct Value;
 
 /** Abstract type used to represent an arbitrary value. All Values
-    support four basic operations. */
+    support four basic operations. 
+    This struct was provided by teaching staff for project 6. */
 struct ValueStruct {
   /** Pointer to a function that prints this value to the terminal.
       @param v Pointer to the value object to print. */
@@ -61,12 +63,22 @@ struct ValueStruct {
 
 /** Parse in integer value from the given string.  If successful, initialize the given
     Value to contain the integer.
+    This method was provided by teaching staff for project 6.
     @param v Pointer to a value instance that will hold the parsed integer.
     @param str String from which to parse the integer value.
     @return Number of characters consumed while parsing the integer, or zero if unsuccessful.
 */
 int parseInteger( Value *v, char const *str );
 
+/** Parse a string value from a given string. 
+ * If the string is able to be parsed, return the number of characters parsed in the string.
+ * If no characters were able to be parsed then return 0.
+ * Memory for this string should be freed by later callers.
+ * The code for this method is based on the readLine function that I completed in project 4 on 11/1/2023.
+    @param v Pointer to a value instance that will hold the parsed string.
+    @param str String the string value is parsed from
+    @return Number of characters parsed in the string and 0 if no characters are parsed.
+*/
 int parseString( Value *v, char const *str );
 
 #endif
