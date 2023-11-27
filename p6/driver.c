@@ -1,4 +1,12 @@
-
+/** 
+    @file driver.c
+    @author Ian M Brain (imbrain)
+    This file provides the main functionality of the program.
+    Users can enter commands to set, get, and remove pairs from the map.
+    Usrs can also use commands to print the size of the map as well as quit the program.
+    Utilizes functionality from the rest of the program to read in user input,
+    parse integer and string values from user input, and to alter map pairs in the map.
+*/
 
 #include "value.h"
 #include "input.h"
@@ -107,7 +115,7 @@ int main( int argc, char *argv[] )
             add_n = 0;
 
             // Print invalid command if there are any more strings in the command aside from the command, key, and value.
-            char test_string[ 20 ] = "";
+            char test_string[ CMD_LENGTH + 1 ] = "";
             sscanf( user_input + n, "%s%n", test_string, &add_n );
             if ( add_n != 0 ) {
                 printf( "%s", "Invalid Command\n" );
@@ -146,7 +154,7 @@ int main( int argc, char *argv[] )
             add_n = 0;
 
             // Print invalid command if there are any more strings after the key.
-            char test_string[ 20 ] = "";
+            char test_string[ CMD_LENGTH + 1 ] = "";
             sscanf( user_input + n, "%s%n", test_string, &add_n );
             if ( add_n != 0 ) {
                 printf( "%s", "Invalid Command\n\n" );
@@ -194,7 +202,7 @@ int main( int argc, char *argv[] )
             add_n = 0;
 
             // Print invalid command if there are any more strings after the key.
-            char test_string[ 20 ] = "";
+            char test_string[ CMD_LENGTH + 1 ] = "";
             sscanf( user_input + n, "%s%n", test_string, &add_n );
             if ( add_n != 0 ) {
                 printf( "%s", "Invalid Command\n\n" );
@@ -221,7 +229,7 @@ int main( int argc, char *argv[] )
             add_n = 0;
 
             // Print invalid command if there are any more strings after the key.
-            char test_string[ 20 ] = "";
+            char test_string[ CMD_LENGTH + 1 ] = "";
             sscanf( user_input + n, "%s%n", test_string, &add_n );
             if ( add_n != 0 ) {
                 printf( "%s", "Invalid Command\n\n" );
@@ -238,7 +246,7 @@ int main( int argc, char *argv[] )
             add_n = 0;
 
             // Print invalid command if there are any more strings after the key.
-            char test_string[ 20 ] = "";
+            char test_string[ CMD_LENGTH + 1 ] = "";
             sscanf( user_input + n, "%s%n", test_string, &add_n );
             if ( add_n != 0 ) {
                 printf( "%s", "Invalid Command\n\n" );
