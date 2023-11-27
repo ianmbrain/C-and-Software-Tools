@@ -4,4 +4,3 @@ set "first" 10
 set "third" "fourth"
 size
 size "invalid"
-

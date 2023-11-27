@@ -77,9 +77,6 @@ int main( int argc, char *argv[] )
             Value key = {};
             Value val = {};
 
-            // Check of whether the key and value are valid.
-            bool valid_input = true;
-
             // Try to parse the key as an integer. If unable to, parse the key as a string.
             add_n = parseInteger( &key, user_input + n );
             if ( add_n == 0 ) {
@@ -90,7 +87,9 @@ int main( int argc, char *argv[] )
             // Command is invalid if a key is not specified.
             if ( add_n == 0 ) {
                 printf( "%s", "Invalid Command\n" );
-                valid_input = false;
+                key.empty( &key );
+                free( user_input );
+                continue;
             }
 
             // Adjust n to read the value.
@@ -107,7 +106,10 @@ int main( int argc, char *argv[] )
             // Command is invalid if a value is not specified.
             if ( add_n == 0 ) {
                 printf( "%s", "Invalid Command\n" );
-                valid_input = false;
+                key.empty( &key );
+                val.empty( &val );
+                free( user_input );
+                continue;
             }
 
             // Adjust n to check for invalid command inputs.
@@ -119,12 +121,14 @@ int main( int argc, char *argv[] )
             sscanf( user_input + n, "%s%n", test_string, &add_n );
             if ( add_n != 0 ) {
                 printf( "%s", "Invalid Command\n" );
-                valid_input = false;
+                key.empty( &key );
+                val.empty( &val );
+                free( user_input );
+                continue;
             }
 
             // Set the key and value pair in the map.
-            if ( valid_input )
-                mapSet( map, &key, &val );
+            mapSet( map, &key, &val );
 
             printf( "\n" );
         }
@@ -146,6 +150,8 @@ int main( int argc, char *argv[] )
             // Command is invalid if a key is not specified.
             if ( add_n == 0 ) {
                 printf( "%s", "Invalid Command\n\n" );
+                key.empty( &key );
+                free( user_input );
                 continue;
             }
 
@@ -158,6 +164,8 @@ int main( int argc, char *argv[] )
             sscanf( user_input + n, "%s%n", test_string, &add_n );
             if ( add_n != 0 ) {
                 printf( "%s", "Invalid Command\n\n" );
+                key.empty( &key );
+                free( user_input );
                 continue;
             }
 
@@ -194,6 +202,8 @@ int main( int argc, char *argv[] )
             // Command is invalid command if a key is not specified or it is in an invalid format.
             if ( add_n == 0 ) {
                 printf( "%s", "Invalid Command\n\n" );
+                key.empty( &key );
+                free( user_input );
                 continue;
             }
 
@@ -206,6 +216,8 @@ int main( int argc, char *argv[] )
             sscanf( user_input + n, "%s%n", test_string, &add_n );
             if ( add_n != 0 ) {
                 printf( "%s", "Invalid Command\n\n" );
+                key.empty( &key );
+                free( user_input );
                 continue;
             }
 
@@ -233,6 +245,7 @@ int main( int argc, char *argv[] )
             sscanf( user_input + n, "%s%n", test_string, &add_n );
             if ( add_n != 0 ) {
                 printf( "%s", "Invalid Command\n\n" );
+                free( user_input );
                 continue;
             }
 
@@ -250,6 +263,7 @@ int main( int argc, char *argv[] )
             sscanf( user_input + n, "%s%n", test_string, &add_n );
             if ( add_n != 0 ) {
                 printf( "%s", "Invalid Command\n\n" );
+                free( user_input );
                 continue;
             }
 
