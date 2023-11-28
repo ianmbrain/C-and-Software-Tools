@@ -10,7 +10,6 @@
 
 #include "map.h"
 #include <stdlib.h>
-#include "value.h"
 
 typedef struct MapPairStruct MapPair;
 

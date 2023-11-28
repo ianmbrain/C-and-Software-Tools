@@ -5,7 +5,7 @@
     Provides methods and a value for each value struct.
     Provides functions to parse integers and strings for provided textual input.
     This functionality is used in map to work with each value struct.
-    This functionality is used in driver to parse integers and strings from values.
+    This functionality is also used in driver to parse integers and strings from values.
  */
 
 #ifndef VALUE_H

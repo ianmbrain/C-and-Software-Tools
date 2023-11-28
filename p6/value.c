@@ -6,7 +6,7 @@
     Each value type has a method to print, move, equal, hash, and empty the value.
     Each value type also has a method to parse the integer or string value from string input.
     This functionality is used in map to work with each value struct.
-    This functionality is used in driver to parse integers and strings from values.
+    This functionality is also used in driver to parse integers and strings from values.
   */
 
 #include "value.h"
@@ -127,9 +127,8 @@ static bool equalsString( Value const *v, Value const *other )
   }
 }
 
-/**
- * This code is based on the Jenkins Hash Function found in this wikipedia article: https://en.wikipedia.org/wiki/Jenkins_hash_function
-*/
+// Hash method for strings.
+// This code is based on the Jenkins Hash Function found in this wikipedia article: https://en.wikipedia.org/wiki/Jenkins_hash_function
 static unsigned int hashString( Value const *v )
 {
   // Hash value of the value string.
@@ -163,7 +162,6 @@ static void emptyString( Value *v )
   free( v->vptr );
 }
 
-// CITE as being based on input.c __-----___---____--_____---____---__-_--____---__-
 int parseString( Value *v, char const *str )
 {
   // Len of the string used to realloc.

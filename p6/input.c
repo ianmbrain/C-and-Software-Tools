@@ -2,7 +2,7 @@
  * @file input.c
  * @author Ian M Brain (imbrain)
  * This file provides functionality to read in a line of text from a file and return a pointer to that string.
- * This functionality is used to read in park lines from in catalog.c and to read in user commands in parks.c.
+ * This functionality is used to read user input from a file in the driver program.
   */
 
 #include "input.h"
