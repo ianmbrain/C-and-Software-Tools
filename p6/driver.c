@@ -13,8 +13,6 @@
 #include "map.h"
 #include <string.h>
 
-// Make sure this is OOP style like lecture 21 so hidden implmentation__----___--___---__---__--_--_--_-_-__-__-_-_------__-_-_---
-
 /** Maximum length of user commands including an additional character for invalid commands. */
 #define CMD_LENGTH 7
 
@@ -192,7 +190,7 @@ int main( int argc, char *argv[] )
             // Boolean indicating if the map pair was removed.
             bool removed = false;
 
-            // Try to parse the key as an integer. If it is not an integer parse it as a string
+            // Try to parse the key as an integer. If it is not an integer parse it as a string.
             add_n = parseInteger( &key, user_input + n );
             if ( add_n == 0 ) {
                 // Parse the key as a string.

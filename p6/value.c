@@ -197,7 +197,7 @@ int parseString( Value *v, char const *str )
       text_string = ( char * ) realloc( text_string, capacity * sizeof( char ) );
     }
 
-    // Functionality to permit escapte sequences. 
+    // Functionality to permit escape sequences.
     if ( cur_char == '\\' ) {
       // If there is a forward slash, get the character after the new line.
       num_read++;
